@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TOOL LAB｜鋼材カットの無料計算ツール（板取り・切断ロス・重量早見表）</title>
+  <meta name="description"
+    content="鋼材・板金の現場で使える無料計算ツール。板取り（ネスティング）と棒材の切断ロス計算をブラウザだけで実行、鋼材の重量早見表も。インストール不要・会員登録不要・データはブラウザ内で完結しサーバー送信なし。滋賀の鉄工所TOOL LABが公開。" />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="https://hashimotokogyo.com/tools.html" />
+  <meta property="og:url" content="https://hashimotokogyo.com/tools.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="TOOL LAB｜鋼材カットの無料計算ツール" />
+  <meta property="og:description" content="板取り・切断ロス計算・重量早見表を無料公開。ブラウザ完結・インストール不要。" />
+  <meta property="og:locale" content="ja_JP" />
+  <style>
+    :root {
+      --bg: #ffffff; --ink: #0f172a; --muted: #64748b; --line: #e2e8f0;
+      --panel: #f8fafc; --panel2: #f1f5f9; --accent: #0ea5e9; --accent-ink: #075985;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; color: var(--ink); background: var(--bg); line-height: 1.7;
+      font-family: system-ui, -apple-system, "Segoe UI", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+    }
+    .wrap { max-width: 1000px; margin: 0 auto; padding: 0 18px; }
+    a { color: var(--accent-ink); }
+
+    .hero { background: linear-gradient(180deg, #0b1220, #131f38); color: #e5eefc; padding: 56px 0 48px; }
+    .brand { font-size: 13px; letter-spacing: .14em; color: #7dd3fc; font-weight: 700; }
+    .hero h1 { font-size: 30px; margin: 10px 0 12px; line-height: 1.35; }
+    .hero p.sub { font-size: 16px; color: #cbd5e1; margin: 0 0 20px; max-width: 640px; }
+    .trust { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13.5px; color: #cbd5e1; }
+    .trust span::before { content: "✓ "; color: #34ff7a; font-weight: 700; }
+
+    section { padding: 44px 0; }
+    section.alt { background: var(--panel); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    h2 { font-size: 22px; margin: 0 0 6px; }
+    .lead { color: var(--muted); margin: 0 0 22px; }
+
+    .tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+    .tool {
+      display: flex; flex-direction: column; padding: 22px; border: 1px solid var(--line);
+      border-radius: 16px; background: #fff; text-decoration: none; color: var(--ink);
+      transition: border-color .15s, transform .05s, box-shadow .15s;
+    }
+    .tool:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 12px 30px rgba(2, 32, 71, .08); }
+    .tool .tag {
+      align-self: flex-start; font-size: 11.5px; font-weight: 700; color: #052e16;
+      background: #34ff7a; border-radius: 999px; padding: 2px 10px; margin-bottom: 12px;
+    }
+    .tool h3 { margin: 0 0 8px; font-size: 18px; }
+    .tool p { margin: 0 0 16px; color: var(--muted); font-size: 14px; flex: 1; }
+    .tool .go { font-weight: 700; color: var(--accent-ink); }
+
+    .how { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+    .step { padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: #fff; }
+    .step .n {
+      display: inline-flex; width: 26px; height: 26px; align-items: center; justify-content: center;
+      background: var(--accent-ink); color: #fff; border-radius: 50%; font-size: 13px; font-weight: 700; margin-bottom: 8px;
+    }
+    .step b { display: block; margin-bottom: 4px; }
+    .step small { color: var(--muted); }
+
+    .biz { padding: 26px; border-radius: 18px; background: #0b1220; color: #e5eefc; }
+    .biz h2 { color: #fff; }
+    .biz p { color: #cbd5e1; margin: 0 0 8px; }
+    .biz a { color: #7dd3fc; font-weight: 700; }
+    .biz ul { margin: 10px 0 0; padding-left: 18px; color: #cbd5e1; font-size: 14px; }
+
+    footer { padding: 28px 0; color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); }
+  </style>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "TOOL LAB",
+  "url": "https://hashimotokogyo.com/tools.html",
+  "description": "鋼材・板金の現場で使える無料計算ツール（板取り・切断ロス計算・重量早見表）。インストール不要・ブラウザ完結。"
+}
+  </script>
+</head>
+
+<body>
+<nav class="no-print" style="background:#0b1220;padding:8px 16px;font-size:13px;font-family:system-ui,-apple-system,'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;border-bottom:1px solid rgba(255,255,255,.08);">
+  <a href="./index.html" style="color:#7dd3fc;font-weight:700;text-decoration:none;">株式会社橋本工業</a>
+  <span style="color:#64748b;margin:0 6px;">｜</span>
+  <a href="./tools.html" style="color:#cbd5e1;text-decoration:none;margin:0 6px;">無料ツール</a>
+  <a href="./itadori_free.html" style="color:#cbd5e1;text-decoration:none;margin:0 6px;">板取り</a>
+  <a href="./bar_free.html" style="color:#cbd5e1;text-decoration:none;margin:0 6px;">切断ロス</a>
+  <a href="./hayami.html" style="color:#cbd5e1;text-decoration:none;margin:0 6px;">重量早見表</a>
+</nav>
+
+  <div class="hero">
+    <div class="wrap">
+      <div class="brand">TOOL LAB</div>
+      <h1>鋼材カットの計算を、ブラウザだけで。<br>現場の「考える」をゼロに。</h1>
+      <p class="sub">
+        板取り（ネスティング）と棒材の切断ロス計算、鋼材の重量早見表を無料で公開しています。
+        ソフトのインストールは不要。仕事で困った瞬間に、すぐ使えます。
+      </p>
+      <div class="trust">
+        <span>インストール不要</span>
+        <span>会員登録不要</span>
+        <span>サーバー送信なし・ブラウザ内で完結</span>
+        <span>スマホ・PC対応</span>
+      </div>
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap">
+      <h2>無料ツール</h2>
+      <p class="lead">まずは無料版でお試しください。より実務向けの機能はPro版でご利用いただけます。</p>
+      <div class="tools">
+        <a class="tool" href="./itadori_free.html">
+          <span class="tag">無料</span>
+          <h3>板取り計算ツール</h3>
+          <p>鋼板の板取り（ネスティング）を自動配置。4×8・5×10などの定尺に必要枚数を計算し、マウスで手動調整も可能。PNGで保存できます。</p>
+          <span class="go">使ってみる →</span>
+        </a>
+        <a class="tool" href="./bar_free.html">
+          <span class="tag">無料</span>
+          <h3>切断ロス計算ツール</h3>
+          <p>角パイプ・アングル・チャンネルなど棒材の切断組合せを自動計算し、定尺のロスを最小化。切断内訳をコピーして見積り・現場へ。</p>
+          <span class="go">使ってみる →</span>
+        </a>
+        <a class="tool" href="./hayami.html">
+          <span class="tag">無料</span>
+          <h3>鋼材 重量早見表</h3>
+          <p>アングル・角パイプ・チャンネル・丸鋼・H形鋼・配管などの単位重量（kg/m）をサイズ検索。定尺長さ別の重量もひと目で。</p>
+          <span class="go">調べる →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt">
+    <div class="wrap">
+      <h2>使い方はかんたん</h2>
+      <p class="lead">ダウンロードもインストールも不要。ブラウザで開いてすぐに使えます。</p>
+      <div class="how">
+        <div class="step"><span class="n">1</span><b>ツールを開く</b><small>リンクをタップするだけ。アプリのインストールは不要です。</small></div>
+        <div class="step"><span class="n">2</span><b>サイズを入力</b><small>定尺と欲しい寸法・本数を入力して「計算」。</small></div>
+        <div class="step"><span class="n">3</span><b>結果を確認・調整</b><small>自動配置の結果を手動で微調整。現場の手癖に合わせられます。</small></div>
+        <div class="step"><span class="n">4</span><b>保存・活用</b><small>PNG保存や切断内訳のコピーで、見積り・現場提出に。</small></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap">
+      <div class="biz">
+        <h2>鋼材の加工・製作のご相談も</h2>
+        <p>
+          TOOL LAB を運営する当社は、滋賀・湖南／甲賀エリアの鉄工所です。
+          板取り・切断のご相談から、製作・施工まで対応します。
+        </p>
+        <ul>
+          <li>製缶・溶接・特注部品の製作</li>
+          <li>機械修理・現地施工</li>
+          <li>鉄骨・構造物の解体</li>
+        </ul>
+        <p style="margin-top:14px;">
+          「板取りは出したけど加工先が…」というときも、お気軽にご連絡ください。
+          <a href="mailto:">お問い合わせ →</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      © TOOL LAB ｜ 現場で使う鋼材カットの実務ツール　
+      <a href="./itadori_free.html">板取り</a>・
+      <a href="./bar_free.html">切断ロス</a>・
+      <a href="./hayami.html">重量早見表</a>
+    </div>
+  </footer>
+</body>
+
+</html>

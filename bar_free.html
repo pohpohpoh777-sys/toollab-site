@@ -1,0 +1,2151 @@
+<!DOCTYPE html>
+<!-- saved from url=(0049)file:///C:/Users/nakat/Downloads/index_fixed.html -->
+<html lang="ja">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>鋼材の切断ロス計算ツール【無料・インストール不要】定尺の取り都合を自動計算｜TOOL LAB</title>
+  <meta name="description" content="角パイプ・アングル・チャンネルなど棒材の切断組合せをブラウザだけで自動計算し、定尺のロスを最小化。切断内訳をコピーして見積り・現場に。インストール不要・サーバー送信なし。無料でお試しいただけます。" />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="https://hashimotokogyo.com/bar_free.html" />
+  <meta property="og:url" content="https://hashimotokogyo.com/bar_free.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="鋼材の切断ロス計算ツール【無料・インストール不要】｜TOOL LAB" />
+  <meta property="og:description" content="棒材の切断組合せをブラウザだけで自動計算。定尺ロス最小化・切断内訳コピー。インストール不要・サーバー送信なし。" />
+  <meta property="og:locale" content="ja_JP" />
+  <style>
+    :root {
+      --bg: #ffffff;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --line: #d0d7de;
+      --panel: #f8fafc;
+      --panel2: #f1f5f9;
+
+      /* Brand */
+      --brand: #34ff7a;
+      /* 控えめネオングリーン */
+      --accent: #1f2937;
+      /* UIの主役は暗色に寄せて疲れない */
+      --accent2: #22c55e;
+      /* ほんのり緑 */
+
+      --warn: #b45309;
+      --danger: #b91c1c;
+      --shadow: 0 8px 24px rgba(2, 6, 23, 0.08);
+      --r: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: linear-gradient(90deg, #0b1220, #0b1220);
+      color: #fff;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+    }
+
+    .topbar {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 12px 16px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    /* 控えめネオングリーンのロゴ（簡易） */
+    .logo {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      background:
+        radial-gradient(circle at 35% 35%, rgba(52, 255, 122, 0.85), rgba(52, 255, 122, 0.08) 60%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.00));
+      border: 1px solid rgba(52, 255, 122, 0.35);
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 10px 18px rgba(0, 0, 0, 0.25);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .logo:before {
+      content: "";
+      position: absolute;
+      inset: 7px 10px 7px 10px;
+      border: 1px solid rgba(52, 255, 122, 0.45);
+      border-radius: 9px;
+      transform: skewX(-8deg);
+      opacity: 0.9;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 15px;
+      letter-spacing: 0.3px;
+    }
+
+    .brand small {
+      display: block;
+      opacity: 0.85;
+      font-size: 11px;
+      margin-top: 1px;
+      color: rgba(255, 255, 255, 0.78);
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      font-size: 12px;
+    }
+
+    .pill input[type="file"] {
+      font-size: 12px;
+      color: #fff;
+      max-width: 210px;
+    }
+
+    .btn {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      padding: 7px 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--ink);
+      transition: transform .04s ease, background .15s ease, border-color .15s ease;
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn.primary {
+      background: linear-gradient(90deg, rgba(52, 255, 122, 0.18), rgba(52, 255, 122, 0.10));
+      color: #0b1220;
+      border-color: rgba(52, 255, 122, 0.35);
+      box-shadow: 0 10px 18px rgba(52, 255, 122, 0.10);
+      font-weight: 700;
+    }
+
+    .btn.ghost {
+      background: transparent;
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+    }
+
+    .btn.danger {
+      background: #fff1f2;
+      border-color: #fecdd3;
+      color: var(--danger);
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .section {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .section .hd {
+      padding: 10px 12px;
+      background: linear-gradient(180deg, var(--panel), #fff);
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .section .hd h2 {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .section .bd {
+      padding: 12px;
+    }
+
+    /* 操作ガイド（ヘッダー直下） */
+    .guide {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 10px 16px 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.00));
+    }
+
+    .guideBox {
+      border: 1px solid rgba(52, 255, 122, 0.25);
+      background: rgba(52, 255, 122, 0.08);
+      border-radius: 12px;
+      padding: 8px 10px;
+      color: #eafff2;
+      font-size: 12px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .guideBox strong {
+      color: #ffffff;
+    }
+
+    .guideBox .miniBtns {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .miniBtn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #fff;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .help {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    label {
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
+      margin: 2px 10px 2px 0;
+    }
+
+    input,
+    select {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 6px 8px;
+      font-size: 13px;
+      background: #fff;
+    }
+
+    input[type="number"] {
+      width: 100px;
+    }
+
+    input[type="text"] {
+      width: 220px;
+    }
+
+    select {
+      max-width: 360px;
+    }
+
+    input:focus,
+    select:focus {
+      outline: 2px solid rgba(52, 255, 122, 0.18);
+      border-color: rgba(52, 255, 122, 0.55);
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 12px;
+    }
+
+    .card {
+      grid-column: span 12;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: linear-gradient(180deg, #ffffff, #fbfdff);
+      box-shadow: 0 10px 22px rgba(2, 6, 23, 0.06);
+      overflow: hidden;
+    }
+
+    @media (min-width: 980px) {
+      .card {
+        grid-column: span 6;
+      }
+    }
+
+    .card .cardhd {
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(90deg, rgba(52, 255, 122, 0.10), rgba(15, 23, 42, 0.02));
+    }
+
+    .card .title {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .card .title strong {
+      font-size: 14px;
+    }
+
+    .card .title small {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .card .actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(15, 23, 42, 0.04);
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--ink);
+    }
+
+    .card .cardbd {
+      padding: 12px;
+    }
+
+    .sub {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      border-radius: 14px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    .sub h3 {
+      margin: 0 0 6px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    @media (min-width: 980px) {
+      .split {
+        grid-template-columns: 1.2fr 0.8fr;
+      }
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      font-size: 13px;
+    }
+
+    th,
+    td {
+      border-bottom: 1px solid var(--line);
+      padding: 6px 8px;
+      text-align: center;
+    }
+
+    th {
+      background: var(--panel2);
+      font-weight: 600;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .tleft {
+      text-align: left;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--muted);
+    }
+
+    .badge.accent {
+      border-color: rgba(52, 255, 122, 0.35);
+      color: #166534;
+      background: rgba(52, 255, 122, 0.12);
+      font-weight: 700;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .warn {
+      color: var(--warn);
+      font-weight: 600;
+    }
+
+    .twoInfo {
+      padding: 9px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(52, 255, 122, 0.40);
+      background: rgba(52, 255, 122, 0.14);
+      color: #0b1220;
+      font-size: 12px;
+      margin: 8px 0;
+      font-weight: 800;
+    }
+
+    .callout {
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(52, 255, 122, 0.35);
+      background: rgba(52, 255, 122, 0.10);
+      color: #14532d;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .hr {
+      height: 1px;
+      background: var(--line);
+      margin: 10px 0;
+    }
+
+    .flex-between {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .right {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    /* Print */
+    @media print {
+
+      header,
+      .no-print,
+      .guide {
+        display: none !important;
+      }
+
+      body {
+        background: #fff;
+      }
+
+      main {
+        max-width: none;
+        padding: 0;
+      }
+
+      .section {
+        box-shadow: none;
+        border: none;
+      }
+
+      .section .hd {
+        border: none;
+        background: #fff;
+      }
+
+      .card {
+        box-shadow: none;
+      }
+
+      .sub {
+        background: #fff;
+      }
+
+      .twoInfo {
+        border: 1px solid #000;
+        background: #fff;
+        color: #000;
+      }
+
+      .callout {
+        border: 1px solid #000;
+        background: #fff;
+        color: #000;
+      }
+
+      th {
+        background: #f2f2f2 !important;
+      }
+
+      .badge.accent {
+        border-color: #999;
+        color: #000;
+        background: #fff;
+      }
+
+      /* まとめ印刷はタイトル＋表だけ */
+      #summarySection .help,
+      #summarySection .callout {
+        display: none !important;
+      }
+
+      #summarySection .bd {
+        padding: 0 !important;
+      }
+    }
+
+    .version {
+      font-size: 12px;
+      color: #888;
+      margin-left: 8px;
+    }
+    /* ===== 無料版：Pro機能を非表示 ===== */
+    .twoResult { display: none !important; }          /* 2本どりパターン＝Pro */
+    #summarySection { display: none !important; }      /* 複数材種まとめ＝Pro */
+    .top-actions { display: none !important; }         /* CSV自作読込・材種カード追加・まとめ印刷＝Pro */
+    label.chip:has(.includeSummary) { display: none !important; }
+
+    /* ===== 無料 / Pro導線 ===== */
+    .freeTag {
+      font-size: 12px; font-weight: 700; color: #065f46;
+      background: rgba(52,255,122,0.22); border: 1px solid rgba(6,95,70,0.35);
+      border-radius: 999px; padding: 2px 10px; vertical-align: middle; margin-left: 6px;
+    }
+    #pro {
+      margin: 32px auto; max-width: 1100px; padding: 22px;
+      border: 1px solid var(--line); border-radius: 16px;
+      background: linear-gradient(180deg, #fffdf9, #fff);
+    }
+    #pro h2 { margin: 0 0 6px; }
+    #pro .lead { color: var(--muted); margin: 0 0 16px; }
+    .cmp { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .cmp th, .cmp td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; }
+    .cmp thead th { background: var(--panel2); }
+    .cmp .yes { color: #065f46; font-weight: 700; }
+    .cmp .no { color: #9ca3af; }
+    .proCta {
+      display: inline-block; margin-top: 16px; padding: 12px 22px;
+      background: #b45309; color: #fff; font-weight: 700; border-radius: 12px; text-decoration: none;
+    }
+    .proNote { font-size: 12px; color: var(--muted); margin-top: 10px; }
+  </style>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "鋼材の切断ロス計算ツール",
+  "url": "https://hashimotokogyo.com/bar_free.html",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web",
+  "description": "角パイプ・アングル・チャンネルなど棒材の切断組合せを自動計算し、定尺のロスを最小化。切断内訳コピー。",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "JPY"
+  }
+}
+  </script>
+</head>
+
+<body>
+<nav class="no-print" style="background:#0b1220;padding:8px 16px;font-size:13px;font-family:system-ui,-apple-system,'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;border-bottom:1px solid rgba(255,255,255,.08);">
+  <a href="./index.html" style="color:#7dd3fc;font-weight:700;text-decoration:none;">株式会社橋本工業</a>
+  <span style="color:#64748b;margin:0 6px;">｜</span>
+  <a href="./tools.html" style="color:#cbd5e1;text-decoration:none;margin:0 6px;">無料ツール</a>
+  <a href="./itadori_free.html" style="color:#cbd5e1;text-decoration:none;margin:0 6px;">板取り</a>
+  <a href="./bar_free.html" style="color:#cbd5e1;text-decoration:none;margin:0 6px;">切断ロス</a>
+  <a href="./hayami.html" style="color:#cbd5e1;text-decoration:none;margin:0 6px;">重量早見表</a>
+</nav>
+
+  <header>
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>鋼材の切断ロス計算ツール <span class="freeTag">無料</span></h1>
+          <small>棒材の取り都合を自動計算／インストール不要・サーバー送信なし・データはブラウザ内で完結</small>
+        </div>
+      </div>
+
+      <div class="top-actions no-print">
+        <span class="pill">
+          master_bar.csv: <input id="csvFile" type="file" accept=".csv,text/csv">
+        </span>
+        <button class="btn ghost" id="btnTryAuto">同階層CSVを自動読込（http時のみ）</button>
+        <button class="btn ghost" id="btnAddCard">＋ 材種カード追加</button>
+        <button class="btn ghost" id="btnPrintSummary">🖨 まとめ印刷</button>
+      </div>
+    </div>
+
+    <!-- 簡単操作ガイド（ヘッダー下部） -->
+    <div class="guide no-print">
+      <div class="guideBox">
+        <div>
+          <strong>使い方（30秒）</strong><br>
+          ① <strong>グループ → 材種</strong> を選択　
+          ② 欲しい長さを入力して <strong>計算</strong>　
+          ③ <strong>切断内訳</strong> をコピー/印刷
+        </div>
+        <div class="miniBtns">
+          <button class="miniBtn" id="jumpSummary">まとめへ</button>
+          <button class="miniBtn" id="jumpTop">先頭へ</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <div class="grid">
+
+      <div class="section">
+        <div class="hd">
+          <h2>材種カード</h2>
+          <div class="right no-print">
+            <label class="chip"><input type="checkbox" id="toggleCost"> 金額を表示（概算）</label>
+          </div>
+        </div>
+        <div class="bd">
+          <div id="cards" class="cards">
+            <div class="card" data-id="1">
+              <div class="cardhd">
+                <div class="title">
+                  <strong class="cardTitle">材種カード</strong>
+                  <small class="cardSub muted">グループ→材種（サイズ）を選択</small>
+                </div>
+                <div class="actions no-print">
+                  <label class="chip"><input type="checkbox" class="includeSummary" checked=""> まとめ印刷に含める</label>
+                  <button type="button" class="btn danger btnRemove">削除</button>
+                </div>
+              </div>
+
+              <div class="cardbd">
+                <div class="sub">
+                  <h3><span>① 材種・定尺・単価</span><span class="badge">master</span></h3>
+
+                  <div class="row">
+                    <label>グループ：
+                      <select class="groupSelect">
+                        <option value="その他">その他</option>
+                      </select>
+                    </label>
+
+                    <label>検索：
+                      <input type="text" class="sizeFilter" placeholder="サイズ検索（例：50 / 75 / 6×）">
+                    </label>
+
+                    <label>材種：
+                      <select class="materialSelect">
+                        <option value="" disabled selected hidden>選択する</option>
+                        <option value="custom">自由入力（手動入力）</option>
+                      </select>
+                    </label>
+                  </div>
+
+                  <div class="row" style="margin-top:6px;">
+                    <label>材種名：
+                      <input type="text" class="materialName" placeholder="例：アングル 6×50×50">
+                    </label>
+
+                    <label>定尺長さ：
+                      <select class="stockSelect">
+                        <option value="5500">5,500 mm</option>
+                        <option value="6000">6,000 mm</option>
+                        <option value="7000">7,000 mm</option>
+                        <option value="8000">8,000 mm</option>
+                        <option value="custom">その他（自由入力）</option>
+                      </select>
+                      <input type="number" class="stockCustom" placeholder="その他(mm)" style="width:120px; display:none;">
+                    </label>
+                  </div>
+
+                  <div class="row" style="margin-top:6px;">
+                    <label>単重量(kg/m)：
+                      <input type="number" class="unitWeight" step="0.001" placeholder="例：4.55">
+                    </label>
+                    <label>キロ単価(円/kg)：
+                      <input type="number" class="pricePerKg" step="1" placeholder="例：210（任意）">
+                    </label>
+                  </div>
+
+                  <div class="row" style="margin-top:6px;">
+                    <label>1カットのロス(mm)：
+                      <input type="number" class="lossPerCut" value="0">
+                    </label>
+                    <label>1本あたり端部ロス(mm)：
+                      <input type="number" class="endLossPerBar" value="0">
+                    </label>
+                  </div>
+
+                  <div class="help" style="margin-top:6px;">
+                    ※ 材種プリセット選択時は「材種名」を固定（誤操作防止）。custom時のみ手入力可。
+                  </div>
+                </div>
+
+                <div class="sub">
+                  <h3><span>② 欲しい長さの一覧</span><span class="badge">長さ×本数</span></h3>
+
+                  <div class="row no-print">
+                    <button type="button" class="btn btnAddRow">＋ 行を追加</button>
+                    <button type="button" class="btn danger btnClearRows">全削除</button>
+                  </div>
+
+                  <table class="mini">
+                    <thead>
+                      <tr>
+                        <th style="width:44px;">No</th>
+                        <th>長さ(mm)</th>
+                        <th>本数</th>
+                        <th style="width:70px;">削除</th>
+                      </tr>
+                    </thead>
+                    <tbody class="tbody">
+                      <tr>
+                        <td class="no" style="width:44px;">1</td>
+                        <td><input class="len" type="number" value=""></td>
+                        <td><input class="qty" type="number" value="1"></td>
+                        <td style="width:70px;"><button type="button" class="btn danger del">削除</button></td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <!-- ★計算ボタンは入力の下（あなたの希望） -->
+                  <div class="row no-print" style="margin-top:8px;">
+                    <button type="button" class="btn primary btnCalc">◎ 計算</button>
+                    <span class="help">※ 欲しい長さ入力後に「計算」を押す</span>
+                  </div>
+                </div>
+
+                <div class="split">
+                  <div>
+                    <div class="sub">
+                      <h3><span>③ 計算結果（案件・材種別）</span><span class="badge accent">結果</span></h3>
+                      <div class="status warn"></div>
+                      <div class="result"></div>
+                    </div>
+                    <div class="sub">
+                      <h3 style="margin-bottom:0;"><span>切断パターン（β）</span><span class="badge">取り方</span></h3>
+                      <div class="patternResult"></div>
+                      <div class="twoResult"></div>
+                    </div>
+                  </div>
+
+                  <div class="sub">
+                    <h3><span>④ 切断内訳（現場表）</span><span class="badge">白黒OK</span></h3>
+
+                    <div class="row no-print">
+                      <label class="chip">内訳モード：
+                        <select class="breakdownMode">
+                          <option value="two">2本どり（推奨/デフォルト）</option>
+                          <option value="single">1本取り</option>
+                        </select>
+                      </label>
+                    </div>
+
+                    <div class="row no-print" style="margin-top:6px;">
+                      <button type="button" class="btn btnCopyLocal">⧉ 内訳コピー</button>
+                      <button type="button" class="btn primary btnPrintLocal">🖨 内訳印刷</button>
+                    </div>
+
+                    <div class="localCutList" style="margin-top:10px;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section" id="summarySection">
+        <div class="hd">
+          <h2>切断内訳まとめ（現場表）</h2>
+          <div class="right no-print">
+            <button class="btn" id="btnCopySummary">⧉ まとめコピー</button>
+            <button class="btn primary" id="btnPrintSummary2">🖨 まとめ印刷</button>
+          </div>
+        </div>
+        <div class="bd">
+          <div class="callout">
+            ※ 「まとめ印刷に含める」チェックが入っていて、かつ<strong>計算済み</strong>の材種だけが表示されます（材種ごと区切り線）。
+          </div>
+          <div id="summaryOutput" style="margin-top:10px;">
+            <div style="margin-top:0px;">
+              <div class="flex-between">
+                <div>
+                  <strong>(材種未入力)</strong>
+                  <span class="badge">2本どり</span>
+                </div>
+                <div class="right">
+                  <span class="badge accent">定尺本数：2</span>
+                </div>
+              </div>
+              <div class="hr"></div>
+              <table class="mini">
+                <thead>
+                  <tr>
+                    <th class="tleft">材種</th>
+                    <th>バーNo</th>
+                    <th>長さ(mm)</th>
+                    <th>切断回数</th>
+                    <th>カット本数</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="tleft">(材種未入力)</td>
+                    <td>1,2</td>
+                    <td>1,000</td>
+                    <td>2</td>
+                    <td><strong>4</strong></td>
+                  </tr>
+                  <tr>
+                    <td class="tleft">(材種未入力)</td>
+                    <td>1,2</td>
+                    <td>800</td>
+                    <td>2</td>
+                    <td><strong>4</strong></td>
+                  </tr>
+                  <tr>
+                    <td class="tleft">(材種未入力)</td>
+                    <td>単独</td>
+                    <td>1,000</td>
+                    <td>1</td>
+                    <td><strong>1</strong></td>
+                  </tr>
+                </tbody>
+              </table>
+              <div style="margin-top:10px;"></div>
+              <table class="mini">
+                <thead>
+                  <tr>
+                    <th class="tleft">欲しい長さ(mm)</th>
+                    <th>本数</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="tleft">1,000</td>
+                    <td><strong>5</strong></td>
+                  </tr>
+                  <tr>
+                    <td class="tleft">800</td>
+                    <td><strong>4</strong></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ===== Pro版 導線 ===== -->
+  <section id="pro" class="no-print">
+    <h2>Pro版でできること</h2>
+    <p class="lead">無料版は1材種・1本取りで「取り都合」を素早く確認する実演台。案件をまるごと積算する実務機能をProにまとめています。</p>
+    <table class="cmp">
+      <thead>
+        <tr><th>機能</th><th>無料版</th><th>Pro版</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>切断組合せの自動計算・切断内訳コピー</td><td class="yes">◯</td><td class="yes">◯</td></tr>
+        <tr><td>内蔵の材種・定尺リスト（早見表相当）</td><td class="yes">◯</td><td class="yes">◯</td></tr>
+        <tr><td>取り方モード</td><td>1本取り</td><td class="yes">2本どり対応</td></tr>
+        <tr><td>材種カード</td><td>1材種</td><td class="yes">複数材種カード（案件を丸ごと積算）</td></tr>
+        <tr><td>master CSV連携</td><td class="no">—</td><td class="yes">自社の定尺・単価を登録</td></tr>
+        <tr><td>まとめ印刷（客先・現場提出用）</td><td class="no">—</td><td class="yes">複数材種を一覧出力</td></tr>
+      </tbody>
+    </table>
+    <a class="proCta" href="https://toollab.booth.pm/" target="_blank" rel="noopener">Pro版を見る（BOOTH）</a>
+    <p class="proNote">※ 決済・配布はBOOTHで行います。無料版はこのままブラウザで動作し、インストール・会員登録は不要です。</p>
+  </section>
+
+  <script>
+    /* =========================================================
+       0) MATERIALS（CSVで上書き）
+       key を必ずユニーク化： symbol|size
+       ========================================================= */
+    let MATERIALS = {};
+    const MASTER_ACCEPT_UNITS = new Set(["bar"]);
+    const MASTER_DEFAULT_FILE_NAME = "master_bar.csv";
+
+    let showCost = false;
+
+    /* =========================================================
+       1) CSV
+       ========================================================= */
+    function normalizeHeader(h) {
+      return String(h || "").trim().replace(/\uFEFF/g, "").toLowerCase();
+    }
+    function safeNum(v) {
+      const n = parseFloat(String(v || "").trim());
+      return Number.isFinite(n) ? n : null;
+    }
+    function safeStr(v) {
+      return String(v ?? "").trim();
+    }
+    function parseCSV(text) {
+      const rows = [];
+      let row = [], field = "", inQuotes = false;
+      for (let i = 0; i < text.length; i++) {
+        const c = text[i], next = text[i + 1];
+        if (inQuotes) {
+          if (c === '"' && next === '"') { field += '"'; i++; }
+          else if (c === '"') { inQuotes = false; }
+          else field += c;
+        } else {
+          if (c === '"') { inQuotes = true; }
+          else if (c === ",") { row.push(field); field = ""; }
+          else if (c === "\n") {
+            row.push(field); field = "";
+            if (row.some(x => String(x).trim() !== "")) rows.push(row);
+            row = [];
+          } else if (c === "\r") {
+          } else field += c;
+        }
+      }
+      row.push(field);
+      if (row.some(x => String(x).trim() !== "")) rows.push(row);
+      return rows;
+    }
+    function makeMaterialKey(symbol, size) {
+      const s1 = safeStr(symbol);
+      const s2 = safeStr(size);
+      return `${s1}|${s2}`.trim();
+    }
+    function buildMaterialsFromMasterCSV(csvText) {
+      const rows = parseCSV(csvText);
+      if (!rows.length) throw new Error("CSVが空です。");
+      const headerRaw = rows.shift();
+      const header = headerRaw.map(normalizeHeader);
+      const idx = {};
+      header.forEach((h, i) => idx[h] = i);
+
+      const requiredMin = ["symbol", "size", "unit", "length_m", "weight"];
+      const missing = requiredMin.filter(k => idx[k] === undefined);
+      if (missing.length) throw new Error("CSVヘッダ不足: " + missing.join(", "));
+
+      const temp = new Map(); // key -> obj
+      const weightFreq = new Map(); // key -> Map(wStr -> count)
+
+      for (const r of rows) {
+        const unit = safeStr(r[idx["unit"]]).toLowerCase();
+        if (!MASTER_ACCEPT_UNITS.has(unit)) continue;
+
+        const symbol = safeStr(r[idx["symbol"]]);
+        const size = safeStr(r[idx["size"]]);
+        if (!symbol && !size) continue;
+
+        const key = makeMaterialKey(symbol || "?", size || "?");
+
+        const group = (idx["group"] !== undefined) ? safeStr(r[idx["group"]]) : "その他";
+        const note = (idx["note"] !== undefined) ? safeStr(r[idx["note"]]) : "";
+
+        const lengthM = safeNum(r[idx["length_m"]]); // m（空なら null）
+        const weight = safeNum(r[idx["weight"]]);   // kg/m
+        const stockMM = (lengthM && lengthM > 0) ? Math.round(lengthM * 1000) : null;
+
+        if (!temp.has(key)) {
+          temp.set(key, {
+            key,
+            symbol,
+            size,
+            label: size || symbol || key,
+            name: size || symbol || key,
+            group: group || "その他",
+            note: note || "",
+            kgPerM: null,
+            stockLengths: []
+          });
+          weightFreq.set(key, new Map());
+        }
+        const obj = temp.get(key);
+
+        if (Number.isFinite(weight) && weight > 0) {
+          const wKey = String(weight);
+          const wf = weightFreq.get(key);
+          wf.set(wKey, (wf.get(wKey) || 0) + 1);
+        }
+        if (stockMM && stockMM > 0 && !obj.stockLengths.includes(stockMM)) {
+          obj.stockLengths.push(stockMM);
+        }
+        if (group) obj.group = group;
+        if (size) obj.name = size;
+        if (size) obj.label = size;
+        if (note) obj.note = note;
+      }
+
+      const materials = {};
+      for (const [key, obj] of temp.entries()) {
+        const wf = weightFreq.get(key);
+        if (wf && wf.size) {
+          let bestW = null, bestC = -1;
+          for (const [wStr, c] of wf.entries()) {
+            if (c > bestC) { bestC = c; bestW = parseFloat(wStr); }
+          }
+          if (Number.isFinite(bestW) && bestW > 0) obj.kgPerM = bestW;
+        }
+        obj.stockLengths.sort((a, b) => a - b);
+        materials[key] = obj;
+      }
+      return materials;
+    }
+    async function tryAutoLoadMasterCSV() {
+      try {
+        const res = await fetch(MASTER_DEFAULT_FILE_NAME, { cache: "no-store" });
+        if (!res.ok) return null;
+        const text = await res.text();
+        return buildMaterialsFromMasterCSV(text);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    /* =========================================================
+       2) group → size（昇順） + 検索（sizeのみ対象）
+       ========================================================= */
+    function normGroup(g) {
+      return (g || "その他").toString().trim() || "その他";
+    }
+    function normText(s) {
+      return (s || "").toString().trim().toLowerCase();
+    }
+    function getGroupsFromMaterials() {
+      const set = new Set();
+      Object.values(MATERIALS).forEach(m => set.add(normGroup(m.group)));
+      const arr = [...set];
+      arr.sort((a, b) => a.localeCompare(b, "ja"));
+      return arr;
+    }
+
+    /* ★サイズを数値抽出して昇順ソート（あなたの①） */
+    function extractNumbers(str) {
+      const nums = (str || "").match(/\d+(\.\d+)?/g);
+      return nums ? nums.map(Number) : [];
+    }
+    function compareSizeAsc(aKey, bKey) {
+      const a = MATERIALS[aKey], b = MATERIALS[bKey];
+      const na = extractNumbers(a?.size || a?.name || "");
+      const nb = extractNumbers(b?.size || b?.name || "");
+      const len = Math.max(na.length, nb.length);
+      for (let i = 0; i < len; i++) {
+        const va = na[i] ?? Infinity;
+        const vb = nb[i] ?? Infinity;
+        if (va !== vb) return va - vb;
+      }
+      return (a?.size || "").localeCompare((b?.size || ""), "ja");
+    }
+    function getKeysByGroup(group) {
+      const g = normGroup(group);
+      return Object.keys(MATERIALS)
+        .filter(k => normGroup(MATERIALS[k].group) === g)
+        .sort(compareSizeAsc);
+    }
+
+    /* =========================================================
+       3) 切断ロジック
+       ========================================================= */
+    function collectLinesFromCard(card) {
+      // ★「欲しい長さの一覧」専用tbodyだけを拾う（結果テーブル等と混線させない）
+      const tbody = card.querySelector("table.mini tbody.tbody");
+      const rows = tbody ? tbody.querySelectorAll("tr") : [];
+      const lines = [];
+
+      rows.forEach(tr => {
+        const lenEl = tr.querySelector("input.len");
+        const qtyEl = tr.querySelector("input.qty");
+        if (!lenEl || !qtyEl) return;
+
+        const len = parseFloat(lenEl.value);
+        const qty = parseInt(qtyEl.value, 10);
+        if (len > 0 && qty > 0) lines.push({ length: len, qty: qty });
+      });
+
+      return lines;
+    }
+
+    function computeBarsGreedy(usableLength, lossPerCut, lines) {
+      const pieces = [];
+      lines.forEach(l => {
+        for (let i = 0; i < l.qty; i++) pieces.push({ length: l.length });
+      });
+      pieces.sort((a, b) => b.length - a.length);
+
+      const bars = [];
+      while (pieces.length) {
+        let remaining = usableLength;
+        const usedThisBar = [];
+
+        let i = 0;
+        while (i < pieces.length) {
+          const len = pieces[i].length;
+          const eff = len + lossPerCut;
+          if (eff <= remaining) {
+            usedThisBar.push(len);
+            remaining -= eff;
+            pieces.splice(i, 1);
+          } else {
+            i++;
+          }
+        }
+        if (!usedThisBar.length) break;
+
+        const map = {};
+        usedThisBar.forEach(len => map[len] = (map[len] || 0) + 1);
+        const usedPiecesGrouped = Object.entries(map)
+          .map(([len, count]) => ({ length: parseFloat(len), count }))
+          .sort((a, b) => b.length - a.length);
+
+        const usedLength = usableLength - remaining;
+        bars.push({ usedPieces: usedPiecesGrouped, usedLength, leftover: remaining });
+      }
+      return bars;
+    }
+
+    /* =========================================================
+       4) UI：カード
+       ========================================================= */
+    const cardsEl = document.getElementById("cards");
+    const toggleCostEl = document.getElementById("toggleCost");
+    toggleCostEl.addEventListener("change", () => {
+      showCost = toggleCostEl.checked;
+      // 計算済みは再描画（あなたの③：後入力でも反映できる土台）
+      document.querySelectorAll(".card").forEach(card => {
+        if (card._lastCalc) renderResults(card, card._lastCalc);
+      });
+      rebuildSummary();
+    });
+
+    document.getElementById("jumpSummary").addEventListener("click", () => {
+      document.getElementById("summarySection").scrollIntoView({ behavior: "smooth" });
+    });
+    document.getElementById("jumpTop").addEventListener("click", () => {
+      document.getElementById("top").scrollIntoView({ behavior: "smooth" });
+    });
+
+    function addRow(tbody, length = "", qty = 1) {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+    <td class="no" style="width:44px;"></td>
+    <td><input class="len" type="number" value="${length}" /></td>
+    <td><input class="qty" type="number" value="${qty}" /></td>
+    <td style="width:70px;"><button type="button" class="btn danger del">削除</button></td>
+  `;
+      tbody.appendChild(tr);
+      tr.querySelector(".del").addEventListener("click", () => {
+        tr.remove();
+        renumberRows(tbody);
+      });
+      renumberRows(tbody);
+    }
+    function renumberRows(tbody) {
+      [...tbody.querySelectorAll("tr")].forEach((tr, i) => {
+        tr.querySelector(".no").textContent = i + 1;
+      });
+    }
+
+    function getDefaultStockCandidates() {
+      return [5500, 6000, 7000, 8000];
+    }
+    function updateStockSelect(card, stockLengths, allowFallback) {
+      const stockSelect = card.querySelector(".stockSelect");
+      const stockCustom = card.querySelector(".stockCustom");
+      stockSelect.innerHTML = "";
+
+      let list = (stockLengths || []).slice();
+      if ((!list.length) && allowFallback) {
+        list = getDefaultStockCandidates();
+      }
+      if (!list.length) {
+        stockSelect.appendChild(new Option("その他（自由入力）", "custom"));
+        stockCustom.style.display = "inline-block";
+        return;
+      }
+      list.forEach(len => {
+        stockSelect.appendChild(new Option(`${len.toLocaleString()} mm`, String(len)));
+      });
+      stockSelect.appendChild(new Option("その他（自由入力）", "custom"));
+      stockCustom.style.display = "none";
+    }
+
+    function lockMaterialName(card, locked) {
+      const nameEl = card.querySelector(".materialName");
+      nameEl.disabled = !!locked;
+      nameEl.style.opacity = locked ? "0.75" : "1";
+    }
+
+    function applyPresetToCard(card) {
+      const matSel = card.querySelector(".materialSelect");
+      const key = matSel.value;
+
+      const nameEl = card.querySelector(".materialName");
+      const unitWeightEl = card.querySelector(".unitWeight");
+
+      if (key === "custom" || !MATERIALS[key]) {
+        lockMaterialName(card, false);
+        updateStockSelect(card, [], true);
+        card.querySelector(".cardTitle").textContent = "材種カード";
+        card.querySelector(".cardSub").textContent = "グループ→材種（サイズ）を選択";
+        return;
+      }
+
+      const m = MATERIALS[key];
+
+      nameEl.value = m.name || m.label || key;
+      lockMaterialName(card, true);
+
+      if (m.kgPerM) unitWeightEl.value = m.kgPerM;
+      updateStockSelect(card, m.stockLengths || [], true);
+
+      card.querySelector(".cardTitle").textContent = (m.name || m.label || "材種カード");
+      card.querySelector(".cardSub").textContent = `${normGroup(m.group)} / ${m.symbol || ""}`;
+    }
+
+    function initMaterialSelect(card) {
+      const groupSel = card.querySelector(".groupSelect");
+      const filterInp = card.querySelector(".sizeFilter");
+      const matSel = card.querySelector(".materialSelect");
+
+      groupSel.innerHTML = "";
+      matSel.innerHTML = "";
+
+      if (!MATERIALS || !Object.keys(MATERIALS).length) {
+        groupSel.appendChild(new Option("その他", "その他"));
+        const opt = new Option("選択する", "");
+        opt.disabled = true; opt.hidden = true; opt.selected = true;
+        matSel.appendChild(opt);
+        matSel.appendChild(new Option("自由入力（手動入力）", "custom"));
+        filterInp.value = "";
+        matSel.onchange = () => applyPresetToCard(card);
+        return;
+      }
+
+      const groups = getGroupsFromMaterials();
+      groups.forEach(g => groupSel.appendChild(new Option(g, g)));
+
+      const renderMaterials = () => {
+        const g = groupSel.value;
+        const q = normText(filterInp.value);
+        const keysAll = getKeysByGroup(g);
+
+        const keys = keysAll.filter(k => {
+          if (!q) return true;
+          const m = MATERIALS[k];
+          // 検索は size のみ（分かりやすさ優先）
+          const text = normText(m?.size || m?.name || "");
+          return text.includes(q);
+        });
+
+        const prev = matSel.value;
+        matSel.innerHTML = "";
+        const opt = new Option("選択する", "");
+        opt.disabled = true; opt.hidden = true;
+        matSel.appendChild(opt);
+        matSel.appendChild(new Option("自由入力（手動入力）", "custom"));
+        keys.forEach(key => {
+          const m = MATERIALS[key];
+          matSel.appendChild(new Option(m.label || m.name || key, key));
+        });
+
+        if (prev && [...matSel.options].some(o => o.value === prev)) matSel.value = prev;
+        else matSel.value = "";
+      };
+
+      filterInp.value = "";
+      renderMaterials();
+
+      groupSel.onchange = () => {
+        filterInp.value = "";
+        renderMaterials();
+        matSel.value = "";
+        applyPresetToCard(card);
+      };
+      filterInp.oninput = () => renderMaterials();
+
+      matSel.onchange = () => applyPresetToCard(card);
+    }
+
+    function createCard() {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+    <div class="cardhd">
+      <div class="title">
+        <strong class="cardTitle">材種カード</strong>
+        <small class="cardSub muted">グループ→材種（サイズ）を選択</small>
+      </div>
+      <div class="actions no-print">
+        <label class="chip"><input type="checkbox" class="includeSummary" checked /> まとめ印刷に含める</label>
+        <button type="button" class="btn danger btnRemove">削除</button>
+      </div>
+    </div>
+
+    <div class="cardbd">
+      <div class="sub">
+        <h3><span>① 材種・定尺・単価</span><span class="badge">master</span></h3>
+
+        <div class="row">
+          <label>グループ：
+            <select class="groupSelect"></select>
+          </label>
+
+          <label>検索：
+            <input type="text" class="sizeFilter" placeholder="サイズ検索（例：50 / 75 / 6×）" />
+          </label>
+
+          <label>材種：
+            <select class="materialSelect"></select>
+          </label>
+        </div>
+
+        <div class="row" style="margin-top:6px;">
+          <label>材種名：
+            <input type="text" class="materialName" placeholder="例：アングル 6×50×50" />
+          </label>
+
+          <label>定尺長さ：
+            <select class="stockSelect"></select>
+            <input type="number" class="stockCustom" placeholder="その他(mm)" style="width:120px; display:none;" />
+          </label>
+        </div>
+
+        <div class="row" style="margin-top:6px;">
+          <label>単重量(kg/m)：
+            <input type="number" class="unitWeight" step="0.001" placeholder="例：4.55" />
+          </label>
+          <label>キロ単価(円/kg)：
+            <input type="number" class="pricePerKg" step="1" placeholder="例：210（任意）" />
+          </label>
+        </div>
+
+        <div class="row" style="margin-top:6px;">
+          <label>1カットのロス(mm)：
+            <input type="number" class="lossPerCut" value="0" />
+          </label>
+          <label>1本あたり端部ロス(mm)：
+            <input type="number" class="endLossPerBar" value="0" />
+          </label>
+        </div>
+
+        <div class="help" style="margin-top:6px;">
+          ※ 材種プリセット選択時は「材種名」を固定（誤操作防止）。custom時のみ手入力可。
+        </div>
+      </div>
+
+      <div class="sub">
+        <h3><span>② 欲しい長さの一覧</span><span class="badge">長さ×本数</span></h3>
+
+        <div class="row no-print">
+          <button type="button" class="btn btnAddRow">＋ 行を追加</button>
+          <button type="button" class="btn danger btnClearRows">全削除</button>
+        </div>
+
+        <table class="mini">
+          <thead>
+            <tr><th style="width:44px;">No</th><th>長さ(mm)</th><th>本数</th><th style="width:70px;">削除</th></tr>
+          </thead>
+          <tbody class="tbody"></tbody>
+        </table>
+
+        <!-- ★計算ボタンは入力の下（あなたの希望） -->
+        <div class="row no-print" style="margin-top:8px;">
+          <button type="button" class="btn primary btnCalc">◎ 計算</button>
+          <span class="help">※ 欲しい長さ入力後に「計算」を押す</span>
+        </div>
+      </div>
+
+      <div class="split">
+        <div>
+          <div class="sub">
+            <h3><span>③ 計算結果（案件・材種別）</span><span class="badge accent">結果</span></h3>
+            <div class="status warn"></div>
+            <div class="result"></div>
+          </div>
+          <div class="sub">
+            <h3 style="margin-bottom:0;"><span>切断パターン（β）</span><span class="badge">取り方</span></h3>
+            <div class="patternResult"></div>
+            <div class="twoResult"></div>
+          </div>
+        </div>
+
+        <div class="sub">
+          <h3><span>④ 切断内訳（現場表）</span><span class="badge">白黒OK</span></h3>
+
+          <div class="row no-print">
+            <label class="chip" style="display:none;">内訳モード：
+              <select class="breakdownMode">
+                <option value="single" selected>1本取り</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="row no-print" style="margin-top:6px;">
+            <button type="button" class="btn btnCopyLocal">⧉ 内訳コピー</button>
+            <button type="button" class="btn primary btnPrintLocal">🖨 内訳印刷</button>
+          </div>
+
+          <div class="localCutList" style="margin-top:10px;"></div>
+        </div>
+      </div>
+    </div>
+  `;
+
+      const tbody = card.querySelector(".tbody");
+      addRow(tbody);
+
+      // events
+      card.querySelector(".btnAddRow").addEventListener("click", () => addRow(tbody));
+      card.querySelector(".btnClearRows").addEventListener("click", () => {
+        tbody.innerHTML = "";
+        addRow(tbody);
+      });
+
+      card.querySelector(".btnRemove").addEventListener("click", () => {
+        card.remove();
+        rebuildSummary();
+      });
+
+      const stockSelect = card.querySelector(".stockSelect");
+      const stockCustom = card.querySelector(".stockCustom");
+      stockSelect.addEventListener("change", () => {
+        stockCustom.style.display = (stockSelect.value === "custom") ? "inline-block" : "none";
+      });
+
+      card.querySelector(".includeSummary").addEventListener("change", rebuildSummary);
+      card.querySelector(".breakdownMode").addEventListener("change", () => {
+        if (card._lastCalc) {
+          renderLocalCutList(card);
+          if (card.querySelector(".includeSummary").checked) rebuildSummary();
+        }
+      });
+
+      // ★金額後入力でも反映：入力イベントで「結果だけ再描画」
+      const priceEl = card.querySelector(".pricePerKg");
+      const unitEl = card.querySelector(".unitWeight");
+      priceEl.addEventListener("input", () => {
+        if (card._lastCalc) {
+          // 参照先を更新（次のrenderで拾えるように）
+          card._lastCalc.input.pricePerKg = priceEl.value === "" ? null : parseFloat(priceEl.value);
+          renderResults(card, card._lastCalc);
+          rebuildSummary();
+        }
+      });
+      unitEl.addEventListener("input", () => {
+        if (card._lastCalc) {
+          card._lastCalc.input.unitWeight = parseFloat(unitEl.value);
+          // 重量/金額を再描画したいので、購入長さから重量を再計算
+          // ※切断ロジックは変えない（事故防止）
+          recalcWeightAndRender(card);
+          rebuildSummary();
+        }
+      });
+
+      card.querySelector(".btnCopyLocal").addEventListener("click", () => copyLocalCutList(card));
+      card.querySelector(".btnPrintLocal").addEventListener("click", () => printSummary());
+      card.querySelector(".btnCalc").addEventListener("click", () => calculateCard(card));
+
+      // init selects
+      initMaterialSelect(card);
+      updateStockSelect(card, [], true);
+
+      return card;
+    }
+
+    /* =========================================================
+       5) 計算
+       ========================================================= */
+    function getInputsFromCard(card) {
+      const status = card.querySelector(".status");
+      status.textContent = "";
+
+      const materialName = (card.querySelector(".materialName").value.trim() || "(材種未入力)");
+
+      const stockSelect = card.querySelector(".stockSelect");
+      const stockCustom = card.querySelector(".stockCustom");
+      let stockLength = null;
+      if (stockSelect.value === "custom") {
+        const v = parseFloat(stockCustom.value);
+        if (!isNaN(v) && v > 0) stockLength = v;
+      } else {
+        stockLength = parseFloat(stockSelect.value);
+      }
+      if (!stockLength || stockLength <= 0) {
+        status.textContent = "定尺長さをプルダウンまたはその他で入力してください。";
+        return null;
+      }
+
+      const unitWeight = parseFloat(card.querySelector(".unitWeight").value);
+      const pricePerKgRaw = card.querySelector(".pricePerKg").value;
+      const pricePerKg = pricePerKgRaw === "" ? null : parseFloat(pricePerKgRaw);
+      const lossPerCut = parseFloat(card.querySelector(".lossPerCut").value) || 0;
+      const endLossPerBar = parseFloat(card.querySelector(".endLossPerBar").value) || 0;
+
+      if (endLossPerBar >= stockLength) {
+        status.textContent = "端部ロスが定尺以上です。値を見直してください。";
+        return null;
+      }
+
+      const lines = collectLinesFromCard(card);
+      if (!lines.length) {
+        status.textContent = "欲しい長さを1行以上入力してください。";
+        return null;
+      }
+
+      const usableLength = stockLength - endLossPerBar;
+      if (usableLength <= 0) {
+        status.textContent = "有効長さが0以下です（端部ロスが大きすぎ）。";
+        return null;
+      }
+
+      return { materialName, stockLength, usableLength, unitWeight, pricePerKg, lossPerCut, endLossPerBar, lines };
+    }
+
+    function calculateCard(card) {
+      const data = getInputsFromCard(card);
+      if (!data) return;
+
+      const { materialName, stockLength, usableLength, unitWeight, pricePerKg, lossPerCut, endLossPerBar, lines } = data;
+
+      let totalLengthWithLoss = 0;
+      let totalPieces = 0;
+      lines.forEach(l => {
+        totalLengthWithLoss += (l.length + lossPerCut) * l.qty;
+        totalPieces += l.qty;
+      });
+      const rawBars = totalLengthWithLoss / usableLength;
+      const barsNeeded = Math.ceil(rawBars);
+
+      const purchasedLength = barsNeeded * stockLength;
+      const totalEndLoss = barsNeeded * endLossPerBar;
+      const leftoverLength = purchasedLength - totalLengthWithLoss - totalEndLoss;
+
+      // ★重量は購入長さから算出（切断に依存しない）
+      let totalWeight = null;
+      if (!isNaN(unitWeight) && unitWeight > 0) {
+        totalWeight = (purchasedLength / 1000) * unitWeight;
+      }
+
+      // 1本取り
+      const singleBars = computeBarsGreedy(usableLength, lossPerCut, lines);
+
+      // 2本どり
+      const pairLines = [];
+      const leftoversOdd = [];
+      lines.forEach(l => {
+        const perBarQty = Math.floor(l.qty / 2);
+        const singleRem = l.qty % 2;
+        if (perBarQty > 0) pairLines.push({ length: l.length, qty: perBarQty });
+        if (singleRem > 0) leftoversOdd.push({ length: l.length, qty: singleRem });
+      });
+
+      const twoBarThreshold = 0.5;
+      let twoBarsAll = pairLines.length ? computeBarsGreedy(usableLength, lossPerCut, pairLines) : [];
+      const twoValid = [];
+      const leftoverFromShortBars = [];
+
+      twoBarsAll.forEach(bar => {
+        const ratio = bar.usedLength / usableLength;
+        if (ratio >= twoBarThreshold) {
+          twoValid.push(bar);
+        } else {
+          bar.usedPieces.forEach(p => {
+            leftoverFromShortBars.push({ length: p.length, qty: p.count * 2 });
+          });
+        }
+      });
+
+      const standaloneMap = {};
+      leftoversOdd.forEach(l => standaloneMap[l.length] = (standaloneMap[l.length] || 0) + l.qty);
+      leftoverFromShortBars.forEach(l => standaloneMap[l.length] = (standaloneMap[l.length] || 0) + l.qty);
+      const standaloneList = Object.entries(standaloneMap)
+        .map(([len, qty]) => ({ length: parseFloat(len), qty }))
+        .sort((a, b) => b.length - a.length);
+
+      const twoPairRows = twoValid.map((bar, i) => ({
+        pairNo: `${2 * i + 1},${2 * i + 2}`,
+        bar
+      }));
+
+      const stockCountSingle = singleBars.length;
+      const stockCountTwo = (twoValid.length * 2);
+
+      card._lastCalc = {
+        input: data,
+        materialName,
+        stockLength, usableLength, endLossPerBar, lossPerCut,
+        totalLengthWithLoss, rawBars, barsNeeded, purchasedLength, totalEndLoss, leftoverLength,
+        totalPieces,
+        totalWeight,
+        singleBars,
+        twoValid, twoPairRows,
+        standaloneList,
+        stockCountSingle,
+        stockCountTwo
+      };
+
+      renderResults(card, card._lastCalc);
+      renderLocalCutList(card);
+
+      if (card.querySelector(".includeSummary").checked) rebuildSummary();
+    }
+
+    /* ★後から単重量を変えた時の重量/金額だけ再計算 */
+    function recalcWeightAndRender(card) {
+      if (!card._lastCalc) return;
+      const unitWeight = parseFloat(card.querySelector(".unitWeight").value);
+      const purchasedLength = card._lastCalc.purchasedLength;
+      card._lastCalc.input.unitWeight = unitWeight;
+      if (!isNaN(unitWeight) && unitWeight > 0) {
+        card._lastCalc.totalWeight = (purchasedLength / 1000) * unitWeight;
+      } else {
+        card._lastCalc.totalWeight = null;
+      }
+      renderResults(card, card._lastCalc);
+    }
+
+    function escapeHtml(str) {
+      return String(str ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+    function fmt(n) {
+      if (n === null || n === undefined || n === "") return "";
+      const x = Number(n);
+      if (!Number.isFinite(x)) return String(n);
+      return x.toLocaleString();
+    }
+
+    function renderResults(card, calc) {
+      const r = card.querySelector(".result");
+      const p = card.querySelector(".patternResult");
+      const t = card.querySelector(".twoResult");
+
+      const {
+        materialName, stockLength, usableLength, endLossPerBar, lossPerCut,
+        totalLengthWithLoss, rawBars, barsNeeded, purchasedLength, totalEndLoss, leftoverLength,
+        totalPieces, totalWeight,
+        singleBars, twoPairRows, standaloneList,
+        stockCountSingle, stockCountTwo
+      } = calc;
+
+      // ★金額は「表示時に再計算」（あなたの③：後入力でも反映）
+      const unitWeight = calc.input.unitWeight;
+      const pricePerKg = calc.input.pricePerKg;
+      let totalCost = null;
+      if (showCost && totalWeight !== null && pricePerKg !== null && !isNaN(pricePerKg) && pricePerKg >= 0) {
+        totalCost = totalWeight * pricePerKg;
+      }
+
+      let html = "";
+      html += `<div class="flex-between">
+    <div>
+      <div><strong>材種：</strong>${escapeHtml(materialName)}</div>
+      <div><strong>定尺：</strong>${fmt(stockLength)} mm（有効 ${fmt(usableLength)} mm / 端部ロス ${fmt(endLossPerBar)} mm）</div>
+    </div>
+    <div class="right">
+      <span class="badge">総切断本数：${fmt(totalPieces)}</span>
+      <span class="badge accent">必要本数：${fmt(barsNeeded)} 本</span>
+    </div>
+  </div>`;
+
+      html += `<div class="hr"></div>`;
+      html += `<table class="mini">
+    <thead><tr><th class="tleft">項目</th><th>値</th></tr></thead>
+    <tbody>
+      <tr><td class="tleft">ロス込み必要長さ合計（カットロス込み）</td><td>${fmt(totalLengthWithLoss)} mm</td></tr>
+      <tr><td class="tleft">端部ロス合計（端部ロス×本数）</td><td>${fmt(totalEndLoss)} mm</td></tr>
+      <tr><td class="tleft">購入長さ合計（定尺×本数）</td><td>${fmt(purchasedLength)} mm</td></tr>
+      <tr><td class="tleft">想定残材長さ（端部ロス＋端数含む）</td><td>${fmt(leftoverLength)} mm</td></tr>
+      <tr><td class="tleft">必要本数（計算値→端数切り上げ）</td><td>${rawBars.toFixed(3)} → <strong>${fmt(barsNeeded)} 本</strong></td></tr>
+    </tbody>
+  </table>`;
+
+      if (!isNaN(unitWeight) && unitWeight > 0 && totalWeight !== null) {
+        html += `<div style="margin-top:6px;"><strong>総重量：</strong>約 ${totalWeight.toFixed(2)} kg（${unitWeight} kg/m）</div>`;
+      } else {
+        html += `<div class="help" style="margin-top:6px;">※ 単重量(kg/m) を入力すると重量が出ます。</div>`;
+      }
+
+      if (showCost) {
+        if (totalCost !== null) {
+          html += `<div class="callout" style="margin-top:10px;">
+        材料費（概算）：<strong>約 ${Math.round(totalCost).toLocaleString()} 円</strong>
+        <span class="muted">（単価 ${fmt(pricePerKg)} 円/kg）</span>
+      </div>`;
+        } else {
+          html += `<div class="callout" style="margin-top:10px;">
+        金額表示：<strong>キロ単価(円/kg)</strong> と <strong>単重量(kg/m)</strong> を入れると概算が出ます。
+      </div>`;
+        }
+      }
+      r.innerHTML = html;
+
+      // 1本取り
+      let htmlP = `<h4 style="margin:6px 0 6px;">1本取りパターン（β） <span class="badge">定尺本数：${fmt(stockCountSingle)}</span></h4>`;
+      if (!singleBars.length) {
+        htmlP += `<div class="help">※取り方パターンを生成できませんでした。</div>`;
+      } else {
+        htmlP += `<table class="mini">
+      <thead><tr><th>バーNo</th><th class="tleft">内容（長さ×本数）</th><th>使う長さ</th><th>残り</th></tr></thead><tbody>`;
+        singleBars.forEach((bar, i) => {
+          const piecesStr = bar.usedPieces.map(x => `${x.length}×${x.count}`).join(" ＋ ");
+          htmlP += `<tr>
+        <td>${i + 1}</td>
+        <td class="tleft">${escapeHtml(piecesStr)}</td>
+        <td>${bar.usedLength.toFixed(1)}</td>
+        <td>${bar.leftover.toFixed(1)}</td>
+      </tr>`;
+        });
+        htmlP += `</tbody></table>
+      <div class="help">※ グリーディ方式の試算です（最適解ではなく「それなりに良い案」）。</div>`;
+      }
+      p.innerHTML = htmlP;
+
+      // 2本どり（目立たせる）
+      let htmlT = `<h4 style="margin:10px 0 6px;">2本どりパターン（β） <span class="badge">定尺本数 ${fmt(stockCountTwo)}（=2本 × ${fmt(twoPairRows.length)}ペア）</span></h4>`;
+      htmlT += `<div class="twoInfo">※ 表は「1本あたりの取り方」。実際は <strong>2本同時切断</strong> です。</div>`;
+
+      if (!twoPairRows.length) {
+        htmlT += `<div class="help">※ 2本どりとして採用できるバーがありませんでした（短すぎる等）。</div>`;
+      } else {
+        htmlT += `<table class="mini">
+      <thead><tr><th>バーNo</th><th class="tleft">内容（1本あたり）</th><th>使う長さ</th><th>残り</th></tr></thead><tbody>`;
+        twoPairRows.forEach(row => {
+          const piecesStr = row.bar.usedPieces.map(x => `${x.length}×${x.count}`).join(" ＋ ");
+          htmlT += `<tr>
+        <td>${row.pairNo}</td>
+        <td class="tleft">${escapeHtml(piecesStr)}</td>
+        <td>${row.bar.usedLength.toFixed(1)}</td>
+        <td>${row.bar.leftover.toFixed(1)}</td>
+      </tr>`;
+        });
+        htmlT += `</tbody></table>`;
+      }
+
+      if (standaloneList.length) {
+        htmlT += `<div class="hr"></div>`;
+        htmlT += `<div class="help"><strong>残材単独（2本どりに乗らない分）</strong></div>`;
+        htmlT += `<table class="mini"><thead><tr><th class="tleft">区分</th><th>長さ</th><th>本数</th></tr></thead><tbody>`;
+        standaloneList.forEach(x => {
+          htmlT += `<tr><td class="tleft">残材単独</td><td>${fmt(x.length)}</td><td>${fmt(x.qty)}</td></tr>`;
+        });
+        htmlT += `</tbody></table>`;
+      }
+      t.innerHTML = htmlT;
+    }
+
+    /* =========================================================
+       6) 現場表（内訳）
+       ========================================================= */
+    function buildLocalCutRows(card) {
+      const calc = card._lastCalc;
+      if (!calc) return { rows: [], stockBarsText: "" };
+
+      const mode = card.querySelector(".breakdownMode").value;
+      const mat = calc.materialName;
+
+      const rows = [];
+      let stockBarsText = "";
+
+      if (mode === "single") {
+        stockBarsText = `定尺本数：${calc.stockCountSingle}`;
+        calc.singleBars.forEach((bar, i) => {
+          bar.usedPieces.forEach(p => {
+            rows.push({ material: mat, barNo: String(i + 1), length: p.length, times: p.count, qty: p.count });
+          });
+        });
+      } else {
+        stockBarsText = `定尺本数：${calc.stockCountTwo}`;
+        calc.twoPairRows.forEach(row => {
+          row.bar.usedPieces.forEach(p => {
+            rows.push({ material: mat, barNo: row.pairNo, length: p.length, times: p.count, qty: p.count * 2 });
+          });
+        });
+        calc.standaloneList.forEach(x => {
+          rows.push({ material: mat, barNo: "単独", length: x.length, times: x.qty, qty: x.qty });
+        });
+      }
+      return { rows, stockBarsText };
+    }
+
+    function renderLocalCutList(card) {
+      const wrap = card.querySelector(".localCutList");
+      wrap.innerHTML = "";
+
+      const calc = card._lastCalc;
+      if (!calc) {
+        wrap.innerHTML = `<div class="help">※ 先に「計算」を実行してください。</div>`;
+        return;
+      }
+
+      const mode = card.querySelector(".breakdownMode").value;
+      const { rows, stockBarsText } = buildLocalCutRows(card);
+
+      const head = `
+    <div class="flex-between">
+      <div>
+        <strong>${escapeHtml(calc.materialName)}</strong>
+        <span class="badge">${mode === "two" ? "2本どり" : "1本取り"}</span>
+      </div>
+      <div class="right">
+        <span class="badge accent">${escapeHtml(stockBarsText)}</span>
+      </div>
+    </div>
+  `;
+
+      if (!rows.length) {
+        wrap.innerHTML = head + `<div class="help" style="margin-top:8px;">※ 内訳を生成できませんでした。</div>`;
+        return;
+      }
+
+      let html = head;
+      html += `<div class="hr"></div>`;
+      html += `<table class="mini">
+    <thead>
+      <tr>
+        <th class="tleft">材種</th>
+        <th>バーNo</th>
+        <th>長さ(mm)</th>
+        <th>切断回数</th>
+        <th>カット本数</th>
+      </tr>
+    </thead>
+    <tbody>`;
+      rows.forEach(r => {
+        html += `<tr>
+      <td class="tleft">${escapeHtml(r.material)}</td>
+      <td>${escapeHtml(r.barNo)}</td>
+      <td>${fmt(r.length)}</td>
+      <td>${fmt(r.times)}</td>
+      <td><strong>${fmt(r.qty)}</strong></td>
+    </tr>`;
+      });
+      html += `</tbody></table>`;
+      wrap.innerHTML = html;
+    }
+
+    function copyLocalCutList(card) {
+      const calc = card._lastCalc;
+      if (!calc) return;
+      const { rows, stockBarsText } = buildLocalCutRows(card);
+      const mode = card.querySelector(".breakdownMode").value;
+
+      let tsv = "";
+      tsv += `材種\tモード\t${stockBarsText}\n`;
+      tsv += `材種\tバーNo\t長さ(mm)\t切断回数\tカット本数\n`;
+      rows.forEach(r => {
+        tsv += `${r.material}\t${r.barNo}\t${r.length}\t${r.times}\t${r.qty}\n`;
+      });
+
+      navigator.clipboard.writeText(tsv)
+        .then(() => toast(`内訳コピー完了（${mode === "two" ? "2本どり" : "1本取り"}）`))
+        .catch(() => alert("コピーに失敗しました。ブラウザの権限をご確認ください。"));
+    }
+    function printLocalCutList(card) {
+      const summary = document.getElementById("summarySection");
+      const cardsSection = document.querySelectorAll(".card");
+
+      summary.style.display = "none";
+      cardsSection.forEach(c => {
+        if (c !== card) c.style.display = "none";
+      });
+
+      window.print();
+
+      summary.style.display = "";
+      cardsSection.forEach(c => c.style.display = "");
+    }
+
+    /* =========================================================
+       7) まとめ
+       ========================================================= */
+    const summaryOutput = document.getElementById("summaryOutput");
+
+    function rebuildSummary() {
+      const cards = [...document.querySelectorAll(".card")];
+      const selected = cards.filter(c => c.querySelector(".includeSummary").checked && c._lastCalc);
+
+      if (!selected.length) {
+        summaryOutput.innerHTML = `<div class="help">※ 計算済みカードがあると表示されます。</div>`;
+        return;
+      }
+
+      let html = "";
+      selected.forEach((card, idx) => {
+        const calc = card._lastCalc;
+        const { rows, stockBarsText } = buildLocalCutRows(card);
+        const mode = card.querySelector(".breakdownMode").value;
+
+        html += `<div style="margin-top:${idx === 0 ? 0 : 14}px;">`;
+        html += `<div class="flex-between">
+      <div>
+        <strong>${escapeHtml(calc.materialName)}</strong>
+        <span class="badge">${mode === "two" ? "2本どり" : "1本取り"}</span>
+      </div>
+      <div class="right">
+        <span class="badge accent">${escapeHtml(stockBarsText)}</span>
+      </div>
+    </div>`;
+
+        html += `<div class="hr"></div>`;
+        html += `<table class="mini">
+      <thead>
+        <tr>
+          <th class="tleft">材種</th><th>バーNo</th><th>長さ(mm)</th><th>切断回数</th><th>カット本数</th>
+        </tr>
+      </thead>
+      <tbody>`;
+        rows.forEach(r => {
+          html += `<tr>
+        <td class="tleft">${escapeHtml(r.material)}</td>
+        <td>${escapeHtml(r.barNo)}</td>
+        <td>${fmt(r.length)}</td>
+        <td>${fmt(r.times)}</td>
+        <td><strong>${fmt(r.qty)}</strong></td>
+      </tr>`;
+        });
+        html += `</tbody></table>`;
+
+        // --- 欲しい長さ一覧（入力リスト集計）
+        const wantMap = new Map();
+        (calc.input && calc.input.lines ? calc.input.lines : []).forEach(l => {
+          const L = Number(l.length);
+          const Q = Number(l.qty);
+          if (!Number.isFinite(L) || !Number.isFinite(Q)) return;
+          wantMap.set(L, (wantMap.get(L) || 0) + Q);
+        });
+        const wantRows = [...wantMap.entries()].map(([length, qty]) => ({ length, qty })).sort((a, b) => b.length - a.length);
+
+        if (wantRows.length) {
+          html += `<div style="margin-top:10px;"></div>`;
+          html += `<table class="mini">
+        <thead>
+          <tr><th class="tleft">欲しい長さ(mm)</th><th>本数</th></tr>
+        </thead>
+        <tbody>`;
+          wantRows.forEach(w => {
+            html += `<tr><td class="tleft">${fmt(w.length)}</td><td><strong>${fmt(w.qty)}</strong></td></tr>`;
+          });
+          html += `</tbody></table>`;
+        }
+
+
+        if (idx !== selected.length - 1) {
+          html += `<div class="hr" style="margin:14px 0;"></div>`;
+        }
+        html += `</div>`;
+      });
+
+      summaryOutput.innerHTML = html;
+    }
+
+    document.getElementById("btnCopySummary").addEventListener("click", () => {
+      const cards = [...document.querySelectorAll(".card")];
+      const selected = cards.filter(c => c.querySelector(".includeSummary").checked && c._lastCalc);
+      if (!selected.length) {
+        alert("まとめ印刷に含めるカードがありません。");
+        return;
+      }
+
+      let tsv = "";
+      selected.forEach((card, idx) => {
+        const { rows, stockBarsText } = buildLocalCutRows(card);
+        const mode = card.querySelector(".breakdownMode").value;
+        const mat = card._lastCalc.materialName;
+
+        tsv += `${mat}\t${mode === "two" ? "2本どり" : "1本取り"}\t${stockBarsText}\n`;
+        tsv += `材種\tバーNo\t長さ(mm)\t切断回数\tカット本数\n`;
+        rows.forEach(r => {
+          tsv += `${r.material}\t${r.barNo}\t${r.length}\t${r.times}\t${r.qty}\n`;
+        });
+        if (idx !== selected.length - 1) tsv += `\n`;
+      });
+
+      navigator.clipboard.writeText(tsv).then(() => toast("まとめコピー完了")).catch(() => alert("コピーに失敗しました。"));
+    });
+
+    function printSummary() {
+      const cards = document.querySelectorAll(".card");
+      cards.forEach(c => c.style.display = "none");
+      window.print();
+      cards.forEach(c => c.style.display = "");
+    }
+    document.getElementById("btnPrintSummary").addEventListener("click", printSummary);
+    document.getElementById("btnPrintSummary2").addEventListener("click", printSummary);
+
+    /* =========================================================
+       8) CSV反映
+       ========================================================= */
+    function applyMaterialsAndRefreshUI(newMaterials) {
+      if (!newMaterials || !Object.keys(newMaterials).length) {
+        alert("CSVから材種を生成できませんでした（unit=bar行が無い等）。");
+        return;
+      }
+      MATERIALS = newMaterials;
+
+      document.querySelectorAll(".card").forEach(card => {
+        initMaterialSelect(card);
+        applyPresetToCard(card);
+      });
+
+      toast("master CSV を反映しました（材種プリセット更新）");
+    }
+
+    document.getElementById("csvFile").addEventListener("change", async (e) => {
+      const f = e.target.files?.[0];
+      if (!f) return;
+      try {
+        const text = await f.text();
+        const mats = buildMaterialsFromMasterCSV(text);
+        applyMaterialsAndRefreshUI(mats);
+      } catch (err) {
+        alert("CSV読み込みエラー: " + (err?.message || err));
+      }
+    });
+
+    document.getElementById("btnTryAuto").addEventListener("click", async () => {
+      const mats = await tryAutoLoadMasterCSV();
+      if (!mats) {
+        alert("自動読込に失敗しました。※ file:// で開いている場合は仕様上失敗します。『ファイル選択』で読み込んでください。");
+        return;
+      }
+      applyMaterialsAndRefreshUI(mats);
+    });
+
+    /* =========================================================
+       9) カード追加
+       ========================================================= */
+    let cardSeq = 0;
+    function addCard() {
+      const card = createCard();
+      cardSeq++;
+      card.dataset.id = String(cardSeq);
+      cardsEl.appendChild(card);
+    }
+    document.getElementById("btnAddCard").addEventListener("click", addCard);
+
+    // 起動時：HTMLに残っている初期カード（静的マークアップ）を消して、JS生成カードだけに統一する
+    // ※ これで「1枚目だけ行追加/削除が効かない」「1枚目の入力行が無い」問題を防止
+    cardsEl.innerHTML = "";
+    cardSeq = 0;
+    addCard();
+
+    // 無料版：同梱の master_bar.csv を起動時に自動読込（材種リストを即利用可能に）
+    (async () => {
+      const mats = await tryAutoLoadMasterCSV();
+      if (mats) applyMaterialsAndRefreshUI(mats);
+    })();
+
+    /* =========================================================
+       10) Toast
+       ========================================================= */
+    let toastTimer = null;
+    function toast(msg) {
+      clearTimeout(toastTimer);
+      let el = document.getElementById("toast");
+      if (!el) {
+        el = document.createElement("div");
+        el.id = "toast";
+        el.style.position = "fixed";
+        el.style.right = "14px";
+        el.style.bottom = "14px";
+        el.style.zIndex = "9999";
+        el.style.background = "rgba(15,23,42,0.92)";
+        el.style.color = "#fff";
+        el.style.padding = "10px 12px";
+        el.style.borderRadius = "12px";
+        el.style.border = "1px solid rgba(255,255,255,0.16)";
+        el.style.boxShadow = "0 14px 34px rgba(0,0,0,0.25)";
+        el.style.fontSize = "13px";
+        document.body.appendChild(el);
+      }
+      el.textContent = msg;
+      el.style.display = "block";
+      toastTimer = setTimeout(() => { el.style.display = "none"; }, 1400);
+    }
+  </script>
+
+
+</body>
+
+</html>

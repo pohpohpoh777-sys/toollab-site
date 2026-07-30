@@ -1,0 +1,3193 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>板取り計算ツール【無料・インストール不要】ブラウザで板金ネスティング｜TOOL LAB</title>
+  <meta name="description" content="鋼板・板金の板取り（ネスティング）をブラウザだけで自動計算。4×8・5×10などの定尺に必要枚数を自動配置し、手動でドラッグ調整も可能。インストール不要・データはブラウザ内で完結しサーバー送信なし。無料でお試しいただけます。" />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="https://hashimotokogyo.com/itadori_free.html" />
+  <meta property="og:url" content="https://hashimotokogyo.com/itadori_free.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="板取り計算ツール【無料・インストール不要】｜TOOL LAB" />
+  <meta property="og:description" content="鋼板・板金の板取りをブラウザだけで自動計算。定尺に自動配置＋手動調整。インストール不要・サーバー送信なし。" />
+  <meta property="og:locale" content="ja_JP" />
+  <style>
+    :root {
+      --bg: #ffffff;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --line: #d0d7de;
+      --panel: #f8fafc;
+      --panel2: #f1f5f9;
+
+      --brand: #34ff7a;
+      --warn: #b45309;
+      --danger: #b91c1c;
+
+      --shadow: 0 8px 24px rgba(2, 6, 23, 0.08);
+      --r: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: linear-gradient(90deg, #0b1220, #0b1220);
+      color: #fff;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+    }
+
+    .topbar {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 12px 16px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .brand img {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      border: 1px solid rgba(52, 255, 122, 0.35);
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 10px 18px rgba(0, 0, 0, 0.25);
+      object-fit: cover;
+      background: #0b1220;
+    }
+
+    .brand .fallbackLogo {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      background:
+        radial-gradient(circle at 35% 35%, rgba(52, 255, 122, 0.85), rgba(52, 255, 122, 0.08) 60%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.00));
+      border: 1px solid rgba(52, 255, 122, 0.35);
+      box-shadow: 0 0 0 1px solid rgba(255, 255, 255, 0.06), 0 10px 18px rgba(0, 0, 0, 0.25);
+      display: none;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 15px;
+      letter-spacing: 0.3px;
+    }
+
+    .brand small {
+      display: block;
+      opacity: 0.85;
+      font-size: 11px;
+      margin-top: 1px;
+      color: rgba(255, 255, 255, 0.78);
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    .btn {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      padding: 7px 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--ink);
+      transition: transform .04s ease, background .15s ease, border-color .15s ease;
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn.primary {
+      background: linear-gradient(90deg, rgba(52, 255, 122, 0.18), rgba(52, 255, 122, 0.10));
+      color: #0b1220;
+      border-color: rgba(52, 255, 122, 0.35);
+      box-shadow: 0 10px 18px rgba(52, 255, 122, 0.10);
+      font-weight: 700;
+    }
+
+    .btn.ghost {
+      background: transparent;
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+    }
+
+    .btn.danger {
+      background: #fff1f2;
+      border-color: #fecdd3;
+      color: var(--danger);
+    }
+
+    .btn.small {
+      padding: 6px 9px;
+      font-size: 12px;
+      border-radius: 10px;
+    }
+
+    .btn.toggleOn {
+      background: rgba(52, 255, 122, 0.18);
+      border-color: rgba(52, 255, 122, 0.55);
+      font-weight: 800;
+    }
+
+    .guide {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 10px 16px 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.00));
+    }
+
+    .guideBox {
+      border: 1px solid rgba(52, 255, 122, 0.25);
+      background: rgba(52, 255, 122, 0.08);
+      border-radius: 12px;
+      padding: 8px 10px;
+      color: #eafff2;
+      font-size: 12px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .guideBox strong {
+      color: #ffffff;
+    }
+
+    .miniBtns {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .miniBtn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #fff;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .section {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .section .hd {
+      padding: 10px 12px;
+      background: linear-gradient(180deg, var(--panel), #fff);
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .section .hd h2 {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .section .bd {
+      padding: 12px;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    label {
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
+      margin: 2px 10px 2px 0;
+    }
+
+    input,
+    select {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 6px 8px;
+      font-size: 13px;
+      background: #fff;
+    }
+
+    input[type="number"] {
+      width: 110px;
+    }
+
+    select {
+      max-width: 360px;
+    }
+
+    input:focus,
+    select:focus {
+      outline: 2px solid rgba(52, 255, 122, 0.18);
+      border-color: rgba(52, 255, 122, 0.55);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      font-size: 13px;
+    }
+
+    th,
+    td {
+      border-bottom: 1px solid var(--line);
+      padding: 6px 8px;
+      text-align: center;
+    }
+
+    th {
+      background: var(--panel2);
+      font-weight: 600;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .help {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--muted);
+    }
+
+    .badge.accent {
+      border-color: rgba(52, 255, 122, 0.35);
+      color: #166534;
+      background: rgba(52, 255, 122, 0.12);
+      font-weight: 700;
+    }
+
+    .callout {
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(52, 255, 122, 0.35);
+      background: rgba(52, 255, 122, 0.10);
+      color: #14532d;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: pre-line;
+    }
+
+    .callout.warn {
+      border-color: rgba(180, 83, 9, 0.55);
+      background: rgba(180, 83, 9, 0.10);
+      color: #7c2d12;
+    }
+
+    .hr {
+      height: 1px;
+      background: var(--line);
+      margin: 10px 0;
+    }
+
+    .flex-between {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .right {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    #canvasWrap {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 10px;
+      background: linear-gradient(180deg, #ffffff, #fbfdff);
+    }
+
+    canvas {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .navBtns {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .editPanel {
+      margin-top: 10px;
+      padding: 10px;
+      border: 1px dashed rgba(52, 255, 122, 0.45);
+      border-radius: 14px;
+      background: rgba(52, 255, 122, 0.06);
+    }
+
+    .editPanel .titleRow {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .editPanel h3 {
+      margin: 0;
+      font-size: 13px;
+    }
+
+    .editInfo {
+      font-size: 12px;
+      color: #14532d;
+      font-weight: 800;
+    }
+
+    .editGrid {
+      margin-top: 8px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .editGrid .group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      padding: 8px;
+      border: 1px solid rgba(52, 255, 122, 0.25);
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    .editGrid .group label {
+      margin: 0;
+    }
+
+    .editGrid input[type="number"] {
+      width: 90px;
+    }
+
+    /* ===== A4 1枚集約印刷用レイアウト ===== */
+    @media print {
+      @page {
+        margin: 10mm;
+        size: A4 portrait;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: auto;
+        margin: 0;
+        padding: 0;
+        background: #fff;
+        overflow: visible;
+        color: #000;
+      }
+
+      .page-break {
+        page-break-after: always;
+        /* 古いブラウザ用 */
+        break-after: page;
+        /* 標準 */
+        display: block;
+        width: 100%;
+        margin-bottom: 0;
+      }
+
+      /* 最後の要素だけは改ページしない（白紙防止） */
+      .page-break:last-of-type {
+        break-after: auto;
+        page-break-after: auto;
+      }
+
+      /* リストがページの途中から始まらないように配慮 */
+      .summary-content {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      /* アプリケーションUIを全て非表示 */
+      body> :not(#printLayoutArea) {
+        display: none !important;
+      }
+
+      /* 印刷専用エリアを表示 */
+      #printLayoutArea {
+        display: block !important;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      /* 画像（Canvas）エリア */
+      #printLayoutArea img.drawing {
+        display: block;
+        width: 100%;
+        height: auto;
+        max-height: 160mm;
+        /* A4の半分強を確保 */
+        object-fit: contain;
+        border: 1px solid #000;
+        margin-bottom: 8mm;
+      }
+
+      /* 集計リストエリア */
+      #printLayoutArea .summary-content {
+        width: 100%;
+      }
+
+      /* リスト内のタイトル */
+      #printLayoutArea .summary-content h3 {
+        font-size: 14pt;
+        margin: 0 0 5px 0;
+        border-bottom: 2px solid #000;
+        display: inline-block;
+        color: #000;
+      }
+
+      /* バッジ類 */
+      #printLayoutArea .badge {
+        border: 1px solid #000;
+        color: #000;
+        background: transparent;
+        font-weight: bold;
+        padding: 2px 6px;
+      }
+
+      #printLayoutArea .flex-between {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 5px;
+      }
+
+      /* テーブルスタイル最適化 */
+      #printLayoutArea table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 10pt;
+        border: 2px solid #000;
+        margin-top: 5px;
+      }
+
+      #printLayoutArea th,
+      #printLayoutArea td {
+        border: 1px solid #000;
+        padding: 4px 8px;
+        text-align: center;
+        color: #000;
+      }
+
+      #printLayoutArea th {
+        background-color: #f0f0f0 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        font-weight: bold;
+      }
+
+      /* 不要な補足情報の調整 */
+      #printLayoutArea .help {
+        font-size: 9pt;
+        color: #000;
+        margin-bottom: 8px;
+      }
+
+      #printLayoutArea .hr {
+        display: none;
+        /* 印刷時は区切り線不要 */
+      }
+    }
+
+    /* 画面表示時は非表示 */
+    #printLayoutArea {
+      display: none;
+    }
+
+    /* ===== App scroll structure ===== */
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      overflow: hidden;
+    }
+
+    #pageScroll {
+      height: 100vh;
+      overflow: auto;
+      display: block;
+      overscroll-behavior: contain;
+    }
+
+    /* ===== status/guide: reserve space without layout jump ===== */
+    #status,
+    #forceGuide {
+      display: block !important;
+      visibility: hidden;
+      height: 72px;
+      /* compact but fixed */
+      box-sizing: border-box;
+      overflow: hidden;
+      white-space: pre-wrap;
+    }
+
+    #forceGuide {
+      margin-top: 8px;
+    }
+
+
+    /* ===== result layout: canvas left + panel right ===== */
+    .resultLayout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 12px;
+      align-items: start;
+      margin-top: 10px;
+      min-height: 0;
+    }
+
+    .canvasCol {
+      min-width: 0;
+    }
+
+    .panelCol {
+      position: sticky;
+      top: 12px;
+      align-self: start;
+      max-height: calc(100vh - 140px);
+      overflow: auto;
+      overscroll-behavior: contain;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px;
+      background: var(--panel);
+    }
+
+    .panelCol .editPanel {
+      margin-top: 0;
+    }
+
+    /* canvas scroll area */
+    #canvasWrap {
+      max-height: 60vh;
+      /* JSで上書き */
+      overflow: auto;
+      overscroll-behavior: contain;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px;
+      background: var(--panel);
+    }
+
+    /* floating force toggle for small screens */
+    #forceFloatBtn {
+      position: fixed;
+      right: 14px;
+      bottom: 14px;
+      z-index: 9999;
+      display: none;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, .18);
+    }
+
+    @media (max-width: 980px) {
+      .resultLayout {
+        grid-template-columns: 1fr;
+      }
+
+      .panelCol {
+        position: static;
+        max-height: none;
+      }
+
+      #forceFloatBtn {
+        display: inline-flex;
+      }
+    }
+
+    /* ===== 無料版 / Pro導線 ===== */
+    .freeTag {
+      font-size: 12px;
+      font-weight: 700;
+      color: #065f46;
+      background: rgba(52, 255, 122, 0.22);
+      border: 1px solid rgba(6, 95, 70, 0.35);
+      border-radius: 999px;
+      padding: 2px 10px;
+      vertical-align: middle;
+      margin-left: 6px;
+    }
+    .pro-hint {
+      color: #b45309;
+    }
+    .pro-hint a { color: #b45309; font-weight: 700; }
+    .pro-inline {
+      margin-top: 10px;
+      padding: 10px 12px;
+      background: rgba(180, 83, 9, 0.08);
+      border: 1px dashed rgba(180, 83, 9, 0.4);
+      border-radius: 10px;
+      font-size: 13px;
+      color: #7c2d12;
+    }
+    .pro-inline a { color: #b45309; font-weight: 700; white-space: nowrap; }
+    .pro-btn {
+      background: #b45309 !important;
+      color: #fff !important;
+      border-color: #b45309 !important;
+      text-decoration: none;
+    }
+    #pro {
+      margin: 32px 0 8px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: linear-gradient(180deg, #fffdf9, #fff);
+    }
+    #pro h2 { margin: 0 0 6px; }
+    #pro .lead { color: var(--muted); margin: 0 0 16px; }
+    .cmp {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    .cmp th, .cmp td {
+      border: 1px solid var(--line);
+      padding: 8px 10px;
+      text-align: left;
+    }
+    .cmp thead th { background: var(--panel2); }
+    .cmp .yes { color: #065f46; font-weight: 700; }
+    .cmp .no { color: #9ca3af; }
+    .proCta {
+      display: inline-block;
+      margin-top: 16px;
+      padding: 12px 22px;
+      background: #b45309;
+      color: #fff;
+      font-weight: 700;
+      border-radius: 12px;
+      text-decoration: none;
+    }
+    .proNote { font-size: 12px; color: var(--muted); margin-top: 10px; }
+  </style>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "板取り計算ツール",
+  "url": "https://hashimotokogyo.com/itadori_free.html",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web",
+  "description": "鋼板・板金の板取り（ネスティング）をブラウザだけで自動計算。定尺への自動配置と手動調整、PNG保存。",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "JPY"
+  }
+}
+  </script>
+</head>
+
+<body>
+<nav class="no-print" style="background:#0b1220;padding:8px 16px;font-size:13px;font-family:system-ui,-apple-system,'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;border-bottom:1px solid rgba(255,255,255,.08);">
+  <a href="./index.html" style="color:#7dd3fc;font-weight:700;text-decoration:none;">株式会社橋本工業</a>
+  <span style="color:#64748b;margin:0 6px;">｜</span>
+  <a href="./tools.html" style="color:#cbd5e1;text-decoration:none;margin:0 6px;">無料ツール</a>
+  <a href="./itadori_free.html" style="color:#cbd5e1;text-decoration:none;margin:0 6px;">板取り</a>
+  <a href="./bar_free.html" style="color:#cbd5e1;text-decoration:none;margin:0 6px;">切断ロス</a>
+  <a href="./hayami.html" style="color:#cbd5e1;text-decoration:none;margin:0 6px;">重量早見表</a>
+</nav>
+
+  <div id="pageScroll">
+    <header>
+      <div class="topbar">
+        <div class="brand">
+          <img id="brandImg" src="toollab.png" alt="TOOL LAB" />
+          <div class="fallbackLogo" id="fallbackLogo" aria-hidden="true"></div>
+          <div>
+            <h1>板取り計算ツール <span class="freeTag">無料</span></h1>
+            <small>ブラウザで板金ネスティング／インストール不要・サーバー送信なし・データはブラウザ内で完結</small>
+          </div>
+        </div>
+
+        <div class="top-actions no-print">
+          <button class="btn ghost" id="jumpResult">結果へ</button>
+          <button class="btn ghost" id="jumpTop">先頭へ</button>
+        </div>
+      </div>
+
+      <div class="guide no-print">
+        <div class="guideBox">
+          <div>
+            <strong>使い方（30秒）</strong><br>
+            ① 元板モードを選択（定尺 / おまかせ / 残材）　
+            ② 欲しい板を入力 → <strong>計算</strong>　
+            ③ <strong>PNG保存 / 印刷</strong>（白黒OK）<br>
+            ④（任意）板をクリックして選択 → <strong>指定元板へ移動</strong> or <strong>強制移動</strong>
+          </div>
+          <div class="miniBtns">
+            <button class="miniBtn" id="btnAddRowTop">行追加</button>
+            <button class="miniBtn" id="btnRunTop">計算</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main id="top">
+      <div class="grid">
+
+        <div class="section">
+          <div class="hd">
+            <h2>① 元板設定</h2>
+            <div class="right">
+              <span class="badge">ロジックA寄り</span>
+              <span class="badge accent">短手残し重視</span>
+            </div>
+          </div>
+          <div class="bd">
+            <div class="row">
+              <label>定尺板：
+                <select id="modeSelect">
+                  <option value="fixed">定尺板から選択</option>
+                </select>
+              </label>
+              <span class="help pro-hint">🔒 AIおまかせ選定・自由サイズ（残材）入力は <a href="#pro">Pro版</a></span>
+
+              <label id="fixedWrap">定尺：
+                <select id="fixedSizeSelect">
+                  <option value="914x1829">3×6（914×1829）</option>
+                  <option value="1000x2000">1×2m（1000×2000）</option>
+                  <option value="1219x2438" selected>4×8（1219×2438）</option>
+                  <option value="1524x3048">5×10（1524×3048）</option>
+                </select>
+                <span id="autoHint" class="help" style="margin-left:8px;"></span>
+              </label>
+
+              <label id="customWrap" style="display:none;">元板幅(mm)：
+                <input type="number" id="customWidth" value="1219" />
+              </label>
+              <label id="customWrap2" style="display:none;">元板長さ(mm)：
+                <input type="number" id="customHeight" value="2438" />
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="hr"></div>
+        <div class="row">
+          <label>材質：
+            <select id="matGlobal">
+              <option value="SS400" selected>SS400（鉄）</option>
+              <option value="SUS">SUS（ステン）</option>
+              <option value="AL">アルミ</option>
+              <option value="CHK">縞鋼板（チェッカープレート）</option>
+              <option value="EXP">エキスパンドメタル</option>
+            </select>
+          </label>
+
+          <label id="thkWrap">板厚(mm)：
+            <input type="number" id="thkGlobal" value="9" min="0" step="0.1" />
+          </label>
+
+          <label id="chkWrap" style="display:none;">縞鋼板 板厚：
+            <select id="chkType"></select>
+          </label>
+
+          <label id="expWrap" style="display:none;">エキスパンド：
+            <select id="expType"></select>
+          </label>
+
+          <label style="display:none;">単価（円/kg）：
+            <input type="number" id="unitPriceKg" placeholder="例：160" min="0" step="0.1" />
+          </label>
+
+          <span class="help">※ 材質は混在不可（この設定が全ての板に適用）</span>
+          <span class="help pro-hint">🔒 重量・概算金額の見積り出力は <a href="#pro">Pro版</a></span>
+        </div>
+
+
+
+        <div class="section">
+          <div class="hd">
+            <h2>② 欲しい板の入力</h2>
+            <div class="right no-print">
+              <button class="btn" id="addRowBtn">＋ 行を追加</button>
+              <button class="btn danger" id="clearRowsBtn">全削除</button>
+            </div>
+          </div>
+          <div class="bd">
+            <table id="piecesTable">
+              <thead>
+                <tr>
+                  <th style="width:52px;">No</th>
+                  <th>幅(mm)</th>
+                  <th>長さ(mm)</th>
+                  <th style="width:90px;">枚数</th>
+                  <th class="no-print" style="width:80px;">削除</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+            <div class="help">※ 幅・長さどちらに入れても、板の向きは自動で最適化します（同サイズ複数は棚内で向きを揃える）。</div>
+          </div>
+        </div>
+
+        <div class="section" id="resultSection">
+          <div class="hd">
+            <h2>③ 計算・プレビュー</h2>
+            <div class="right no-print">
+              <button class="btn primary" id="runBtn">◎ 板取を計算</button>
+              <button class="btn" id="savePngBtn">PNG保存</button>
+              <button class="btn" id="printBtn" style="display:none;">🖨 印刷</button>
+              <a class="btn pro-btn" href="#pro">🔒 加工指示書を印刷（Pro）</a>
+            </div>
+          </div>
+          <div class="bd">
+            <div id="status" class="callout" style="visibility:hidden;"></div>
+            <div id="forceGuide" class="callout warn" style="visibility:hidden; margin-top:8px;"></div>
+
+
+            <div class="resultLayout" id="resultLayout">
+              <div class="canvasCol">
+                <div id="canvasWrap">
+                  <canvas id="previewCanvas" width="900" height="620"></canvas>
+
+                  <div class="flex-between" style="margin-top:8px;">
+                    <div id="sheetInfo" class="help"></div>
+                    <div class="navBtns no-print">
+                      <button class="btn" id="prevSheetBtn">前の元板</button>
+                      <button class="btn" id="nextSheetBtn">次の元板</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="panelCol">
+                <div class="editPanel no-print" id="editPanel" style="display:none;">
+                  <div class="titleRow">
+                    <h3>手動調整（通常移動 / 強制配置 / 戻す）</h3>
+                    <div class="editInfo" id="editInfo">選択なし</div>
+                  </div>
+
+                  <div class="editGrid">
+                    <div class="group">
+                      <label>指定元板：
+                        <input type="number" id="targetSheetNo" min="1" step="1" value="1">
+                      </label>
+                      <button class="btn small" id="btnMoveToNo">通常移動（再パック）</button>
+                      <button class="btn small danger" id="btnClearSel">選択解除</button>
+                    </div>
+
+                    <div class="group">
+                      <button class="btn small" id="btnForceToggle">強制移動ON</button>
+                      <label style="margin-left:10px;">回転：
+                        <select id="rotateModeSelect">
+                          <option value="auto" selected>自動</option>
+                          <option value="0">0°固定</option>
+                          <option value="90">90°固定</option>
+                        </select>
+                      </label>
+                      <span class="help">※ クリックで「移動先シート→置きたい位置」</span>
+                    </div>
+                  </div>
+
+                  <div class="group">
+                    <button class="btn small" id="btnUndo">戻す（1回）</button>
+                  </div>
+                </div>
+
+                <div class="help" style="margin-top:8px;">
+                  通常移動：移動元/移動先の<strong>2枚だけ</strong>再パック（棚置き法）します。<br>
+                  強制移動：棚置き法を無視して<strong>クリック位置に配置</strong>します（0°/90°自動判定）。完了後は自動でOFF。
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn no-print" id="forceFloatBtn" type="button">強制移動</button>
+
+          <div class="hr"></div>
+          <div id="piecesSummary"></div>
+
+        </div>
+      </div>
+
+  </div>
+  </main>
+
+  <!-- ===== Pro版 導線 ===== -->
+  <section id="pro" class="no-print">
+    <h2>Pro版でできること</h2>
+    <p class="lead">無料版は「入るか・何枚必要か」を確かめる実演台。実務で客先に出す段階の機能をProにまとめています。</p>
+    <table class="cmp">
+      <thead>
+        <tr><th>機能</th><th>無料版</th><th>Pro版</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>定尺への自動配置（短手優先ロジック）</td><td class="yes">◯</td><td class="yes">◯</td></tr>
+        <tr><td>手動調整（ドラッグ・回転・強制配置・戻す）</td><td class="yes">◯</td><td class="yes">◯</td></tr>
+        <tr><td>PNG保存</td><td class="yes">◯</td><td class="yes">◯</td></tr>
+        <tr><td>定尺サイズ</td><td>3×6 / 4×8 / 5×10 など定番</td><td class="yes">自由サイズ入力＋AIおまかせ選定</td></tr>
+        <tr><td>重量・概算金額（見積り算出）</td><td class="no">—</td><td class="yes">◯ 材質マスタ×単価</td></tr>
+        <tr><td>加工指示書の一括印刷（複数シート集約）</td><td class="no">—</td><td class="yes">◯ 客先・現場提出用</td></tr>
+      </tbody>
+    </table>
+    <a class="proCta" href="https://toollab.booth.pm/" target="_blank" rel="noopener">Pro版を見る（BOOTH）</a>
+    <p class="proNote">※ 決済・配布はBOOTHで行います。無料版はこのままブラウザで動作し、インストール・会員登録は不要です。</p>
+  </section>
+
+  <img id="printImage" style="display:none;" alt="print" />
+  <!-- 印刷専用エリア -->
+  <div id="printLayoutArea"></div>
+
+  <script>
+    /* ========= logo fallback ========= */
+    (() => {
+      const img = document.getElementById("brandImg");
+      const fallback = document.getElementById("fallbackLogo");
+      img.addEventListener("error", () => {
+        img.style.display = "none";
+        fallback.style.display = "block";
+      });
+    })();
+
+    /* ========= constants ========= */
+    const FIXED_SIZES = [
+      { label: "3×6（914×1829）", width: 914, height: 1829 },
+      { label: "1×2m（1000×2000）", width: 1000, height: 2000 },
+      { label: "4×8（1219×2438）", width: 1219, height: 2438 },
+      { label: "5×10（1524×3048）", width: 1524, height: 3048 }
+    ];
+
+    /* ========= material master ========= */
+    // densityKgM2PerMm: 1㎡あたり板厚1mmの重量(kg) = 密度(kg/㎥)×0.001
+    // ※ UIの材質キーと必ず一致させる（例：<option value="SUS">…）
+    const MATERIAL_MASTER = {
+      "SS400": { label: "SS400", densityKgM2PerMm: 7.85, densityKgM3: 7850, defaultYenPerKg: 0 },
+      // UIは value="SUS" を使うのでエイリアスを用意
+      "SUS": { label: "SUS", densityKgM2PerMm: 7.93, densityKgM3: 7930, defaultYenPerKg: 0 },
+      // 互換用（過去キー）
+      "SUS304": { label: "SUS304", densityKgM2PerMm: 7.93, densityKgM3: 7930, defaultYenPerKg: 0 },
+      "AL": { label: "アルミ", densityKgM2PerMm: 2.70, densityKgM3: 2700, defaultYenPerKg: 0 },
+      // 縞鋼板：突起分があるため板厚×比重では出せない。kg/㎡を実測値で持つ（下記 CHK_OPTIONS）
+      "CHK": { label: "縞鋼板", densityKgM2PerMm: null, densityKgM3: null, defaultYenPerKg: null },
+      "EXP": { label: "エキスパンドメタル", densityKgM2PerMm: null, densityKgM3: null, defaultYenPerKg: null }
+    };
+
+    // 縞鋼板（チェッカープレート）：板厚と㎡重量のセット。突起分を含む実重量。
+    const CHK_OPTIONS = [
+      { "key": "2.3", "label": "t2.3（19.76 kg/㎡）", "thk": 2.3, "kgm2": 19.76 },
+      { "key": "3.2", "label": "t3.2（26.79 kg/㎡）", "thk": 3.2, "kgm2": 26.79 },
+      { "key": "4.5", "label": "t4.5（36.99 kg/㎡）", "thk": 4.5, "kgm2": 36.99 },
+      { "key": "6.0", "label": "t6.0（48.77 kg/㎡）", "thk": 6.0, "kgm2": 48.77 },
+      { "key": "9.0", "label": "t9.0（72.32 kg/㎡）", "thk": 9.0, "kgm2": 72.32 },
+      { "key": "12", "label": "t12（95.87 kg/㎡）", "thk": 12, "kgm2": 95.87 }
+    ];
+
+
+    const EXPAND_MASTER = [{ "key": "XS-31", "size": "XS-31", "kgm2": 2.36, "label": "EXM XS-31（2.36 kg/㎡）" }, { "key": "XS-32", "size": "XS-32", "kgm2": 4.19, "label": "EXM XS-32（4.19 kg/㎡）" }, { "key": "XS-33", "size": "XS-33", "kgm2": 9.03, "label": "EXM XS-33（9.03 kg/㎡）" }, { "key": "XS-41", "size": "XS-41", "kgm2": 2.28, "label": "EXM XS-41（2.28 kg/㎡）" }, { "key": "XS-42", "size": "XS-42", "kgm2": 4.1, "label": "EXM XS-42（4.1 kg/㎡）" }, { "key": "XS-43", "size": "XS-43", "kgm2": 8.0, "label": "EXM XS-43（8 kg/㎡）" }, { "key": "XS-61", "size": "XS-61", "kgm2": 3.19, "label": "EXM XS-61（3.19 kg/㎡）" }, { "key": "XS-62", "size": "XS-62", "kgm2": 5.91, "label": "EXM XS-62（5.91 kg/㎡）" }, { "key": "XS-63", "size": "XS-63", "kgm2": 10.4, "label": "EXM XS-63（10.4 kg/㎡）" }, { "key": "XG-21", "size": "XG-21", "kgm2": 13.7, "label": "EXM XG-21（13.7 kg/㎡）" }, { "key": "XG-22", "size": "XG-22", "kgm2": 18.3, "label": "EXM XG-22（18.3 kg/㎡）" }, { "key": "XG-23", "size": "XG-23", "kgm2": 31.4, "label": "EXM XG-23（31.4 kg/㎡）" }];
+
+    const THICKNESS_OPTIONS = {
+      "SS400": ["1.6", "2.3", "3.2", "4.5", "6", "9", "12", "16", "19", "22", "25", "32"],
+      // UIは value="SUS" を使う
+      "SUS": ["1.0", "1.5", "2.0", "3.0", "4.0", "5.0", "6.0"],
+      // 互換用
+      "SUS304": ["1.0", "1.5", "2.0", "3.0", "4.0", "5.0", "6.0"],
+      "AL": ["1.0", "1.5", "2.0", "3.0", "4.0", "5.0", "6.0"]
+    };
+
+    const EXP_OPTIONS = [{ "key": "XS-31", "label": "XS-31（t1.2 / 2.36kg/㎡）", "thk": 1.2, "kgm2": 2.36 }, { "key": "XS-32", "label": "XS-32（t1.6 / 4.19kg/㎡）", "thk": 1.6, "kgm2": 4.19 }, { "key": "XS-33", "label": "XS-33（t2.3 / 9.03kg/㎡）", "thk": 2.3, "kgm2": 9.03 }, { "key": "XS-41", "label": "XS-41（t1.6 / 2.28kg/㎡）", "thk": 1.6, "kgm2": 2.28 }, { "key": "XS-42", "label": "XS-42（t2.3 / 4.1kg/㎡）", "thk": 2.3, "kgm2": 4.1 }, { "key": "XS-43", "label": "XS-43（t3.2 / 8.0kg/㎡）", "thk": 3.2, "kgm2": 8.0 }, { "key": "XS-61", "label": "XS-61（t2.3 / 3.19kg/㎡）", "thk": 2.3, "kgm2": 3.19 }, { "key": "XS-62", "label": "XS-62（t3.2 / 5.91kg/㎡）", "thk": 3.2, "kgm2": 5.91 }, { "key": "XS-63", "label": "XS-63（t4.5 / 10.4kg/㎡）", "thk": 4.5, "kgm2": 10.4 }, { "key": "XG-21", "label": "XG-21（t4.5 / 13.7kg/㎡）", "thk": 4.5, "kgm2": 13.7 }, { "key": "XG-22", "label": "XG-22（t6.0 / 18.3kg/㎡）", "thk": 6.0, "kgm2": 18.3 }, { "key": "XG-23", "label": "XG-23（t8.0 / 31.4kg/㎡）", "thk": 8.0, "kgm2": 31.4 }];
+
+
+    function populateThicknessOptions(tr) {
+      const mat = tr.querySelector(".matSel")?.value || "SS400";
+      const thkSel = tr.querySelector(".thkSel");
+      if (!thkSel) return;
+
+      thkSel.innerHTML = "";
+
+      if (mat === "EXP") {
+        // エキスパンドは規格選択（kg/㎡が決まる）
+        EXP_OPTIONS.forEach(opt => {
+          const o = document.createElement("option");
+          o.value = opt.key;
+          o.textContent = opt.label;
+          thkSel.appendChild(o);
+        });
+        if (!thkSel.value && thkSel.options.length) thkSel.selectedIndex = 0;
+      } else {
+        const opts = THICKNESS_OPTIONS[mat] || THICKNESS_OPTIONS["SS400"];
+        opts.forEach(t => {
+          const o = document.createElement("option");
+          o.value = t;        // mm
+          o.textContent = `${t} mm`;
+          thkSel.appendChild(o);
+        });
+        if (!thkSel.value && thkSel.options.length) thkSel.selectedIndex = 0;
+      }
+    }
+
+    /* ========= state ========= */
+    let sheets = [];
+    let currentSheetIndex = 0; // “先頭シート index / 4枚単位”
+    let chosenBaseSize = null;
+    let lastRunMeta = null;
+    let chosenEffSize = null;
+
+    let selected = null; // { sheetIndex, rectIndex }
+    let hitRects = [];   // click hit test用（drawで更新）
+
+    // 強制移動（固定なし）
+    let forceMode = false;
+    let isManuallyModified = false; // ★追加：手動調整が行われたかどうかのフラグ
+    let forceDestSheetIndex = null; // null の時は「移動先シートをクリックして選ぶ」段階
+
+    // 強制移動の回転モード（auto / 0 / 90）
+    let rotateMode = "auto";
+
+    // Undo（1回）
+    let undoSnapshot = null;
+
+    /* ========= dom ========= */
+    const modeSelect = document.getElementById("modeSelect");
+    const fixedWrap = document.getElementById("fixedWrap");
+    const fixedSizeSelect = document.getElementById("fixedSizeSelect");
+    const customWrap = document.getElementById("customWrap");
+    const customWrap2 = document.getElementById("customWrap2");
+    const customWidthInput = document.getElementById("customWidth");
+    const customHeightInput = document.getElementById("customHeight");
+    const autoHint = document.getElementById("autoHint");
+
+    const addRowBtn = document.getElementById("addRowBtn");
+    const clearRowsBtn = document.getElementById("clearRowsBtn");
+    const piecesTableBody = document.querySelector("#piecesTable tbody");
+
+    const runBtn = document.getElementById("runBtn");
+    const savePngBtn = document.getElementById("savePngBtn");
+    const printBtn = document.getElementById("printBtn");
+    const statusDiv = document.getElementById("status");
+    const forceGuideDiv = document.getElementById("forceGuide");
+
+    const pageScroll = document.getElementById("pageScroll");
+    const forceFloatBtn = document.getElementById("forceFloatBtn");
+
+    // floating force toggle (small screens): delegates to existing button
+    if (forceFloatBtn) {
+      forceFloatBtn.addEventListener("click", () => {
+        const btn = document.getElementById("btnForceToggle");
+        if (btn) btn.click();
+        // パネルが見える位置に誘導（小画面で下に行ってもOK）
+        const ep = document.getElementById("editPanel");
+        if (ep) ep.scrollIntoView({ block: "nearest", inline: "nearest" });
+      });
+    }
+
+    // canvasWrap height: make canvas scroll, not the whole page
+    function updateCanvasWrapHeight() {
+      const wrap = document.getElementById("canvasWrap");
+      if (!wrap) return;
+      const rect = wrap.getBoundingClientRect();
+      // 画面下に少し余白を残す
+      const avail = Math.max(260, window.innerHeight - rect.top - 16);
+      wrap.style.maxHeight = avail + "px";
+    }
+    window.addEventListener("resize", updateCanvasWrapHeight);
+    if (pageScroll) pageScroll.addEventListener("scroll", () => {
+      // scroll位置が変わると rect.top が変わるので再計算
+      updateCanvasWrapHeight();
+    });
+    setTimeout(updateCanvasWrapHeight, 0);
+
+
+    const canvas = document.getElementById("previewCanvas");
+    const ctx = canvas.getContext("2d");
+    const sheetInfo = document.getElementById("sheetInfo");
+    const prevSheetBtn = document.getElementById("prevSheetBtn");
+    const nextSheetBtn = document.getElementById("nextSheetBtn");
+
+    const piecesSummaryDiv = document.getElementById("piecesSummary");
+    const printImage = document.getElementById("printImage");
+    const printLayoutArea = document.getElementById("printLayoutArea");
+
+    // edit panel
+    const editPanel = document.getElementById("editPanel");
+    const editInfo = document.getElementById("editInfo");
+    const targetSheetNo = document.getElementById("targetSheetNo");
+    const btnMoveToNo = document.getElementById("btnMoveToNo");
+    const btnClearSel = document.getElementById("btnClearSel");
+    const btnForceToggle = document.getElementById("btnForceToggle");
+    const rotateModeSelect = document.getElementById("rotateModeSelect");
+    const btnUndo = document.getElementById("btnUndo");
+
+    // material (global)
+    const matGlobal = document.getElementById("matGlobal");
+    const thkWrap = document.getElementById("thkWrap");
+    const thkGlobal = document.getElementById("thkGlobal");
+    const expWrap = document.getElementById("expWrap");
+    const expType = document.getElementById("expType");
+    const chkWrap = document.getElementById("chkWrap");
+    const chkType = document.getElementById("chkType");
+    const unitPriceKg = document.getElementById("unitPriceKg");
+
+    /* ========= header guide buttons ========= */
+    document.getElementById("jumpResult").addEventListener("click", () => {
+      document.getElementById("resultSection").scrollIntoView({ behavior: "smooth" });
+    });
+    document.getElementById("jumpTop").addEventListener("click", () => {
+      document.getElementById("top").scrollIntoView({ behavior: "smooth" });
+    });
+    document.getElementById("btnAddRowTop").addEventListener("click", () => addPieceRow());
+    document.getElementById("btnRunTop").addEventListener("click", () => runPacking());
+
+    /* ========= mode change ========= */
+    modeSelect.addEventListener("change", () => {
+      const mode = modeSelect.value;
+      if (mode === "fixed") {
+        fixedWrap.style.display = "inline-flex";
+        customWrap.style.display = "none";
+        customWrap2.style.display = "none";
+        fixedSizeSelect.disabled = false;
+        autoHint.textContent = "";
+      } else if (mode === "auto") {
+        fixedWrap.style.display = "inline-flex";
+        customWrap.style.display = "none";
+        customWrap2.style.display = "none";
+        fixedSizeSelect.disabled = true;
+        autoHint.textContent = "（AIおまかせで自動選択）";
+      } else {
+        fixedWrap.style.display = "none";
+        customWrap.style.display = "inline-flex";
+        customWrap2.style.display = "inline-flex";
+        fixedSizeSelect.disabled = false;
+        autoHint.textContent = "";
+      }
+    });
+
+    /* ========= table row controls ========= */
+    addRowBtn.addEventListener("click", addPieceRow);
+    clearRowsBtn.addEventListener("click", () => {
+      piecesTableBody.innerHTML = "";
+      syncMaterialUI();
+      addPieceRow();
+    });
+
+    function addPieceRow(initialData = null) {
+      const tr = document.createElement("tr");
+      const idx = piecesTableBody.children.length + 1;
+      const wVal = initialData ? initialData.width : "";
+      const hVal = initialData ? initialData.height : "";
+      const qVal = initialData ? initialData.quantity : "1";
+
+      tr.innerHTML = `
+    <td>${idx}</td>
+    <td><input type="number" min="0" step="1" value="${wVal}"/></td>
+    <td><input type="number" min="0" step="1" value="${hVal}"/></td>
+    <td><input type="number" min="1" step="1" value="${qVal}"/></td>
+    <td class="no-print"><button class="btn danger delRowBtn" type="button">削除</button></td>`;
+      piecesTableBody.appendChild(tr);
+
+      tr.querySelector(".delRowBtn").addEventListener("click", () => {
+        tr.remove(); renumberRows();
+      });
+    }
+
+    function renumberRows() {
+      [...piecesTableBody.children].forEach((tr, i) => tr.children[0].textContent = i + 1);
+    }
+
+    /* ========= nav sheet page ========= */
+    prevSheetBtn.addEventListener("click", () => {
+      if (!sheets.length) return;
+      const perPage = 4;
+      const maxPage = Math.ceil(sheets.length / perPage);
+      const nowPage = Math.floor(currentSheetIndex / perPage);
+      const nextPage = (nowPage - 1 + maxPage) % maxPage;
+      currentSheetIndex = nextPage * perPage;
+      drawCurrentSheet();
+    });
+    nextSheetBtn.addEventListener("click", () => {
+      if (!sheets.length) return;
+      const perPage = 4;
+      const maxPage = Math.ceil(sheets.length / perPage);
+      const nowPage = Math.floor(currentSheetIndex / perPage);
+      const nextPage = (nowPage + 1) % maxPage;
+      currentSheetIndex = nextPage * perPage;
+      drawCurrentSheet();
+    });
+
+    /* ========= run ========= */
+    runBtn.addEventListener("click", runPacking);
+
+    /* ========= manual panel ========= */
+    btnClearSel.addEventListener("click", () => {
+      // 選択板も、強制移動で選んだ「移動先シート」も両方解除
+      selected = null;
+      forceDestSheetIndex = null;
+      refreshEditUI();
+      if (forceMode) {
+        setForceGuide("強制移動ON：①まず板をクリックして選択してください。", false);
+      }
+      drawCurrentSheet();
+    });
+    btnMoveToNo.addEventListener("click", () => moveSelectedToNumber());
+    btnForceToggle.addEventListener("click", () => toggleForceMode());
+    rotateModeSelect.addEventListener("change", () => {
+      rotateMode = rotateModeSelect.value;
+      if (forceMode) {
+        // ガイド更新
+        if (!selected) {
+          setForceGuide("強制移動ON：①まず板をクリックして選択してください。", false);
+        } else if (forceDestSheetIndex === null) {
+          setForceGuide("強制移動ON：②移動先の元板（SHEET枠内）をクリックして選んでください。", false);
+        } else {
+          setForceGuide(`強制移動ON：③SHEET ${forceDestSheetIndex + 1} に置きたい位置をクリックしてください（回転：${rotateModeSelect.options[rotateModeSelect.selectedIndex].text}）。`, false);
+        }
+      }
+    });
+    btnUndo.addEventListener("click", () => undoOnce());
+
+    /* ========= print & export ========= */
+    printBtn.addEventListener("click", () => {
+      // 1. データが無いなら何もしない
+      if (!sheets.length || !chosenBaseSize) return;
+
+      // 2. 印刷用エリアをリセット
+      printLayoutArea.innerHTML = "";
+
+      // 3. 現在の表示位置を保存（印刷後に戻すため）
+      const savedIndex = currentSheetIndex;
+
+      // 4. 全ページ分（シート4枚ごと）を順番に描画して画像化
+      const perPage = 4;
+      const totalPages = Math.ceil(sheets.length / perPage);
+
+      for (let i = 0; i < totalPages; i++) {
+        // 描画位置を強制的に変更
+        currentSheetIndex = i * perPage;
+        drawCurrentSheet(); // 同期的にCanvasを描画
+
+        // 画像化して追加
+        const imgUrl = canvas.toDataURL("image/png");
+        const imgEl = document.createElement("img");
+        imgEl.src = imgUrl;
+        imgEl.className = "drawing page-break"; // ★CSSで改ページさせるクラス
+        imgEl.alt = `Page ${i + 1}`;
+        printLayoutArea.appendChild(imgEl);
+      }
+
+      // 5. リスト（集計表）を最後に追加
+      const summaryClone = document.createElement("div");
+      summaryClone.className = "summary-content";
+      summaryClone.innerHTML = piecesSummaryDiv.innerHTML;
+      printLayoutArea.appendChild(summaryClone);
+
+      // 6. 画面表示を元の位置に戻す
+      currentSheetIndex = savedIndex;
+      drawCurrentSheet();
+
+      // 7. 印刷実行（少し待ってから）
+      setTimeout(() => {
+        window.print();
+      }, 100);
+    });
+
+    savePngBtn.addEventListener("click", () => {
+      const exportCanvas = createExportCanvas();
+      if (!exportCanvas) return;
+      const link = document.createElement("a");
+      link.href = exportCanvas.toDataURL("image/png");
+      link.download = `banatori_page${Math.floor(currentSheetIndex / 4) + 1}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+
+    function createExportCanvas(startIndexOverride = null, pageMeta = null) {
+      if (!sheets.length || !chosenBaseSize) return null;
+      const prevIndex = currentSheetIndex;
+      if (startIndexOverride !== null) {
+        currentSheetIndex = Math.max(0, Math.min(startIndexOverride, Math.max(0, sheets.length - 1)));
+      }
+      drawCurrentSheet();
+
+
+      const statsRows = getPiecesStats();
+      const meta = lastRunMeta;
+
+      const exportCanvas = document.createElement("canvas");
+      const exportCtx = exportCanvas.getContext("2d");
+
+      const baseW = canvas.width;
+      const baseH = canvas.height;
+
+      const tableHeaderHeight = 30;
+      const rowHeight = 18;
+      const tableHeight = statsRows.length > 0
+        ? tableHeaderHeight + statsRows.length * rowHeight + 70
+        : 80;
+
+      exportCanvas.width = baseW;
+      exportCanvas.height = baseH + tableHeight;
+
+      exportCtx.fillStyle = "#ffffff";
+      exportCtx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+
+      exportCtx.drawImage(canvas, 0, 0);
+
+      exportCtx.fillStyle = "#000000";
+      exportCtx.font = "13px sans-serif";
+      let y = baseH + 22;
+
+      exportCtx.fillText("板取結果（現場用）", 20, y);
+
+      exportCtx.font = "11px sans-serif";
+      y += 18;
+
+      const info1 = meta ? meta.summaryLine1 : "";
+      const info2 = meta ? meta.summaryLine2 : "";
+
+      if (info1) exportCtx.fillText(info1, 20, y);
+      y += 14;
+      if (info2) exportCtx.fillText(info2, 20, y);
+      y += 18;
+
+      if (pageMeta && pageMeta.pageNo && pageMeta.totalPages) {
+        exportCtx.fillText(`ページ：${pageMeta.pageNo} / ${pageMeta.totalPages}`, 20, y);
+        y += 14;
+      }
+
+
+      if (statsRows.length > 0) {
+        exportCtx.font = "11px sans-serif";
+        const colX = [20, 90, 190, 300];
+
+        exportCtx.fillText("No", colX[0], y);
+        exportCtx.fillText("幅(mm)", colX[1], y);
+        exportCtx.fillText("長さ(mm)", colX[2], y);
+        exportCtx.fillText("枚数", colX[3], y);
+        y += rowHeight;
+
+        statsRows.forEach(r => {
+          exportCtx.fillText(`#${r.id}`, colX[0], y);
+          exportCtx.fillText(String(r.width), colX[1], y);
+          exportCtx.fillText(String(r.height), colX[2], y);
+          exportCtx.fillText(String(r.qty), colX[3], y);
+          y += rowHeight;
+        });
+      } else {
+        exportCtx.fillText("※板取結果がありません。", 20, y);
+      }
+
+      // restore view index
+      currentSheetIndex = prevIndex;
+
+      return exportCanvas;
+    }
+
+
+    /* ========= material UI (global) ========= */
+    function syncMaterialUI() {
+      const mat = matGlobal.value;
+      thkWrap.style.display = "none";
+      chkWrap.style.display = "none";
+      expWrap.style.display = "none";
+
+      if (mat === "EXP") {
+        expWrap.style.display = "inline-flex";
+        // populate expand options once
+        if (expType.options.length === 0) {
+          EXPAND_MASTER.forEach((it) => {
+            const opt = document.createElement("option");
+            opt.value = it.key;
+            opt.textContent = it.label;
+            expType.appendChild(opt);
+          });
+        }
+      } else if (mat === "CHK") {
+        chkWrap.style.display = "inline-flex";
+        if (chkType.options.length === 0) {
+          CHK_OPTIONS.forEach((it) => {
+            const opt = document.createElement("option");
+            opt.value = it.key;
+            opt.textContent = it.label;
+            chkType.appendChild(opt);
+          });
+          const def = CHK_OPTIONS.findIndex(o => o.key === "4.5");
+          chkType.selectedIndex = def >= 0 ? def : 0;
+        }
+      } else {
+        thkWrap.style.display = "inline-flex";
+      }
+    }
+
+    matGlobal.addEventListener("change", () => {
+      syncMaterialUI();
+      updatePiecesSummary();
+    });
+
+    chkType.addEventListener("change", () => {
+      updatePiecesSummary();
+    });
+
+    expType.addEventListener("change", () => {
+      updatePiecesSummary();
+    });
+
+    thkGlobal.addEventListener("input", () => updatePiecesSummary());
+    unitPriceKg.addEventListener("input", () => updatePiecesSummary());
+
+    /* ========= init ========= */
+    addPieceRow();
+
+    /* ========= collect pieces ========= */
+
+    function collectPieces() {
+      const arr = [];
+      [...piecesTableBody.children].forEach((tr, i) => {
+        const w = parseFloat(tr.children[1].querySelector("input").value);
+        const h = parseFloat(tr.children[2].querySelector("input").value);
+        const q = parseInt(tr.children[3].querySelector("input").value, 10);
+        if (w > 0 && h > 0 && q > 0) {
+          arr.push({ width: w, height: h, quantity: q, id: i + 1 });
+        }
+      });
+      return arr;
+    }
+
+
+    /* ========= main packing ========= */
+    function runPacking() {
+      if (isManuallyModified) {
+        if (!confirm("手動調整された配置がリセットされます。\n再計算してよろしいですか？")) {
+          return;
+        }
+      }
+      isManuallyModified = false;
+      setStatus("", false);
+      setForceGuide("", false);
+
+      sheets = [];
+      currentSheetIndex = 0;
+      chosenBaseSize = null;
+      chosenEffSize = null;
+      lastRunMeta = null;
+      undoSnapshot = null;
+
+      clearSelection();
+      forceMode = false;
+      forceDestSheetIndex = null;
+      syncForceBtn();
+
+      const pieces = collectPieces();
+      if (!pieces.length) {
+        setStatus("板寸法を入力してください。", true);
+        drawCurrentSheet();
+        updatePiecesSummary();
+        return;
+      }
+
+      const mode = modeSelect.value;
+
+      // edgeMargin / kerf UIなし → 固定
+      const edgeMargin = 0;
+      const kerf = 0;
+
+      let candidates = [];
+      if (mode === "fixed") {
+        const [w, h] = fixedSizeSelect.value.split("x").map(Number);
+        candidates = [{ width: w, height: h, label: `${w}×${h}` }];
+      } else if (mode === "custom") {
+        const w = parseFloat(customWidthInput.value);
+        const h = parseFloat(customHeightInput.value);
+        if (!w || !h || w <= 0 || h <= 0) {
+          setStatus("元板の寸法を正しく入力してください。", true);
+          return;
+        }
+        candidates = [{ width: w, height: h, label: `残材 ${w}×${h}` }];
+      } else {
+        candidates = FIXED_SIZES.map(s => ({ width: s.width, height: s.height, label: s.label }));
+      }
+
+      // evaluate each candidate
+      let best = null;
+      for (const c of candidates) {
+        const effW = c.width - edgeMargin * 2;
+        const effH = c.height - edgeMargin * 2;
+        if (effW <= 0 || effH <= 0) continue;
+
+        const res = packAllPieces(pieces, effW, effH, kerf);
+        if (!res.success) continue;
+
+        const sheetCount = res.sheets.length;
+        const waste = calcTotalWasteArea(res.sheets, effW, effH);
+        const shortSideScore = calcShortSideKeepScore(res.sheets, effW, effH);
+        const lScore = calcLShapePlacementScore(res.sheets, effW);  // ★追加
+        const scoreObj = { sheetCount, waste, shortSideScore, lScore }; // ★追加
+
+        if (!best) {
+          best = { sheets: res.sheets, base: c, eff: { w: effW, h: effH }, score: scoreObj };
+        } else {
+          if (sheetCount < best.score.sheetCount) {
+            best = { sheets: res.sheets, base: c, eff: { w: effW, h: effH }, score: scoreObj };
+          } else if (sheetCount === best.score.sheetCount) {
+            if (waste < best.score.waste) {
+              best = { sheets: res.sheets, base: c, eff: { w: effW, h: effH }, score: scoreObj };
+            } else if (waste === best.score.waste) {
+              if (shortSideScore > best.score.shortSideScore) {
+                best = { sheets: res.sheets, base: c, eff: { w: effW, h: effH }, score: scoreObj };
+              } else if (shortSideScore === best.score.shortSideScore) {
+                if (scoreObj.lScore.value > best.score.lScore.value) {
+                  best = { sheets: res.sheets, base: c, eff: { w: effW, h: effH }, score: scoreObj };
+                }
+              }
+            }
+          }
+        }
+
+        if (mode !== "auto") break;
+      }
+
+      if (!best) {
+        setStatus(mode === "auto" ? "候補定尺すべてで収まらない板があります。" : "元板に入らない板があります。", true);
+        sheets = [];
+        drawCurrentSheet();
+        updatePiecesSummary();
+        return;
+      }
+
+      sheets = best.sheets;
+      chosenBaseSize = { width: best.base.width, height: best.base.height };
+      chosenEffSize = { w: best.eff.w, h: best.eff.h };
+
+      const meta1 = (mode === "auto")
+        ? `AI選択：${best.base.label} / 必要枚数：${best.score.sheetCount}`
+        : `元板 ${best.base.label} / 必要枚数：${best.score.sheetCount}`;
+
+      lastRunMeta = { summaryLine1: meta1, summaryLine2: getMaterialLabel() };
+      setStatus(meta1, false);
+
+      drawCurrentSheet();
+      updatePiecesSummary();
+
+      // edit panel
+      editPanel.style.display = "block";
+      targetSheetNo.value = "1";
+      refreshEditUI();
+      syncRunMetaSheetCountUI();
+    }
+
+    /* ========= packing algorithm (shelf + orientation sync) ========= */
+    function packAllPieces(pieces, sheetW, sheetH, kerf) {
+      const pending = [];
+      pieces.forEach(p => {
+        for (let i = 0; i < p.quantity; i++) {
+          pending.push({ width: p.width, height: p.height, id: p.id, material: p.material, thicknessKey: p.thicknessKey, priceOverride: p.priceOverride });
+        }
+      });
+
+      for (const r of pending) {
+        if (!canRectFitSheet(r.width, r.height, sheetW, sheetH)) {
+          return { success: false, sheets: [] };
+        }
+      }
+
+      pending.sort((a, b) => Math.max(b.width, b.height) - Math.max(a.width, a.height));
+
+      const resultSheets = [];
+      while (pending.length) {
+        const sheet = { rects: [], usedHeight: 0 };
+        let prevShelfUsedWidth = sheetW; // ★追加：上の棚の幅（最初は最大）
+
+        while (pending.length) {
+          // 1) まずはフラット棚（段差なし）だけで探す
+          let shelf = buildBestShelf(pending, sheetW, sheetH, kerf, prevShelfUsedWidth, false);
+
+          // 2) 無ければL棚（段差あり）を許可して探す（＝最後に寄る）
+          if (!shelf) {
+            shelf = buildBestShelf(pending, sheetW, sheetH, kerf, prevShelfUsedWidth, true);
+          }
+
+
+          if (!shelf) break;
+          if (sheet.usedHeight + shelf.height > sheetH) break;
+
+          let x = 0;
+          const y = sheet.usedHeight;
+
+          shelf.items.forEach(item => {
+            sheet.rects.push({
+              x,
+              y,
+              width: item.wReal,
+              height: item.hReal,
+              wPlace: item.wPlace,
+              hPlace: item.hPlace,
+              id: item.id,
+              material: item.material,
+              thicknessKey: item.thicknessKey,
+              priceOverride: item.priceOverride
+            });
+            x += item.wPlace;
+          });
+
+          sheet.usedHeight += shelf.height;
+          prevShelfUsedWidth = shelf.usedWidth; // ★追加：次の棚はこれより広がりにくくする
+
+          const usedIdx = shelf.items.map(it => it.index).sort((a, b) => b - a);
+          usedIdx.forEach(i => pending.splice(i, 1));
+        }
+
+        if (!sheet.rects.length) return { success: false, sheets: [] };
+        resultSheets.push(sheet);
+      }
+
+      return { success: true, sheets: resultSheets.map(s => ({ rects: s.rects })) };
+    }
+
+    function buildBestShelf(pending, sheetW, sheetH, kerf, prevShelfUsedWidth, allowL) {
+
+      console.log("buildBestShelf called", pending.length);
+
+      if (!pending.length) return null;
+
+      let best = null;
+
+      const order = [...pending.keys()].sort((i, j) => {
+        const ai = pending[i], aj = pending[j];
+        return Math.max(aj.width, aj.height) - Math.max(ai.width, ai.height);
+      });
+
+      for (const idx of order) {
+        const baseRect = pending[idx];
+
+        const sameCount = pending.reduce((acc, r) => {
+          const same =
+            (r.width === baseRect.width && r.height === baseRect.height) ||
+            (r.width === baseRect.height && r.height === baseRect.width);
+          return acc + (same ? 1 : 0);
+        }, 0);
+
+        const smallSide = Math.min(baseRect.width, baseRect.height);
+        const largeSide = Math.max(baseRect.width, baseRect.height);
+
+        let orientations;
+        if (sameCount >= 2) {
+          const smallCover = Math.min(sameCount, Math.floor(sheetW / (smallSide + kerf))) * (smallSide + kerf);
+          const largeCover = Math.min(sameCount, Math.floor(sheetW / (largeSide + kerf))) * (largeSide + kerf);
+          orientations = (smallCover >= largeCover)
+            ? [{ wReal: smallSide, hReal: largeSide }]
+            : [{ wReal: largeSide, hReal: smallSide }];
+        } else {
+          orientations = [
+            { wReal: baseRect.width, hReal: baseRect.height },
+            { wReal: baseRect.height, hReal: baseRect.width }
+          ];
+        }
+
+        for (const ori of orientations) {
+          const w0 = ori.wReal, h0 = ori.hReal;
+          const w0p = w0 + kerf;
+          const h0p = h0 + kerf;
+          if (w0p > sheetW || h0p > sheetH) continue;
+
+          const shelfHeight = h0p;
+          let remainingWidth = sheetW - w0p;
+
+          const groupItems = [{
+            index: idx,
+            wReal: w0, hReal: h0,
+            wPlace: w0p, hPlace: h0p,
+            id: baseRect.id,
+            material: baseRect.material,
+            thicknessKey: baseRect.thicknessKey,
+            priceOverride: baseRect.priceOverride
+
+          }];
+
+          // ===== フェーズ1：同種（sameAsBase）を先に詰める =====
+          for (const j of order) {
+            if (j === idx) continue;
+            const r = pending[j];
+
+            const sameAsBase =
+              (r.width === baseRect.width && r.height === baseRect.height) ||
+              (r.width === baseRect.height && r.height === baseRect.width);
+
+            if (!sameAsBase) continue;
+
+            // 同種は「棚高さに一致する向き」だけ採用（段差ゼロ）
+            const candSame = [];
+            const o1 = { wReal: r.width, hReal: r.height };
+            const o2 = { wReal: r.height, hReal: r.width };
+
+            [o1, o2].forEach(o => {
+              const wp = o.wReal + kerf;
+              const hp = o.hReal + kerf;
+              if (wp <= remainingWidth && hp === shelfHeight) {
+                candSame.push({ ...o, wPlace: wp, hPlace: hp });
+              }
+            });
+
+            if (!candSame.length) continue;
+
+            // 同種は幅の大きい方（＝棚を埋める）でOK
+            candSame.sort((a, b) => b.wPlace - a.wPlace);
+            const pick = candSame[0];
+
+            groupItems.push({
+              index: j,
+              wReal: pick.wReal, hReal: pick.hReal,
+              wPlace: pick.wPlace, hPlace: pick.hPlace,
+              id: r.id,
+              material: r.material,
+              thicknessKey: r.thicknessKey,
+              priceOverride: r.priceOverride
+            });
+
+            remainingWidth -= pick.wPlace;
+            if (remainingWidth <= 0) break;
+          }
+
+          // ===== フェーズ2：異種を詰める（段差を避けつつ） =====
+          for (const j of order) {
+            if (remainingWidth <= 0) break;
+            if (j === idx) continue;
+
+            // すでに使ったindexはスキップ
+            if (groupItems.some(it => it.index === j)) continue;
+
+            const r = pending[j];
+
+            const candsSameH = [];
+            const candsLowerH = [];
+
+            const o1 = { wReal: r.width, hReal: r.height };
+            const o2 = { wReal: r.height, hReal: r.width };
+
+            [o1, o2].forEach(o => {
+              const wp = o.wReal + kerf;
+              const hp = o.hReal + kerf;
+              if (wp <= remainingWidth && hp <= shelfHeight && hp <= sheetH) {
+                const cand = { ...o, wPlace: wp, hPlace: hp };
+                if (hp === shelfHeight) candsSameH.push(cand);
+                else candsLowerH.push(cand);
+              }
+            });
+
+            // 原則：棚高さと同じものだけで詰める（段差L字を出さない）
+            let cands = candsSameH;
+
+            // 例外：棚高さ一致が一つも無い場合だけ、低いものを許可（＝最後の棚っぽい状態でのみ起きる）
+            if (!cands.length) cands = candsLowerH;
+
+            if (!cands.length) continue;
+
+            // 同じ高さの中では幅優先
+            cands.sort((a, b) => b.wPlace - a.wPlace);
+            const pick = cands[0];
+
+
+            groupItems.push({
+              index: j,
+              wReal: pick.wReal, hReal: pick.hReal,
+              wPlace: pick.wPlace, hPlace: pick.hPlace,
+              id: r.id,
+              material: r.material,
+              thicknessKey: r.thicknessKey,
+              priceOverride: r.priceOverride
+            });
+
+            remainingWidth -= pick.wPlace;
+          }
+          // ★L棚判定：棚内に shelfHeight より低いピースが混ざっていたら L棚
+          const hasLower = groupItems.some(it => it.hPlace < shelfHeight);
+          if (!allowL && hasLower) {
+            // フラット棚しか許可しないモードでは、この候補棚は捨てる
+            continue;
+          }
+
+
+          const usedWidth = sheetW - remainingWidth;
+
+          // ★途中で棚が「広がる」ほどL字が出やすいので罰する
+          // prevShelfUsedWidth：直前の棚の幅（上の棚）
+          // usedWidth：今回候補の棚の幅（下の棚）
+          const stepMin = 60;          // mm：この程度の増加は許容（現場感で調整）
+          const stepPenalty = 200;     // 罰の強さ（大きいほど「広がる棚」を避ける）
+
+          // 直前棚よりどれだけ“広がったか”（広がってなければ0）
+          const expand = Math.max(0, usedWidth - (prevShelfUsedWidth + stepMin));
+
+          // まず「幅を使う」のは良いが、途中で広がると強烈に減点
+          const score = usedWidth - expand * stepPenalty;
+
+          // best は usedWidth ではなく score で更新
+          if (!best || score > best.score) {
+            best = { usedWidth, height: shelfHeight, items: groupItems, score };
+          }
+
+        }
+      }
+      return best;
+    }
+
+    function canRectFitSheet(w, h, sheetW, sheetH) {
+      return (w <= sheetW && h <= sheetH) || (h <= sheetW && w <= sheetH);
+    }
+
+    /* ========= scoring (logic A-ish) ========= */
+    function calcTotalWasteArea(sheets, sheetW, sheetH) {
+      const sheetArea = sheetW * sheetH;
+      let total = 0;
+      sheets.forEach(s => {
+        let used = 0;
+        s.rects.forEach(r => {
+          used += (r.wPlace ?? r.width) * (r.hPlace ?? r.height);
+        });
+        total += Math.max(0, sheetArea - used);
+      });
+      return Math.round(total);
+    }
+
+    function calcShortSideKeepScore(sheets, sheetW, sheetH) {
+      let score = 0;
+      sheets.forEach(s => {
+        let maxX = 0;
+        s.rects.forEach(r => {
+          const x2 = r.x + (r.wPlace ?? r.width);
+          if (x2 > maxX) maxX = x2;
+        });
+        const leftoverW = Math.max(0, sheetW - maxX);
+        score += leftoverW;
+      });
+      return Math.round(score);
+    }
+    /* ========= L字（途中の段差/欠け）検出＆スコア ========= */
+
+    /** rects -> shelves（同じyの棚）へ */
+    function buildShelvesFromRects(rects) {
+      const map = new Map();
+      for (const r of rects) {
+        const yKey = r.y; // あなたの棚詰めは同じ棚=同じyになる前提
+        if (!map.has(yKey)) map.set(yKey, []);
+        map.get(yKey).push(r);
+      }
+      const shelves = [...map.entries()]
+        .sort((a, b) => a[0] - b[0])
+        .map(([y, list]) => {
+          const items = [...list].sort((p, q) => p.x - q.x);
+          return { y, items };
+        });
+      return shelves;
+    }
+
+    /** 棚の占有区間をマージして [ [x1,x2], ... ] を返す */
+    function mergedIntervals(items) {
+      const segs = items.map(r => [r.x, r.x + (r.wPlace ?? r.width)]).sort((a, b) => a[0] - b[0]);
+      const out = [];
+      for (const s of segs) {
+        if (!out.length) out.push(s);
+        else {
+          const last = out[out.length - 1];
+          if (s[0] <= last[1]) last[1] = Math.max(last[1], s[1]);
+          else out.push(s);
+        }
+      }
+      return out;
+    }
+
+    /**
+     * L字っぽさを判定：
+     * - 棚が左端(0)から連続していない（左に空きがある）
+     * - もしくは棚内に大きな「穴」がある（途中欠け）
+     * - もしくは上棚と比べて“右端が大きく後退”して段差ができる
+     *
+     * ※ここは「現場の美観/切断効率」なので、閾値で調整するのが正解
+     */
+    function detectLShelves(sheet, sheetW, opts = {}) {
+      const gapMin = opts.gapMin ?? 40;        // mm：これ以上の空き/穴を「欠け」とみなす
+      const stepMin = opts.stepMin ?? 80;      // mm：棚間の右端差がこれ以上なら段差扱い
+      const shelves = buildShelvesFromRects(sheet.rects);
+
+      const info = shelves.map(sh => {
+        const segs = mergedIntervals(sh.items);
+        const minX = segs[0]?.[0] ?? 0;
+        const maxX = segs.at(-1)?.[1] ?? 0;
+
+        // 棚内の穴（区間の隙間）
+        let hasHole = false;
+        for (let i = 0; i < segs.length - 1; i++) {
+          const hole = segs[i + 1][0] - segs[i][1];
+          if (hole >= gapMin) { hasHole = true; break; }
+        }
+
+        const leftGap = minX;               // 左端からの空き
+        const rightGap = Math.max(0, sheetW - maxX);
+
+        return { minX, maxX, leftGap, rightGap, hasHole };
+      });
+
+      // 「途中L」候補：段差（右端後退）や左空き/穴がある棚
+      const mid = [];
+      for (let i = 0; i < info.length; i++) {
+        const cur = info[i];
+        const prev = (i > 0) ? info[i - 1] : null;
+
+        const leftNotFlush = cur.leftGap >= gapMin;
+        const hole = cur.hasHole;
+
+        // 上の棚より右端が大きく後退している → 段差（L字の内側を作りやすい）
+        const stepBack = prev ? ((prev.maxX - cur.maxX) >= stepMin) : false;
+
+        if (leftNotFlush || hole || stepBack) mid.push(i);
+      }
+
+      return { shelves, info, mid };
+    }
+
+    /**
+     * 配置スコアに「途中Lは罰、最後LはOK/ボーナス」を入れる
+     * 値は大きめに効かせるのがコツ（あなたの思想）
+     */
+    function calcLShapePlacementScore(sheets, sheetW, opts = {}) {
+      const gapMin = opts.gapMin ?? 40;
+      const stepMin = opts.stepMin ?? 80;
+
+      // 途中Lを強烈に罰、最後棚の“右側に大きい残”は少しボーナス
+      const penaltyPerMid = opts.penaltyPerMid ?? 5000;
+      const bonusLast = opts.bonusLast ?? 800;
+
+      let totalPenalty = 0;
+      let totalBonus = 0;
+
+      for (const s of sheets) {
+        const { info, mid } = detectLShelves(s, sheetW, { gapMin, stepMin });
+
+        if (!info.length) continue;
+        const lastIdx = info.length - 1;
+
+        // 途中棚にL判定があれば罰（最後は除外）
+        const midOnly = mid.filter(i => i !== lastIdx);
+        totalPenalty += midOnly.length * penaltyPerMid;
+
+        // 最後棚は「大きい残材が右側に残る」ならボーナス（Lを最後に寄せる思想）
+        const last = info[lastIdx];
+        if (last.rightGap >= (opts.lastRightGapMin ?? 200)) {
+          totalBonus += bonusLast;
+        }
+      }
+
+      return { penalty: totalPenalty, bonus: totalBonus, value: (totalBonus - totalPenalty) };
+    }
+
+    /* ========= drawing (4 sheets/page) ========= */
+    canvas.addEventListener("click", (ev) => {
+      if (!sheets.length || !chosenBaseSize) return;
+
+      const m = getMouseCanvas(ev);
+      // 強制モード時は挙動分岐
+      if (forceMode) {
+        handleForceClick(m.mx, m.my);
+        return;
+      }
+
+      // 通常：板選択
+      const hit = hitTestRect(m.mx, m.my);
+      if (hit) {
+        selected = { sheetIndex: hit.sheetIndex, rectIndex: hit.rectIndex };
+        refreshEditUI();
+        drawCurrentSheet();
+        return;
+      }
+
+      // 空白クリック→解除
+      clearSelection();
+      drawCurrentSheet();
+    });
+
+    function drawCurrentSheet() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      hitRects = [];
+
+      if (!sheets.length || !chosenBaseSize) {
+        sheetInfo.textContent = "";
+        editPanel.style.display = "none";
+        return;
+      }
+
+      const W = chosenBaseSize.width;
+      const H = chosenBaseSize.height;
+
+      const COLS = 2;
+      const ROWS = 2;
+      const margin = 40;
+
+      const cellW = (canvas.width - margin * (COLS + 1)) / COLS;
+      const cellH = (canvas.height - margin * (ROWS + 1)) / ROWS;
+
+      const scale = Math.min(cellW / W, cellH / H);
+
+      const colors = ["#ffcccc", "#ccffcc", "#ccccff", "#ffe0b3", "#e0ccff", "#ccffff", "#ffd9e6", "#e6ffcc"];
+
+      const startIndex = currentSheetIndex;
+      const endIndex = Math.min(startIndex + COLS * ROWS, sheets.length);
+
+      for (let i = startIndex; i < endIndex; i++) {
+        const sheet = sheets[i];
+        const localIndex = i - startIndex;
+
+        const col = localIndex % COLS;
+        const row = Math.floor(localIndex / COLS);
+
+        const offsetX = margin + col * (cellW + margin) + (cellW - W * scale) / 2;
+        const offsetY = margin + row * (cellH + margin) + (cellH - H * scale) / 2;
+
+        // outer
+        ctx.strokeStyle = "#333";
+        ctx.lineWidth = 1;
+        ctx.strokeRect(offsetX, offsetY, W * scale, H * scale);
+
+        drawOuterDims(offsetX, offsetY, W, H, scale);
+
+        // sheet label（番号）
+        ctx.fillStyle = "#111";
+        ctx.font = "11px sans-serif";
+        const matLabel = getMaterialLabel();
+        ctx.fillText(`SHEET ${i + 1}${matLabel ? '｜' + matLabel : ''}`, offsetX + 4, offsetY + 14);
+
+        // sheet badge（見やすい丸番号）
+        drawSheetBadge(offsetX + (W * scale) - 44, offsetY + 10, String(i + 1));
+
+        for (let ri = 0; ri < sheet.rects.length; ri++) {
+          const r = sheet.rects[ri];
+
+          const x = offsetX + r.x * scale;
+          const y = offsetY + r.y * scale;
+          const w = r.width * scale;
+          const h = r.height * scale;
+
+          ctx.fillStyle = colors[r.id % colors.length];
+          ctx.fillRect(x, y, w, h);
+          ctx.strokeStyle = "#444";
+          ctx.lineWidth = 1;
+          ctx.strokeRect(x, y, w, h);
+
+          // label
+          ctx.fillStyle = "#000";
+          ctx.font = "10px sans-serif";
+          ctx.fillText(`#${r.id}`, x + 4, y + 12);
+
+          drawDimLinesInside(x, y, w, h, r.width, r.height);
+
+          // hit rect（通常選択用）
+          hitRects.push({ sheetIndex: i, rectIndex: ri, x, y, w, h, offsetX, offsetY, scale, W, H });
+
+          // selected highlight
+          if (selected && selected.sheetIndex === i && selected.rectIndex === ri) {
+            ctx.save();
+            ctx.strokeStyle = "#111";
+            ctx.lineWidth = 3;
+            ctx.strokeRect(x + 1, y + 1, w - 2, h - 2);
+            ctx.restore();
+          }
+        }
+
+        // 強制移動の「移動先シート」に選ばれてる時のハイライト
+        if (forceMode && forceDestSheetIndex === i) {
+          ctx.save();
+          ctx.strokeStyle = "#000";
+          ctx.lineWidth = 3;
+          ctx.setLineDash([6, 4]);
+          ctx.strokeRect(offsetX - 4, offsetY - 4, W * scale + 8, H * scale + 8);
+          ctx.restore();
+        }
+      }
+
+      const perPage = COLS * ROWS;
+      const pageNo = Math.floor(startIndex / perPage) + 1;
+      const pageMax = Math.ceil(sheets.length / perPage);
+
+      const matLabel2 = getMaterialLabel();
+
+      sheetInfo.textContent =
+        `元板 ${matLabel2 ? matLabel2 + ' × ' : ''}${W}×${H} mm ／ ${sheets.length}枚（ページ ${pageNo} / ${pageMax}）`;
+    }
+
+    function drawSheetBadge(x, y, text) {
+      ctx.save();
+      ctx.fillStyle = "rgba(255,255,255,0.85)";
+      ctx.strokeStyle = "#111";
+      ctx.lineWidth = 1;
+      const w = 34, h = 20;
+      ctx.beginPath();
+      roundRect(ctx, x, y, w, h, 8);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = "#111";
+      ctx.font = "11px sans-serif";
+      const tw = ctx.measureText(text).width;
+      ctx.fillText(text, x + (w - tw) / 2, y + 14);
+      ctx.restore();
+    }
+
+    function roundRect(c, x, y, w, h, r) {
+      c.moveTo(x + r, y);
+      c.lineTo(x + w - r, y);
+      c.quadraticCurveTo(x + w, y, x + w, y + r);
+      c.lineTo(x + w, y + h - r);
+      c.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+      c.lineTo(x + r, y + h);
+      c.quadraticCurveTo(x, y + h, x, y + h - r);
+      c.lineTo(x, y + r);
+      c.quadraticCurveTo(x, y, x + r, y);
+      c.closePath();
+    }
+
+    function drawOuterDims(offsetX, offsetY, W, H, scale) {
+      ctx.strokeStyle = "#000";
+      ctx.fillStyle = "#000";
+      ctx.lineWidth = 0.9;
+      ctx.font = "11px sans-serif";
+      const arrow = 6;
+
+      const sheetWidthPx = W * scale;
+      const sheetHeightPx = H * scale;
+
+      const valueW = String(W);
+      const tw = ctx.measureText(valueW).width;
+      const lineY = offsetY - 18;
+      const textY = lineY - 2;
+      const lineX1 = offsetX;
+      const lineX2 = offsetX + sheetWidthPx;
+      const textX = offsetX + (sheetWidthPx - tw) / 2;
+
+      ctx.fillText(valueW, textX, textY);
+      ctx.beginPath(); ctx.moveTo(lineX1, lineY); ctx.lineTo(lineX2, lineY); ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(lineX1, lineY); ctx.lineTo(lineX1 + arrow, lineY - arrow / 2);
+      ctx.moveTo(lineX1, lineY); ctx.lineTo(lineX1 + arrow, lineY + arrow / 2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(lineX2, lineY); ctx.lineTo(lineX2 - arrow, lineY - arrow / 2);
+      ctx.moveTo(lineX2, lineY); ctx.lineTo(lineX2 - arrow, lineY + arrow / 2);
+      ctx.stroke();
+
+      const valueH = String(H);
+      const lineX = offsetX + sheetWidthPx + 22;
+      const lineY1 = offsetY;
+      const lineY2 = offsetY + sheetHeightPx;
+
+      ctx.beginPath(); ctx.moveTo(lineX, lineY1); ctx.lineTo(lineX, lineY2); ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(lineX, lineY1); ctx.lineTo(lineX - arrow / 2, lineY1 + arrow);
+      ctx.moveTo(lineX, lineY1); ctx.lineTo(lineX + arrow / 2, lineY1 + arrow);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(lineX, lineY2); ctx.lineTo(lineX - arrow / 2, lineY2 - arrow);
+      ctx.moveTo(lineX, lineY2); ctx.lineTo(lineX + arrow / 2, lineY2 - arrow);
+      ctx.stroke();
+
+      ctx.save();
+      ctx.translate(lineX + 10, offsetY + sheetHeightPx / 2);
+      ctx.rotate(-Math.PI / 2);
+      const th = ctx.measureText(valueH).width;
+      ctx.fillText(valueH, -th / 2, 0);
+      ctx.restore();
+    }
+
+    function drawDimLinesInside(x, y, w, h, realW, realH) {
+      ctx.strokeStyle = "#000";
+      ctx.fillStyle = "#000";
+      ctx.lineWidth = 0.8;
+      ctx.font = "10px sans-serif";
+      const arrow = 6;
+      const margin = 6;
+
+      const textW = String(realW);
+      const tw = ctx.measureText(textW).width;
+      const lineY = y + h - margin;
+      const textY = lineY - 2;
+      const lineX1 = x + margin;
+      const lineX2 = x + w - margin;
+      const textX = x + (w - tw) / 2;
+
+      ctx.fillText(textW, textX, textY);
+      ctx.beginPath(); ctx.moveTo(lineX1, lineY); ctx.lineTo(lineX2, lineY); ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(lineX1, lineY); ctx.lineTo(lineX1 + arrow, lineY - arrow / 2);
+      ctx.moveTo(lineX1, lineY); ctx.lineTo(lineX1 + arrow, lineY + arrow / 2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(lineX2, lineY); ctx.lineTo(lineX2 - arrow, lineY - arrow / 2);
+      ctx.moveTo(lineX2, lineY); ctx.lineTo(lineX2 - arrow, lineY + arrow / 2);
+      ctx.stroke();
+
+      const textH = String(realH);
+      const textCenterX = x + margin + 6;
+      const lineX = textCenterX + 10;
+      const lineY1 = y + margin;
+      const lineY2 = y + h - margin;
+
+      ctx.save();
+      ctx.translate(textCenterX, y + h / 2);
+      ctx.rotate(-Math.PI / 2);
+      const th = ctx.measureText(textH).width;
+      ctx.fillText(textH, -th / 2, 0);
+      ctx.restore();
+
+      ctx.beginPath(); ctx.moveTo(lineX, lineY1); ctx.lineTo(lineX, lineY2); ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(lineX, lineY1); ctx.lineTo(lineX - arrow / 2, lineY1 + arrow);
+      ctx.moveTo(lineX, lineY1); ctx.lineTo(lineX + arrow / 2, lineY1 + arrow);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(lineX, lineY2); ctx.lineTo(lineX - arrow / 2, lineY2 - arrow);
+      ctx.moveTo(lineX, lineY2); ctx.lineTo(lineX + arrow / 2, lineY2 - arrow);
+      ctx.stroke();
+    }
+
+    /* ========= selection ========= */
+    function clearSelection() {
+      selected = null;
+      refreshEditUI();
+      syncRunMetaSheetCountUI();
+    }
+    function refreshEditUI() {
+      if (!sheets.length || !chosenBaseSize) {
+        editPanel.style.display = "none";
+        return;
+      }
+      editPanel.style.display = "block";
+
+      if (!selected) {
+        editInfo.textContent = "選択なし（プレビューの板をクリックして選択）";
+        return;
+      }
+      const s = sheets[selected.sheetIndex];
+      if (!s || !s.rects[selected.rectIndex]) {
+        editInfo.textContent = "選択なし（再計算した場合は再選択してください）";
+        selected = null;
+        return;
+      }
+      const r = s.rects[selected.rectIndex];
+      editInfo.textContent = `選択：SHEET ${selected.sheetIndex + 1} の #${r.id}（${r.width}×${r.height}）`;
+    }
+
+    /* ========= status ========= */
+    function setStatus(msg, isWarn) {
+      if (!msg) {
+        statusDiv.style.visibility = "hidden";
+        statusDiv.textContent = "";
+        statusDiv.classList.remove("warn");
+        return;
+      }
+      statusDiv.style.visibility = "visible";
+      statusDiv.textContent = msg;
+      statusDiv.classList.toggle("warn", !!isWarn);
+    }
+    function setForceGuide(msg, isWarn) {
+      if (!msg) {
+        forceGuideDiv.style.visibility = "hidden";
+        forceGuideDiv.textContent = "";
+        forceGuideDiv.classList.remove("warn");
+        return;
+      }
+      forceGuideDiv.style.visibility = "visible";
+      forceGuideDiv.textContent = msg;
+      forceGuideDiv.classList.toggle("warn", !!isWarn);
+    }
+
+    // 強制移動ON中の注意文言
+    function forceWarnSuffix() {
+      return "\n※ 強制配置後に通常移動（再パック）すると配置が崩れる可能性があります";
+    }
+
+
+    /* ========= meta sync (sheet count after manual edits) ========= */
+    function syncRunMetaSheetCountUI() {
+      if (!chosenBaseSize) return;
+      const count = sheets.length;
+
+      // status line (meta)
+      if (lastRunMeta && typeof lastRunMeta.summaryLine1 === "string") {
+        const updated = lastRunMeta.summaryLine1.replace(/必要枚数：\s*\d+/, `必要枚数：${count}`);
+        lastRunMeta.summaryLine1 = updated;
+        // status表示も同期（警告ではない）
+        setStatus(updated, false);
+      }
+    }
+
+
+    /* ========= material label (preview/print) ========= */
+    function getMaterialLabel() {
+      // ①元板設定に集約した「材質・板厚(or エキスパンド種)」＋「元板サイズ」を表示用にまとめる
+      const mat = (matGlobal?.value || "").trim();
+      if (!mat) return "";
+
+      // 表示用の材質名（CHK 等の内部キーをそのまま出さない）
+      const matName = (mat === "CHK") ? "縞鋼板"
+        : (mat === "EXP") ? "エキスパンド"
+          : (MATERIAL_MASTER[mat]?.label || mat);
+
+      let spec = "";
+      if (mat === "EXP") {
+        const t = (expType?.value || "").trim(); // 例：SWD×LWD×t など
+        spec = t ? t : "";
+      } else if (mat === "CHK") {
+        const t = (chkType?.value || "").trim();
+        spec = t ? `${t}t` : "";
+      } else {
+        const t = (thkGlobal?.value || "").trim(); // mm
+        spec = t ? `${t}t` : "";
+      }
+
+      // まだ計算前でも材質・厚みだけは出す
+      if (!chosenBaseSize) {
+        return spec ? `${matName} ${spec}` : `${matName}`;
+      }
+
+      const W = chosenBaseSize.width;
+      const H = chosenBaseSize.height;
+
+      if (spec) return `${matName} ${spec} × ${W} × ${H}`;
+      return `${matName} × ${W} × ${H}`;
+    }
+
+
+    /* ========= summary ========= */
+    function getPiecesStats() {
+      if (!sheets.length || !chosenBaseSize) return [];
+      const stats = {};
+      sheets.forEach(sheet => {
+        sheet.rects.forEach(r => {
+          const id = r.id;
+          if (!stats[id]) stats[id] = { id, width: r.width, height: r.height, qty: 0 };
+          stats[id].qty += 1;
+        });
+      });
+      return Object.values(stats).sort((a, b) => a.id - b.id);
+    }
+    function updatePiecesSummary() {
+      const rows = getPiecesStats();
+      if (!rows.length) { piecesSummaryDiv.innerHTML = ""; return; }
+
+      // totals
+      const totalAreaMm2 = rows.reduce((acc, r) => acc + (r.width * r.height * r.qty), 0);
+      const totalAreaM2 = totalAreaMm2 / 1_000_000;
+
+      const mat = matGlobal.value;
+      const thkMm = parseFloat(thkGlobal.value || "0");
+      let totalKg = 0;
+
+      if (mat === "EXP") {
+        const key = expType.value;
+        const it = EXPAND_MASTER.find(x => x.key === key);
+        const kgm2 = it ? it.kgm2 : 0;
+        totalKg = totalAreaM2 * kgm2;
+      } else if (mat === "CHK") {
+        const kgm2 = resolveKgm2("CHK", chkType.value) || 0;
+        totalKg = totalAreaM2 * kgm2;
+      } else {
+        // SS/SUS/AL は「kg/㎡（板厚mm換算）」で計算
+        const kgm2 = resolveKgm2(mat, String(thkMm));
+        totalKg = (kgm2 != null) ? (totalAreaM2 * kgm2) : 0;
+      }
+
+      const up = parseFloat(unitPriceKg.value || "");
+      const hasUp = Number.isFinite(up) && up > 0;
+      const totalYen = hasUp ? totalKg * up : null;
+
+      const matLabel = (mat === "SS400") ? "SS400（鉄）"
+        : (mat === "SUS") ? "SUS（ステン）"
+          : (mat === "AL") ? "アルミ"
+            : (mat === "CHK") ? "縞鋼板（チェッカープレート）"
+              : "エキスパンドメタル";
+
+      let subInfo = `材質：${matLabel}`;
+      if (mat === "EXP") {
+        const it = EXPAND_MASTER.find(x => x.key === expType.value);
+        subInfo += it ? ` / ${it.label}` : "";
+      } else if (mat === "CHK") {
+        const it = CHK_OPTIONS.find(o => o.key === chkType.value);
+        subInfo += it ? ` / ${it.label}` : "";
+      } else {
+        subInfo += ` / 板厚：${thkMm || 0} mm`;
+      }
+
+      let html = `<div class="flex-between">
+    <h3 style="margin:0;">欲しい板リスト（板取結果）</h3>
+    <div class="right">
+      <span class="badge accent">必要枚数：${sheets.length}</span>
+    </div>
+  </div>`;
+
+      html += `<div class="help" style="margin-top:6px;">${subInfo}</div>`;
+
+      html += `<table style="margin-top:10px;">
+    <thead><tr><th>No</th><th>幅(mm)</th><th>長さ(mm)</th><th>枚数</th></tr></thead><tbody>`;
+      rows.forEach(r => {
+        html += `<tr><td>#${r.id}</td><td>${r.width}</td><td>${r.height}</td><td>${r.qty}</td></tr>`;
+      });
+      html += `</tbody></table>`;
+
+      // totals line（無料版：面積のみ。重量・概算金額はPro）
+      const areaTxt = totalAreaM2.toFixed(3);
+
+      html += `<div class="hr"></div>
+  <table>
+    <thead><tr><th>必要枚数</th><th>総面積(㎡)</th></tr></thead>
+    <tbody><tr><td>${sheets.length} 枚</td><td>${areaTxt}</td></tr></tbody>
+  </table>
+  <div class="pro-inline">🔒 <b>重量・概算金額（見積り）</b>と<b>加工指示書の一括印刷</b>は Pro版でご利用いただけます。 <a href="#pro">Pro版を見る →</a></div>`;
+
+      piecesSummaryDiv.innerHTML = html;
+    }
+
+    /* ========= area/weight/cost summary ========= */
+    function getMaterialKeyForRect(r) {
+      return r.material || "SS400";
+    }
+    function getThicknessKeyForRect(r) {
+      return r.thicknessKey || "";
+    }
+    function resolveKgm2(mat, thicknessKey) {
+      if (mat === "EXP") {
+        const opt = EXP_OPTIONS.find(o => o.key === thicknessKey);
+        return opt ? opt.kgm2 : null;
+      }
+      if (mat === "CHK") {
+        // 縞鋼板は板厚ごとの実測 kg/㎡（突起分を含む）
+        const opt = CHK_OPTIONS.find(o => o.key === thicknessKey)
+          || CHK_OPTIONS.find(o => o.thk === parseFloat(thicknessKey));
+        return opt ? opt.kgm2 : null;
+      }
+      const mm = parseFloat(thicknessKey);
+      const m = MATERIAL_MASTER[mat];
+      if (!m || !mm) return null;
+      return m.densityKgM2PerMm * mm;
+    }
+    function resolveYenPerKg(mat, priceOverride) {
+      if (priceOverride != null && !Number.isNaN(priceOverride)) return priceOverride;
+      const m = MATERIAL_MASTER[mat];
+      return m ? m.defaultYenPerKg : null;
+    }
+
+    // sheets 配置結果から、入力行No(id)ごとに材質/板厚/単価を引き継ぐ
+    function buildInputMetaById() {
+      const map = {};
+      [...piecesTableBody.children].forEach((tr, i) => {
+        const id = i + 1;
+        map[id] = {
+          material: tr.querySelector(".matSel")?.value || "SS400",
+          thicknessKey: tr.querySelector(".thkSel")?.value || "",
+          priceOverride: (() => {
+            const v = tr.querySelector(".priceIn")?.value;
+            if (v === "" || v == null) return null;
+            const n = parseFloat(v);
+            return Number.isNaN(n) ? null : n;
+          })()
+        };
+      });
+      return map;
+    }
+
+    function buildCostRows() {
+      if (!sheets.length || !chosenBaseSize) return { rows: [], totalArea: 0, totalWeight: 0, totalCost: 0, missingPrice: false };
+
+      const metaById = buildInputMetaById();
+
+      // group by (material, thicknessKey)
+      const g = new Map();
+      for (const s of sheets) {
+        for (const r of s.rects) {
+          const id = r.id;
+          const meta = metaById[id] || {};
+          const mat = meta.material || "SS400";
+          const thk = meta.thicknessKey || "";
+          const priceOverride = meta.priceOverride;
+
+          const area = (r.width * r.height) / 1e6; // ㎡
+          const key = `${mat}__${thk}__${priceOverride ?? ""}`;
+
+          if (!g.has(key)) {
+            g.set(key, { mat, thk, priceOverride, area: 0 });
+          }
+          g.get(key).area += area;
+        }
+      }
+
+      let totalArea = 0, totalWeight = 0, totalCost = 0;
+      let missingPrice = false;
+
+      const rows = [];
+      for (const v of g.values()) {
+        totalArea += v.area;
+
+        const kgm2 = resolveKgm2(v.mat, v.thk);
+        const weight = (kgm2 != null) ? v.area * kgm2 : null;
+
+        const yenPerKg = resolveYenPerKg(v.mat, v.priceOverride);
+        const cost = (weight != null && yenPerKg != null && yenPerKg > 0) ? weight * yenPerKg : null;
+
+        if (yenPerKg == null || yenPerKg <= 0) missingPrice = true;
+
+        if (weight != null) totalWeight += weight;
+        if (cost != null) totalCost += cost;
+
+        rows.push({
+          mat: MATERIAL_MASTER[v.mat]?.label || v.mat,
+          thkLabel: (v.mat === "EXP") ? v.thk : `${v.thk} mm`,
+          area: v.area,
+          kgm2,
+          weight,
+          yenPerKg,
+          cost
+        });
+      }
+
+      // sort for stable display
+      rows.sort((a, b) => (a.mat + a.thkLabel).localeCompare(b.mat + b.thkLabel, "ja"));
+
+      return { rows, totalArea, totalWeight, totalCost, missingPrice };
+    }
+
+
+    /* =========================================================
+       通常移動（再パック）：選択 → 指定元板へ移動
+       - 移動元/移動先の2枚だけ再パック
+       - 抜けたシートは必ず再パック（空なら削除）
+       ========================================================= */
+    function moveSelectedToNumber() {
+      if (!selected) return alert("先にプレビューの板をクリックして選択してください。");
+      if (!chosenEffSize) return alert("先に計算してください。");
+
+      const n = parseInt(targetSheetNo.value, 10);
+      if (!n || n < 1) return alert("指定元板番号を 1 以上で入力してください。");
+      const to = n - 1;
+      if (to < 0 || to >= sheets.length) {
+        return alert(`指定元板が範囲外です（1〜${sheets.length}）。`);
+      }
+      if (selected.sheetIndex === to) return;
+
+      // undo
+      saveUndoSnapshot();
+
+      moveRectRepack(selected.sheetIndex, selected.rectIndex, to);
+    }
+
+    function moveRectRepack(fromSheetIndex, rectIndex, toSheetIndex) {
+      const kerf = 0;
+      const effW = chosenEffSize.w;
+      const effH = chosenEffSize.h;
+
+      const fromSheet = sheets[fromSheetIndex];
+      const toSheet = sheets[toSheetIndex];
+      if (!fromSheet || !toSheet) return;
+
+      const src = fromSheet.rects[rectIndex];
+      if (!src) return;
+
+      const piece = {
+        width: src.width, height: src.height, id: src.id,
+        material: src.material,
+        thicknessKey: src.thicknessKey,
+        priceOverride: src.priceOverride
+      };
+
+      const fromPieces = fromSheet.rects.map(r => ({ width: r.width, height: r.height, id: r.id, material: r.material, thicknessKey: r.thicknessKey, priceOverride: r.priceOverride }));
+      const toPieces = toSheet.rects.map(r => ({ width: r.width, height: r.height, id: r.id, material: r.material, thicknessKey: r.thicknessKey, priceOverride: r.priceOverride }));
+
+      fromPieces.splice(rectIndex, 1);
+      toPieces.push({ ...piece });
+
+      const repackedTo = repackSingleSheet(toPieces, effW, effH, kerf);
+      if (!repackedTo.success) {
+        alert("移動先の元板に収まりません（移動を取り消しました）。");
+        undoSnapshot = null;
+        return;
+      }
+
+      let repackedFrom = { success: true, rects: [] };
+      if (fromPieces.length === 0) {
+        repackedFrom = { success: true, rects: [] };
+      } else {
+        repackedFrom = repackSingleSheet(fromPieces, effW, effH, kerf);
+        if (!repackedFrom.success) {
+          alert("移動元の再整列でエラーが出ました（念のため処理中断）。");
+          undoSnapshot = null;
+          return;
+        }
+      }
+
+      sheets[toSheetIndex].rects = repackedTo.rects;
+      sheets[fromSheetIndex].rects = repackedFrom.rects;
+      isManuallyModified = true; // ★追加
+
+      // 移動元が空ならシート削除
+      if (sheets[fromSheetIndex].rects.length === 0) {
+        sheets.splice(fromSheetIndex, 1);
+        if (toSheetIndex > fromSheetIndex) toSheetIndex -= 1;
+
+        currentSheetIndex = Math.min(
+          currentSheetIndex,
+          Math.max(0, Math.floor((sheets.length - 1) / 4) * 4)
+        );
+      }
+
+      selected = findRectBySignature(toSheetIndex, piece);
+
+      const perPage = 4;
+      currentSheetIndex = Math.floor((selected?.sheetIndex ?? 0) / perPage) * perPage;
+
+      setForceGuide("", false);
+      drawCurrentSheet();
+      updatePiecesSummary();
+      refreshEditUI();
+      syncRunMetaSheetCountUI();
+    }
+
+    /* ========= repackSingleSheet（必須） ========= */
+    function repackSingleSheet(pieces, sheetW, sheetH, kerf) {
+      for (const p of pieces) {
+        if (!canRectFitSheet(p.width, p.height, sheetW, sheetH)) return { success: false, rects: [] };
+      }
+
+      const pending = pieces.map(p => ({ width: p.width, height: p.height, id: p.id, material: p.material, thicknessKey: p.thicknessKey, priceOverride: p.priceOverride }));
+      pending.sort((a, b) => Math.max(b.width, b.height) - Math.max(a.width, a.height));
+
+      const rects = [];
+      let usedHeight = 0;
+
+      while (pending.length) {
+        const shelf = buildBestShelf(pending, sheetW, sheetH, kerf);
+        if (!shelf) return { success: false, rects: [] };
+        if (usedHeight + shelf.height > sheetH) return { success: false, rects: [] };
+
+        let x = 0;
+        const y = usedHeight;
+        shelf.items.forEach(item => {
+          rects.push({
+            x, y,
+            width: item.wReal,
+            height: item.hReal,
+            wPlace: item.wPlace,
+            hPlace: item.hPlace,
+            id: item.id,
+            material: item.material,
+            thicknessKey: item.thicknessKey,
+            priceOverride: item.priceOverride
+          });
+          x += item.wPlace;
+        });
+        usedHeight += shelf.height;
+
+        const usedIdx = shelf.items.map(it => it.index).sort((a, b) => b - a);
+        usedIdx.forEach(i => pending.splice(i, 1));
+      }
+
+      return { success: true, rects };
+    }
+
+    /* ========= findRectBySignature（必須） ========= */
+    function findRectBySignature(sheetIndex, sig) {
+      const s = sheets[sheetIndex];
+      if (!s) return null;
+      for (let i = s.rects.length - 1; i >= 0; i--) {
+        const r = s.rects[i];
+        if (r.id === sig.id &&
+          ((r.width === sig.width && r.height === sig.height) || (r.width === sig.height && r.height === sig.width))
+        ) {
+          return { sheetIndex, rectIndex: i };
+        }
+      }
+      return { sheetIndex, rectIndex: Math.max(0, s.rects.length - 1) };
+    }
+
+    /* =========================================================
+       強制移動（固定なし）：棚置き法無視でクリック位置へ配置
+       - 同一シート内移動（位置替え）OK
+       - 別シートへ移す場合：移動元だけ再パック（抜けた側は詰め直す）
+       ========================================================= */
+    function toggleForceMode() {
+      if (!sheets.length) return alert("先に計算してください。");
+      forceMode = !forceMode;
+      forceDestSheetIndex = null;
+      syncForceBtn();
+
+      if (forceMode) {
+        if (!selected) {
+          setForceGuide("強制移動ON：①まず板をクリックして選択してください。" + forceWarnSuffix(), false);
+        } else {
+          setForceGuide("強制移動ON：②移動先の元板（SHEET枠内）をクリックして選んでください。" + forceWarnSuffix(), false);
+        }
+      } else {
+        setForceGuide("", false);
+      }
+      drawCurrentSheet();
+    }
+
+    function syncForceBtn() {
+      btnForceToggle.textContent = forceMode ? "強制移動ON（実行中）" : "強制移動ON";
+      btnForceToggle.classList.toggle("toggleOn", !!forceMode);
+    }
+
+    function handleForceClick(mx, my) {
+      if (!selected) {
+        // 強制ONだけど未選択 → まず選択へ（通常と同じ）
+        const hit = hitTestRect(mx, my);
+        if (hit) {
+          selected = { sheetIndex: hit.sheetIndex, rectIndex: hit.rectIndex };
+          refreshEditUI();
+          setForceGuide("強制移動ON：②移動先の元板（SHEET枠内）をクリックして選んでください。" + forceWarnSuffix(), false);
+          drawCurrentSheet();
+        } else {
+          setForceGuide("強制移動ON：①板をクリックして選択してください。" + forceWarnSuffix(), true);
+        }
+        return;
+      }
+
+      // まず移動先シート選択（同一シート内移動もOKなので、ここで同じSHEET選べる）
+      if (forceDestSheetIndex === null) {
+        const sHit = hitTestSheetArea(mx, my);
+        if (!sHit) {
+          setForceGuide("強制移動ON：②移動先の元板（SHEET枠内）をクリックしてください。" + forceWarnSuffix(), true);
+          return;
+        }
+        forceDestSheetIndex = sHit.sheetIndex;
+        setForceGuide(`強制移動ON：③SHEET ${forceDestSheetIndex + 1} の枠内で、置きたい位置をクリックしてください（0°/90°自動）。` + forceWarnSuffix(), false);
+        drawCurrentSheet();
+        return;
+      }
+
+      // 置きたい位置クリック（forceDestSheetIndexの枠内である必要）
+      const destInfo = hitTestSheetArea(mx, my);
+      if (!destInfo || destInfo.sheetIndex !== forceDestSheetIndex) {
+        setForceGuide(`強制移動ON：SHEET ${forceDestSheetIndex + 1} の枠内をクリックしてください。` + forceWarnSuffix(), true);
+        return;
+      }
+
+      // undo
+      saveUndoSnapshot();
+
+      const ok = forcePlaceMove(selected.sheetIndex, selected.rectIndex, forceDestSheetIndex, mx, my, destInfo);
+      if (!ok) {
+        // 失敗時はundo不要（成立してない）
+        undoSnapshot = null;
+        return;
+      }
+
+      // 成功 → 強制OFF
+      isManuallyModified = true; // ★追加
+      forceMode = false;
+      forceDestSheetIndex = null;
+      syncForceBtn();
+      setForceGuide("", false);
+      syncRunMetaSheetCountUI();
+
+      drawCurrentSheet();
+      updatePiecesSummary();
+      refreshEditUI();
+    }
+
+
+    /* ========= snap helper for force placement ========= */
+    function findBestSnapPosition(rectsForOverlap, clickX, clickY, w, h, sheetW, sheetH) {
+      // V3：X/Y独立スナップ（右下に飛ぶ現象を根絶）
+      // 吸い付き強さ：ここだけ調整
+      const snapTolX = 200;  // 横：強め
+      const snapTolY = 170;  // 縦：棚に吸うので少し控えめ（お好みで）
+      const grid = 10;       // 線が近くに無いときの保険
+
+      const clamp = (v, min, max) => Math.max(min, Math.min(v, max));
+      const snapGrid = (v) => Math.round(v / grid) * grid;
+
+      // --- X候補：元板端 + 既存板の左右エッジ（0mmで隣接/揃え） ---
+      const xs = new Set([1, sheetW - w]);
+      for (const r of rectsForOverlap) {
+        xs.add(r.x);                 // 左揃え
+        xs.add(r.x + r.width - w);   // 右端揃え
+        xs.add(r.x + r.width);       // 右隣（0mm）
+        xs.add(r.x - w);             // 左隣（0mm）
+      }
+
+      // --- Y候補：元板上端 + 棚区切り線（=既存rectの下端） ---
+      const ys = new Set([1, sheetH - h]);
+      for (const r of rectsForOverlap) {
+        ys.add(r.y + r.height);      // 上の棚の下端（区切り線）
+        // ys.add(r.y - h);          // ←必要ならON（棚の上側へ寄せる）
+      }
+
+      // クリック近傍の候補だけ残す（吸い付き強さ）
+      const xCand = [];
+      for (const x0 of xs) {
+        const x = clamp(x0, 0, sheetW - w);
+        if (Math.abs(x - clickX) <= snapTolX) xCand.push(x);
+      }
+      if (!xCand.length) xCand.push(clamp(snapGrid(clickX), 0, sheetW - w));
+
+      const yCand = [];
+      for (const y0 of ys) {
+        const y = clamp(y0, 0, sheetH - h);
+        if (Math.abs(y - clickY) <= snapTolY) yCand.push(y);
+      }
+      if (!yCand.length) yCand.push(clamp(snapGrid(clickY), 0, sheetH - h));
+
+      // --- V3：Xは最短、Yは最短（独立） ---
+      let bestX = xCand[0], bestDX = Infinity;
+      for (const x of xCand) {
+        const dx = Math.abs(x - clickX);
+        if (dx < bestDX) { bestDX = dx; bestX = x; }
+      }
+
+      let bestY = yCand[0], bestDY = Infinity;
+      for (const y of yCand) {
+        const dy = Math.abs(y - clickY);
+        if (dy < bestDY) { bestDY = dy; bestY = y; }
+      }
+
+      // その座標で置けるか確認。ダメなら「X近い順 × Y近い順」で代替探索
+      const rect0 = { x: bestX, y: bestY, width: w, height: h };
+      if (fitsWithinAndNoOverlapRects(rectsForOverlap, rect0, sheetW, sheetH)) {
+        return { x: bestX, y: bestY };
+      }
+
+      // 代替：近い順に並べて試す（動かない問題を防ぐ）
+      xCand.sort((a, b) => Math.abs(a - clickX) - Math.abs(b - clickX));
+      yCand.sort((a, b) => Math.abs(a - clickY) - Math.abs(b - clickY));
+
+      for (const x of xCand) {
+        for (const y of yCand) {
+          const rect = { x, y, width: w, height: h };
+          if (fitsWithinAndNoOverlapRects(rectsForOverlap, rect, sheetW, sheetH)) {
+            return { x, y };
+          }
+        }
+      }
+
+      return null;
+    }
+
+
+    function forcePlaceMove(fromSheetIndex, rectIndex, toSheetIndex, mx, my, destInfo) {
+      if (!chosenBaseSize) return false;
+
+      const W = chosenBaseSize.width;
+      const H = chosenBaseSize.height;
+
+      const fromSheet = sheets[fromSheetIndex];
+      const toSheet = sheets[toSheetIndex];
+      if (!fromSheet || !toSheet) return false;
+
+      const src = fromSheet.rects[rectIndex];
+      if (!src) return false;
+
+      // シート座標に変換（mm）
+      const { offsetX, offsetY, scale } = destInfo;
+      const sx = (mx - offsetX) / scale;
+      const sy = (my - offsetY) / scale;
+
+      // グリッド吸着（mm）
+      const grid = 10; // 10mm吸着
+      const snap0 = (v) => Math.round(v / grid) * grid;
+      const snapEdge = (v) => (Math.abs(v) <= grid ? 0 : v);
+
+      // 同一シート内移動の場合：衝突判定から自分自身を除外する
+      const isSameSheet = (fromSheetIndex === toSheetIndex);
+      const rectsForOverlap = isSameSheet
+        ? toSheet.rects.filter((_, idx) => idx !== rectIndex)
+        : toSheet.rects;
+
+      const tryOri = (w, h) => {
+        const pos = findBestSnapPosition(rectsForOverlap, sx, sy, w, h, W, H);
+        if (!pos) return null;
+        const candidate = { x: pos.x, y: pos.y, width: w, height: h };
+        if (!fitsWithinAndNoOverlapRects(rectsForOverlap, candidate, W, H)) return null;
+        return candidate;
+      };
+
+      let place = null;
+      if (rotateMode === "0") {
+        place = tryOri(src.width, src.height);
+      } else if (rotateMode === "90") {
+        place = tryOri(src.height, src.width);
+      } else {
+        const cand0 = tryOri(src.width, src.height);
+        const cand90 = tryOri(src.height, src.width);
+        place = cand0 || cand90;
+      }
+
+      if (!place) {
+        alert("その位置には置けません（衝突 or はみ出し）。別の位置をクリックしてください。");
+        return false;
+      }
+
+      // ===== commit =====
+      if (isSameSheet) {
+        // 同一シート内：板だけ位置替え（他は動かさない）
+        toSheet.rects[rectIndex] = {
+          ...toSheet.rects[rectIndex],
+          x: place.x,
+          y: place.y,
+          width: place.width,
+          height: place.height,
+          wPlace: place.width,
+          hPlace: place.height,
+          id: src.id,
+          material: src.material,
+          thicknessKey: src.thicknessKey,
+          priceOverride: src.priceOverride
+        };
+      } else {
+        // 別シートへ：移動（移動先は再パックしない＝クリック位置を守る）
+        fromSheet.rects.splice(rectIndex, 1);
+        toSheet.rects.push({
+          x: place.x,
+          y: place.y,
+          width: place.width,
+          height: place.height,
+          wPlace: place.width,
+          hPlace: place.height,
+          id: src.id,
+          material: src.material,
+          thicknessKey: src.thicknessKey,
+          priceOverride: src.priceOverride
+        });
+
+        // 移動元が空ならシート削除
+        if (fromSheet.rects.length === 0) {
+          sheets.splice(fromSheetIndex, 1);
+          if (toSheetIndex > fromSheetIndex) toSheetIndex -= 1;
+        } else {
+          // 抜けた側は必ず再パック（要望）
+          const kerf = 0;
+          const effW = (chosenEffSize?.w ?? W);
+          const effH = (chosenEffSize?.h ?? H);
+          const fromPieces = fromSheet.rects.map(r => ({ width: r.width, height: r.height, id: r.id, material: r.material, thicknessKey: r.thicknessKey, priceOverride: r.priceOverride }));
+          const repacked = repackSingleSheet(fromPieces, effW, effH, kerf);
+          if (!repacked.success) {
+            alert("移動元の再パックでエラーが出ました（処理を中断しました）。");
+            return false;
+          }
+          // 注意：fromSheetIndex の参照は splice 前なのでここではOK
+          sheets[fromSheetIndex].rects = repacked.rects;
+        }
+
+        // currentSheetIndex 安全化
+        currentSheetIndex = Math.min(
+          currentSheetIndex,
+          Math.max(0, Math.floor((sheets.length - 1) / 4) * 4)
+        );
+      }
+
+      // 選択は「移動先シート」上の同id・寸法に寄せる（同一シートでもOK）
+      selected = findRectBySignature(toSheetIndex, {
+        id: src.id,
+        material: src.material,
+        thicknessKey: src.thicknessKey,
+        priceOverride: src.priceOverride, width: place.width, height: place.height
+      });
+
+      const perPage = 4;
+      currentSheetIndex = Math.floor((selected?.sheetIndex ?? 0) / perPage) * perPage;
+
+      return true;
+    }
+
+    function fitsWithinAndNoOverlapRects(rects, rect, sheetW, sheetH) {
+      if (rect.x < 0 || rect.y < 0) return false;
+      if (rect.x + rect.width > sheetW) return false;
+      if (rect.y + rect.height > sheetH) return false;
+
+      for (const r of rects) {
+        const ax1 = rect.x, ay1 = rect.y, ax2 = rect.x + rect.width, ay2 = rect.y + rect.height;
+        const bx1 = r.x, by1 = r.y, bx2 = r.x + r.width, by2 = r.y + r.height;
+
+        const overlap = (ax1 < bx2) && (ax2 > bx1) && (ay1 < by2) && (ay2 > by1);
+        if (overlap) return false;
+      }
+      return true;
+    }
+
+    /* ========= hit tests / mouse ========= */
+    function getMouseCanvas(ev) {
+      const rect = canvas.getBoundingClientRect();
+      const mx = (ev.clientX - rect.left) * (canvas.width / rect.width);
+      const my = (ev.clientY - rect.top) * (canvas.height / rect.height);
+      return { mx, my };
+    }
+
+    function hitTestRect(mx, my) {
+      for (let i = hitRects.length - 1; i >= 0; i--) {
+        const h = hitRects[i];
+        if (mx >= h.x && mx <= h.x + h.w && my >= h.y && my <= h.y + h.h) {
+          return { sheetIndex: h.sheetIndex, rectIndex: h.rectIndex };
+        }
+      }
+      return null;
+    }
+
+    function hitTestSheetArea(mx, my) {
+      // 現在ページの各シート枠を再計算して、枠内クリックを拾う
+      const W = chosenBaseSize.width;
+      const H = chosenBaseSize.height;
+
+      const COLS = 2;
+      const ROWS = 2;
+      const margin = 40;
+
+      const cellW = (canvas.width - margin * (COLS + 1)) / COLS;
+      const cellH = (canvas.height - margin * (ROWS + 1)) / ROWS;
+      const scale = Math.min(cellW / W, cellH / H);
+
+      const startIndex = currentSheetIndex;
+      const endIndex = Math.min(startIndex + COLS * ROWS, sheets.length);
+
+      for (let i = startIndex; i < endIndex; i++) {
+        const localIndex = i - startIndex;
+        const col = localIndex % COLS;
+        const row = Math.floor(localIndex / COLS);
+
+        const offsetX = margin + col * (cellW + margin) + (cellW - W * scale) / 2;
+        const offsetY = margin + row * (cellH + margin) + (cellH - H * scale) / 2;
+
+        const wPx = W * scale;
+        const hPx = H * scale;
+
+        if (mx >= offsetX && mx <= offsetX + wPx && my >= offsetY && my <= offsetY + hPx) {
+          return { sheetIndex: i, offsetX, offsetY, scale, W, H };
+        }
+      }
+      return null;
+    }
+
+    /* =========================================================
+       Undo（1回）
+       ========================================================= */
+    function saveUndoSnapshot() {
+      undoSnapshot = {
+        sheets: JSON.parse(JSON.stringify(sheets)),
+        currentSheetIndex,
+        chosenBaseSize: chosenBaseSize ? { ...chosenBaseSize } : null,
+        chosenEffSize: chosenEffSize ? { ...chosenEffSize } : null,
+        selected: selected ? { ...selected } : null,
+        forceMode,
+        forceDestSheetIndex
+      };
+    }
+    function undoOnce() {
+      if (!undoSnapshot) {
+        alert("戻す履歴がありません。");
+        return;
+      }
+      sheets = JSON.parse(JSON.stringify(undoSnapshot.sheets));
+      currentSheetIndex = undoSnapshot.currentSheetIndex;
+      chosenBaseSize = undoSnapshot.chosenBaseSize ? { ...undoSnapshot.chosenBaseSize } : null;
+      chosenEffSize = undoSnapshot.chosenEffSize ? { ...undoSnapshot.chosenEffSize } : null;
+      selected = undoSnapshot.selected ? { ...undoSnapshot.selected } : null;
+      forceMode = false; // 戻した後は安全にOFF
+      forceDestSheetIndex = null;
+      syncForceBtn();
+      setForceGuide("", false);
+
+      undoSnapshot = null;
+
+      syncRunMetaSheetCountUI();
+
+      drawCurrentSheet();
+      updatePiecesSummary();
+      refreshEditUI();
+    }
+
+    /* ========= beforeunload protection ========= */
+    window.addEventListener("beforeunload", function (e) {
+      // Show confirmation dialog when user tries to close/reload
+      e.preventDefault();
+      e.returnValue = "";
+    });
+
+    /* ========= export helpers ========= */
+    function getPiecesStatsForExport() { return getPiecesStats(); } // 互換
+
+  </script>
+  </div>
+</body>
+
+</html>

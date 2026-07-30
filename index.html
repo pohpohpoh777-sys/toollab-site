@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>株式会社橋本工業｜滋賀・湖南／甲賀の製缶・溶接・機械修理・現地施工</title>
+  <meta name="description"
+    content="滋賀県湖南市の鉄工所株式会社橋本工業。製缶・溶接、機械修理、特注部品の製作、現地施工、鉄骨・構造物の解体まで対応します。板取り・切断ロス計算などの無料実務ツールも公開中。" />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="https://hashimotokogyo.com/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="株式会社橋本工業｜滋賀・湖南市の製缶・溶接・機械修理" />
+  <meta property="og:description" content="製缶・溶接・機械修理・現地施工・鉄骨解体。無料の鋼材計算ツールも公開。" />
+  <meta property="og:url" content="https://hashimotokogyo.com/" />
+  <meta property="og:locale" content="ja_JP" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "株式会社橋本工業",
+    "url": "https://hashimotokogyo.com/",
+    "description": "滋賀県湖南市の鉄工所。製缶・溶接、機械修理、特注部品、現地施工、鉄骨・構造物の解体に対応。",
+    "areaServed": ["滋賀県", "湖南市", "関西"]
+  }
+  </script>
+  <style>
+    :root {
+      --bg: #ffffff; --ink: #0f172a; --muted: #64748b; --line: #e2e8f0;
+      --panel: #f8fafc; --panel2: #f1f5f9; --accent: #0ea5e9; --accent-ink: #075985;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; color: var(--ink); background: var(--bg); line-height: 1.7;
+      font-family: system-ui, -apple-system, "Segoe UI", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+    }
+    .wrap { max-width: 1000px; margin: 0 auto; padding: 0 18px; }
+    a { color: var(--accent-ink); }
+
+    /* 共通ナビ */
+    .topnav {
+      background: #0b1220; color: #cbd5e1; font-size: 13px;
+      padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .topnav .wrap { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
+    .topnav a { color: #cbd5e1; text-decoration: none; padding: 2px 8px; border-radius: 6px; }
+    .topnav a:hover { background: rgba(255,255,255,.08); }
+    .topnav a.home { color: #7dd3fc; font-weight: 700; }
+    .topnav .sep { opacity: .4; }
+
+    .hero {
+      background: linear-gradient(180deg, #0b1220, #131f38); color: #e5eefc; padding: 60px 0 52px;
+    }
+    .hero .kicker { font-size: 13px; letter-spacing: .14em; color: #7dd3fc; font-weight: 700; }
+    .hero h1 { font-size: 32px; margin: 12px 0 14px; line-height: 1.35; }
+    .hero p { font-size: 16px; color: #cbd5e1; margin: 0 0 22px; max-width: 620px; }
+    .btn {
+      display: inline-block; padding: 13px 26px; border-radius: 12px; font-weight: 700;
+      background: #34ff7a; color: #052e16; text-decoration: none;
+    }
+    .btn.ghost { background: transparent; color: #e5eefc; border: 1px solid rgba(255,255,255,.25); margin-left: 8px; }
+
+    section { padding: 48px 0; }
+    section.alt { background: var(--panel); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    h2 { font-size: 23px; margin: 0 0 6px; }
+    .lead { color: var(--muted); margin: 0 0 24px; }
+
+    .grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+    .svc { padding: 22px; border: 1px solid var(--line); border-radius: 16px; background: #fff; }
+    .svc h3 { margin: 0 0 6px; font-size: 17px; }
+    .svc p { margin: 0; color: var(--muted); font-size: 14px; }
+    .svc .ic { font-size: 22px; }
+
+    /* 実績ギャラリー（差し替え用プレースホルダ枠） */
+    .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+    .ph {
+      aspect-ratio: 4 / 3; border: 1px dashed var(--line); border-radius: 14px;
+      display: flex; align-items: center; justify-content: center; text-align: center;
+      color: #94a3b8; font-size: 13px; background:
+        repeating-linear-gradient(45deg, #fbfdff, #fbfdff 10px, #f5f8fc 10px, #f5f8fc 20px);
+      padding: 10px;
+    }
+    /* 実際の写真を入れる場合：<div class="ph"><img src="works1.jpg" alt="…"></div> のように差し替え */
+    .ph img { width: 100%; height: 100%; object-fit: cover; border-radius: 14px; }
+
+    .tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+    .tool {
+      display: flex; flex-direction: column; padding: 20px; border: 1px solid var(--line);
+      border-radius: 14px; background: #fff; text-decoration: none; color: var(--ink);
+      transition: border-color .15s, transform .05s;
+    }
+    .tool:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .tool .tag {
+      align-self: flex-start; font-size: 11px; font-weight: 700; color: #052e16;
+      background: #34ff7a; border-radius: 999px; padding: 2px 9px; margin-bottom: 10px;
+    }
+    .tool b { font-size: 16px; }
+    .tool small { color: var(--muted); margin: 6px 0 12px; flex: 1; }
+    .tool .go { font-weight: 700; color: var(--accent-ink); font-size: 14px; }
+
+    table.profile { width: 100%; border-collapse: collapse; font-size: 15px; }
+    table.profile th, table.profile td { border-bottom: 1px solid var(--line); padding: 12px 8px; text-align: left; vertical-align: top; }
+    table.profile th { width: 140px; color: var(--muted); font-weight: 700; white-space: nowrap; }
+
+    .contact { padding: 26px; border-radius: 18px; background: #0b1220; color: #e5eefc; }
+    .contact h2 { color: #fff; }
+    .contact p { color: #cbd5e1; }
+    .contact a { color: #7dd3fc; font-weight: 700; }
+
+    footer { padding: 26px 0; color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); }
+    .todo { color: #b45309; font-size: 12px; }
+  </style>
+</head>
+
+<body>
+  <nav class="topnav">
+    <div class="wrap">
+      <a class="home" href="./index.html">株式会社橋本工業</a>
+      <span class="sep">｜</span>
+      <a href="./tools.html">無料ツール</a>
+      <a href="./itadori_free.html">板取り</a>
+      <a href="./bar_free.html">切断ロス</a>
+      <a href="./hayami.html">重量早見表</a>
+    </div>
+  </nav>
+
+  <div class="hero">
+    <div class="wrap">
+      <div class="kicker">滋賀・湖南／甲賀の鉄工所</div>
+      <h1>鉄を、図面から現場まで。<br>製缶・溶接・機械修理・現地施工。</h1>
+      <p>
+        株式会社橋本工業は、滋賀県湖南市を拠点とする鉄工所です。
+        製缶・溶接から機械修理、特注部品の製作、現地施工、鉄骨・構造物の解体まで、
+        一貫して対応します。少量・特急・特注のご相談もお気軽に。
+      </p>
+      <a class="btn" href="#contact">お問い合わせ</a>
+      <a class="btn ghost" href="#works">実績を見る</a>
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap">
+      <h2>事業内容</h2>
+      <p class="lead">鉄まわりのことは、まとめてご相談ください。</p>
+      <div class="grid3">
+        <div class="svc"><div class="ic">🏭</div><h3>製缶・溶接</h3><p>各種鋼材の加工・組立・溶接。タンク、架台、フレーム、ホッパー等の製作。</p></div>
+        <div class="svc"><div class="ic">🔧</div><h3>機械修理</h3><p>設備・機械の修理、部品交換、改造。稼働停止を最小限にする対応を心がけます。</p></div>
+        <div class="svc"><div class="ic">⚙️</div><h3>特注部品の製作</h3><p>1個からの特注・別注部品。図面がなくても現物・スケッチからご相談いただけます。</p></div>
+        <div class="svc"><div class="ic">🏗️</div><h3>現地施工</h3><p>据付・取付・補修などの現場施工。工場製作と現地作業を一貫対応します。</p></div>
+        <div class="svc"><div class="ic">🚧</div><h3>鉄骨・構造物の解体</h3><p>鉄骨造・構造物の解体、撤去。安全・近隣配慮を第一に進めます。</p></div>
+        <div class="svc"><div class="ic">🧰</div><h3>板金・鋼材加工</h3><p>板取り・切断・曲げ加工。無料の計算ツールも公開しています（下記）。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt" id="works">
+    <div class="wrap">
+      <h2>製作・工事の実績</h2>
+      <p class="lead">これまでの製作物・施工事例をご紹介します。<span class="todo"></span></p>
+      <div class="gallery">
+        <div class="ph">製作物の写真①<br>（例：架台・フレーム）</div>
+        <div class="ph">製作物の写真②<br>（例：タンク・ホッパー）</div>
+        <div class="ph">製作物の写真③<br>（例：特注部品）</div>
+        <div class="ph">工事の写真①<br>（例：現地据付）</div>
+        <div class="ph">工事の写真②<br>（例：機械修理）</div>
+        <div class="ph">工事の写真③<br>（例：解体現場）</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>現場で使える無料ツール</h2>
+      <p class="lead">板金・鋼材の実務向けに、当社が無料で公開している計算ツールです。インストール不要・ブラウザで完結します。</p>
+      <div class="tools">
+        <a class="tool" href="./itadori_free.html">
+          <span class="tag">無料</span><b>板取り計算ツール</b>
+          <small>鋼板の板取り（ネスティング）を自動配置＋手動調整。</small><span class="go">使ってみる →</span>
+        </a>
+        <a class="tool" href="./bar_free.html">
+          <span class="tag">無料</span><b>切断ロス計算ツール</b>
+          <small>棒材の切断組合せを自動計算し、定尺のロスを最小化。</small><span class="go">使ってみる →</span>
+        </a>
+        <a class="tool" href="./hayami.html">
+          <span class="tag">無料</span><b>鋼材 重量早見表</b>
+          <small>アングル・角パイプ・H形鋼などの重量をサイズ検索。</small><span class="go">調べる →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt">
+    <div class="wrap">
+      <h2>会社概要</h2>
+      <p class="lead"><span class="todo"></span></p>
+      <table class="profile">
+        <tr><th>社名</th><td>株式会社橋本工業</td></tr>
+        <tr><th>所在地</th><td>滋賀県湖南市石部北5丁目3-18</td></tr>
+        <tr><th>事業内容</th><td>製缶・溶接、機械修理、特注部品製作、現地施工、鉄骨・構造物解体、板金・鋼材加工</td></tr>
+        <tr><th>対応エリア</th><td>滋賀県／関西一円</td></tr>
+        <tr><th>連絡先</th><td>TEL：0748-77-4186　MAIL：hashimotokogyo@outlook.com</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap">
+      <div class="contact">
+        <h2>お問い合わせ</h2>
+        <p>
+          製作・修理・施工・解体のご相談、板取りや加工のお見積りなど、お気軽にご連絡ください。
+          図面がなくても、現物やスケッチ、写真からご相談いただけます。
+        </p>
+        <p style="margin-top:12px;">
+          📞 <a href="tel:0748-77-4186">0748-77-4186</a>　
+          ✉️ <a href="hashimotokogyo@outlook.com:">メールで問い合わせ</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      © 株式会社橋本工業 ｜
+      <a href="./tools.html">無料ツール</a>・
+      <a href="./itadori_free.html">板取り</a>・
+      <a href="./bar_free.html">切断ロス</a>・
+      <a href="./hayami.html">重量早見表</a>
+    </div>
+  </footer>
+</body>
+
+</html>
