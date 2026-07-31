@@ -73,15 +73,28 @@
 
     /* 実績ギャラリー（差し替え用プレースホルダ枠） */
     .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+    .gallery figure { margin: 0; }
     .ph {
       aspect-ratio: 4 / 3; border: 1px dashed var(--line); border-radius: 14px;
       display: flex; align-items: center; justify-content: center; text-align: center;
       color: #94a3b8; font-size: 13px; background:
         repeating-linear-gradient(45deg, #fbfdff, #fbfdff 10px, #f5f8fc 10px, #f5f8fc 20px);
-      padding: 10px;
+      padding: 10px; cursor: default; overflow: hidden;
     }
-    /* 実際の写真を入れる場合：<div class="ph"><img src="works1.jpg" alt="…"></div> のように差し替え */
-    .ph img { width: 100%; height: 100%; object-fit: cover; border-radius: 14px; }
+    .ph:has(img) { padding: 0; cursor: zoom-in; border-style: solid; }
+    .ph img { width: 100%; height: 100%; object-fit: cover; border-radius: 14px; display: block; }
+
+    .lightbox {
+      display: none; position: fixed; inset: 0; background: rgba(11,18,32,.92);
+      z-index: 999; align-items: center; justify-content: center; padding: 24px;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img { max-width: min(92vw, 1100px); max-height: 86vh; border-radius: 10px; box-shadow: 0 20px 60px rgba(0,0,0,.5); }
+    .lightbox .lb-cap { position: absolute; bottom: 22px; left: 0; right: 0; text-align: center; color: #e5eefc; font-size: 14px; }
+    .lightbox .lb-close {
+      position: absolute; top: 18px; right: 22px; color: #fff; font-size: 28px; line-height: 1;
+      cursor: pointer; background: none; border: none;
+    }
 
     .tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
     .tool {
@@ -126,7 +139,7 @@
 
   <div class="hero">
     <div class="wrap">
-      <div class="kicker">滋賀・湖南／甲賀の鉄工所</div>
+      <div class="kicker">滋賀県・湖南市の鉄工所</div>
       <h1>鉄を、図面から現場まで。<br>製缶・溶接・機械修理・現地施工。</h1>
       <p>
         株式会社橋本工業は、滋賀県湖南市を拠点とする鉄工所です。
@@ -143,7 +156,7 @@
       <h2>事業内容</h2>
       <p class="lead">鉄まわりのことは、まとめてご相談ください。</p>
       <div class="grid3">
-        <div class="svc"><div class="ic">🏭</div><h3>製缶・溶接</h3><p>各種鋼材の加工・組立・溶接。タンク、架台、フレーム、ホッパー等の製作。</p></div>
+        <div class="svc"><div class="ic">🏭</div><h3>製缶・溶接</h3><p>各種鋼材の加工・組立・溶接。ダクト、架台、フレーム、ホッパー等の製作。</p></div>
         <div class="svc"><div class="ic">🔧</div><h3>機械修理</h3><p>設備・機械の修理、部品交換、改造。稼働停止を最小限にする対応を心がけます。</p></div>
         <div class="svc"><div class="ic">⚙️</div><h3>特注部品の製作</h3><p>1個からの特注・別注部品。図面がなくても現物・スケッチからご相談いただけます。</p></div>
         <div class="svc"><div class="ic">🏗️</div><h3>現地施工</h3><p>据付・取付・補修などの現場施工。工場製作と現地作業を一貫対応します。</p></div>
@@ -157,13 +170,19 @@
     <div class="wrap">
       <h2>製作・工事の実績</h2>
       <p class="lead">これまでの製作物・施工事例をご紹介します。<span class="todo"></span></p>
-      <div class="gallery">
-        <div class="ph">製作物の写真①<br>（例：架台・フレーム）</div>
-        <div class="ph">製作物の写真②<br>（例：タンク・ホッパー）</div>
-        <div class="ph">製作物の写真③<br>（例：特注部品）</div>
-        <div class="ph">工事の写真①<br>（例：現地据付）</div>
-        <div class="ph">工事の写真②<br>（例：機械修理）</div>
-        <div class="ph">工事の写真③<br>（例：解体現場）</div>
+      <div class="gallery" id="gallery">
+        <figure class="ph" data-cap="">製作物の写真①<br>（例：架台・フレーム）</figure>
+        <figure class="ph" data-cap="">製作物の写真②<br>（例：タンク・ホッパー）</figure>
+        <figure class="ph" data-cap="">製作物の写真③<br>（例：特注部品）</figure>
+        <figure class="ph" data-cap="">工事の写真①<br>（例：現地据付）</figure>
+        <figure class="ph" data-cap="">工事の写真②<br>（例：機械修理）</figure>
+        <figure class="ph" data-cap="">工事の写真③<br>（例：解体現場）</figure>
+      </div>
+
+      <div class="lightbox" id="lightbox">
+        <button class="lb-close" id="lbClose" aria-label="閉じる">×</button>
+        <img id="lbImg" src="" alt="">
+        <div class="lb-cap" id="lbCap"></div>
       </div>
     </div>
   </section>
@@ -228,6 +247,32 @@
       <a href="./hayami.html">重量早見表</a>
     </div>
   </footer>
+<script>
+    (function () {
+      const box = document.getElementById('lightbox');
+      const img = document.getElementById('lbImg');
+      const cap = document.getElementById('lbCap');
+      const closeBtn = document.getElementById('lbClose');
+
+      function openLightbox(src, caption) {
+        img.src = src; img.alt = caption || ''; cap.textContent = caption || '';
+        box.classList.add('open');
+      }
+      function closeLightbox() { box.classList.remove('open'); img.src = ''; }
+
+      document.querySelectorAll('#gallery .ph').forEach((el) => {
+        const photo = el.querySelector('img');
+        if (!photo) return;
+        el.addEventListener('click', () => {
+          openLightbox(photo.getAttribute('src'), el.dataset.cap || photo.alt || '');
+        });
+      });
+
+      closeBtn.addEventListener('click', closeLightbox);
+      box.addEventListener('click', (e) => { if (e.target === box) closeLightbox(); });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
+    })();
+  </script>
 </body>
 
 </html>
