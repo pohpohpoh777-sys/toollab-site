@@ -37,7 +37,6 @@
     .wrap { max-width: 1000px; margin: 0 auto; padding: 0 18px; }
     a { color: var(--accent-ink); }
 
-    /* 共通ナビ */
     .topnav {
       background: #0b1220; color: #cbd5e1; font-size: 13px;
       padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,.08);
@@ -71,9 +70,15 @@
     .svc p { margin: 0; color: var(--muted); font-size: 14px; }
     .svc .ic { font-size: 22px; }
 
-    /* 実績ギャラリー（差し替え用プレースホルダ枠） */
     .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
     .gallery figure { margin: 0; }
+    .gallery.collapsed figure:nth-child(n+7) { display: none; }
+    .gallery-more { text-align: center; margin-top: 14px; }
+    .gallery-more button {
+      padding: 9px 22px; border-radius: 999px; border: 1px solid var(--line);
+      background: #fff; color: var(--accent-ink); font-weight: 700; font-size: 13px; cursor: pointer;
+    }
+    .gallery-more button:hover { border-color: var(--accent); }
     .ph {
       aspect-ratio: 4 / 3; border: 1px dashed var(--line); border-radius: 14px;
       display: flex; align-items: center; justify-content: center; text-align: center;
@@ -94,6 +99,19 @@
     .lightbox .lb-close {
       position: absolute; top: 18px; right: 22px; color: #fff; font-size: 28px; line-height: 1;
       cursor: pointer; background: none; border: none;
+    }
+    .lightbox .lb-nav {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 46px; height: 46px; border-radius: 999px; border: none;
+      background: rgba(255,255,255,.12); color: #fff; font-size: 22px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .lightbox .lb-nav:hover { background: rgba(255,255,255,.22); }
+    .lightbox .lb-prev { left: 18px; }
+    .lightbox .lb-next { right: 18px; }
+    .lightbox .lb-count {
+      position: absolute; top: 20px; left: 0; right: 0; text-align: center;
+      color: #94a3b8; font-size: 13px;
     }
 
     .tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
@@ -170,7 +188,8 @@
     <div class="wrap">
       <h2>製作・工事の実績</h2>
       <p class="lead">これまでの製作物・施工事例をご紹介します。<span class="todo"></span></p>
-      <div class="gallery" id="gallery">
+
+      <div class="gallery collapsed" id="gallery">
         <figure class="ph" data-cap="">製作物の写真①<br>（例：架台・フレーム）</figure>
         <figure class="ph" data-cap="">製作物の写真②<br>（例：タンク・ホッパー）</figure>
         <figure class="ph" data-cap="">製作物の写真③<br>（例：特注部品）</figure>
@@ -178,10 +197,16 @@
         <figure class="ph" data-cap="">工事の写真②<br>（例：機械修理）</figure>
         <figure class="ph" data-cap="">工事の写真③<br>（例：解体現場）</figure>
       </div>
+      <div class="gallery-more" id="galleryMoreWrap">
+        <button id="galleryMoreBtn" type="button">もっと見る</button>
+      </div>
 
       <div class="lightbox" id="lightbox">
+        <div class="lb-count" id="lbCount"></div>
         <button class="lb-close" id="lbClose" aria-label="閉じる">×</button>
+        <button class="lb-nav lb-prev" id="lbPrev" aria-label="前の写真">‹</button>
         <img id="lbImg" src="" alt="">
+        <button class="lb-nav lb-next" id="lbNext" aria-label="次の写真">›</button>
         <div class="lb-cap" id="lbCap"></div>
       </div>
     </div>
@@ -232,7 +257,7 @@
         </p>
         <p style="margin-top:12px;">
           📞 <a href="tel:0748-77-4186">0748-77-4186</a>　
-          ✉️ <a href="hashimotokogyo@outlook.com:">メールで問い合わせ</a>
+          ✉️ <a href="mailto:hashimotokogyo@outlook.com">メールで問い合わせ</a>
         </p>
       </div>
     </div>
@@ -247,30 +272,76 @@
       <a href="./hayami.html">重量早見表</a>
     </div>
   </footer>
-<script>
+
+  <script>
+    // 実績アルバム：写真クリックで拡大表示 ＋ ← → で前後移動 ＋ もっと見る
     (function () {
       const box = document.getElementById('lightbox');
       const img = document.getElementById('lbImg');
       const cap = document.getElementById('lbCap');
+      const count = document.getElementById('lbCount');
       const closeBtn = document.getElementById('lbClose');
+      const prevBtn = document.getElementById('lbPrev');
+      const nextBtn = document.getElementById('lbNext');
+      const gallery = document.getElementById('gallery');
+      const moreWrap = document.getElementById('galleryMoreWrap');
+      const moreBtn = document.getElementById('galleryMoreBtn');
 
-      function openLightbox(src, caption) {
-        img.src = src; img.alt = caption || ''; cap.textContent = caption || '';
+      // 写真が入っている枠だけを対象にする（プレースホルダーは除外）
+      // ※ ここは「もっと見る」で隠れている7枚目以降も含めて全部拾う
+      //   → ホームでは6枚だけでも、拡大後の矢印送りでは全枚数をたどれる
+      function getPhotos() {
+        return Array.from(gallery.querySelectorAll('.ph')).filter(el => el.querySelector('img'));
+      }
+
+      let currentIndex = -1;
+
+      function show(index) {
+        const photos = getPhotos();
+        if (!photos.length) return;
+        currentIndex = (index + photos.length) % photos.length;
+        const el = photos[currentIndex];
+        const photo = el.querySelector('img');
+        img.src = photo.getAttribute('src');
+        img.alt = el.dataset.cap || photo.alt || '';
+        cap.textContent = el.dataset.cap || photo.alt || '';
+        count.textContent = `${currentIndex + 1} / ${photos.length}`;
+        const multi = photos.length > 1;
+        prevBtn.style.display = multi ? 'flex' : 'none';
+        nextBtn.style.display = multi ? 'flex' : 'none';
         box.classList.add('open');
       }
-      function closeLightbox() { box.classList.remove('open'); img.src = ''; }
+      function closeLightbox() {
+        box.classList.remove('open');
+        img.src = '';
+        currentIndex = -1;
+      }
 
-      document.querySelectorAll('#gallery .ph').forEach((el) => {
-        const photo = el.querySelector('img');
-        if (!photo) return;
-        el.addEventListener('click', () => {
-          openLightbox(photo.getAttribute('src'), el.dataset.cap || photo.alt || '');
-        });
+      getPhotos().forEach((el, i) => {
+        el.addEventListener('click', () => show(i));
       });
 
+      prevBtn.addEventListener('click', () => show(currentIndex - 1));
+      nextBtn.addEventListener('click', () => show(currentIndex + 1));
       closeBtn.addEventListener('click', closeLightbox);
       box.addEventListener('click', (e) => { if (e.target === box) closeLightbox(); });
-      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
+      document.addEventListener('keydown', (e) => {
+        if (!box.classList.contains('open')) return;
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowLeft') show(currentIndex - 1);
+        if (e.key === 'ArrowRight') show(currentIndex + 1);
+      });
+
+      // もっと見る：7枚目以降が無ければボタン自体を隠す
+      const total = gallery.querySelectorAll('figure.ph').length;
+      if (total <= 6) {
+        moreWrap.style.display = 'none';
+      } else {
+        moreBtn.addEventListener('click', () => {
+          gallery.classList.remove('collapsed');
+          moreWrap.style.display = 'none';
+        });
+      }
     })();
   </script>
 </body>
