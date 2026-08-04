@@ -333,14 +333,18 @@
         if (e.key === 'ArrowRight') show(currentIndex + 1);
       });
 
-      // もっと見る：7枚目以降が無ければボタン自体を隠す
+      // もっと見る／折りたたむ：7枚目以降が無ければボタン自体を隠す
       const total = gallery.querySelectorAll('figure.ph').length;
       if (total <= 6) {
         moreWrap.style.display = 'none';
       } else {
         moreBtn.addEventListener('click', () => {
-          gallery.classList.remove('collapsed');
-          moreWrap.style.display = 'none';
+          const isCollapsed = gallery.classList.toggle('collapsed');
+          moreBtn.textContent = isCollapsed ? 'もっと見る' : '閉じる';
+          if (isCollapsed) {
+            // 折りたたんだら実績セクションの先頭までスクロールして位置を分かりやすくする
+            document.getElementById('works').scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
         });
       }
     })();
