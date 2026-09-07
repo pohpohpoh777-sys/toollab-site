@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>三角形の辺・角度 計算【無料】直角三角形・一般三角形｜TOOL LAB</title>
+  <meta name="description"
+    content="わかっている辺の長さ・角度を入力するだけで、残りの辺の長さや角度を計算する無料ツール。直角三角形（勾配・ブラケット角度）と一般三角形（三辺・二辺挟角）に対応。三角関数の公式を覚えていなくてもOK。インストール不要・ブラウザで完結。" />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="https://hashimotokogyo.com/triangle_calc.html" />
+  <meta property="og:url" content="https://hashimotokogyo.com/triangle_calc.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="三角形の辺・角度 計算【無料】｜TOOL LAB" />
+  <meta property="og:description" content="わかっている値を入力するだけで、直角三角形・一般三角形の残りの辺と角度を計算。" />
+  <meta property="og:locale" content="ja_JP" />
+  <style>
+    :root {
+      --bg: #ffffff; --ink: #0f172a; --muted: #64748b; --line: #e2e8f0;
+      --panel: #f8fafc; --panel2: #f1f5f9; --accent: #0ea5e9; --accent-ink: #075985;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: system-ui, -apple-system, "Segoe UI", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+      color: var(--ink); background: var(--bg); line-height: 1.6;
+    }
+    header { background: linear-gradient(180deg, #0b1220, #111a2e); color: #e5eefc; padding: 22px 18px; }
+    .wrap { max-width: 780px; margin: 0 auto; padding: 0 16px; }
+    header .wrap { padding: 0 16px; }
+    .brand { font-size: 13px; letter-spacing: .12em; color: #7dd3fc; font-weight: 700; }
+    h1 { margin: 6px 0 4px; font-size: 22px; }
+    h1 .freeTag { font-size: 12px; font-weight: 700; color: #052e16; background: #34ff7a; border-radius: 999px; padding: 2px 10px; vertical-align: middle; margin-left: 6px; }
+    header small { color: #94a3b8; }
+    .trust { margin-top: 10px; font-size: 12.5px; color: #cbd5e1; display: flex; gap: 14px; flex-wrap: wrap; }
+    .trust span::before { content: "✓ "; color: #34ff7a; }
+
+    main { padding: 24px 0 60px; }
+
+    .panel { border: 1px solid var(--line); border-radius: 16px; padding: 20px; background: #fff; margin-bottom: 18px; }
+    .panel h2 { font-size: 16px; margin: 0 0 4px; }
+    .panel .hint { font-size: 12.5px; color: var(--muted); margin: 0 0 14px; }
+
+    .kindTabs { display: flex; gap: 8px; margin-bottom: 14px; }
+    .kindTabs button {
+      flex: 1; padding: 10px; border-radius: 10px; border: 1px solid var(--line);
+      background: #fff; font-size: 14px; font-weight: 700; color: var(--muted); cursor: pointer;
+    }
+    .kindTabs button.active { background: var(--accent-ink); border-color: var(--accent-ink); color: #fff; }
+
+    .modeTabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+    .modeTabs button {
+      flex: 1 1 auto; min-width: 130px; padding: 9px 8px; border-radius: 10px; border: 1px solid var(--line);
+      background: #fff; font-size: 12.5px; font-weight: 700; color: var(--muted); cursor: pointer;
+    }
+    .modeTabs button.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    .diagram { text-align: center; margin-bottom: 14px; }
+    .diagram svg { max-width: 200px; }
+
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+    .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+    label { display: block; font-size: 12.5px; color: var(--muted); margin-bottom: 4px; }
+    input[type="number"] {
+      width: 100%; padding: 10px 12px; font-size: 15px; border: 1px solid var(--line);
+      border-radius: 10px; background: #fff; color: var(--ink);
+    }
+    input:focus { outline: 2px solid var(--accent); border-color: var(--accent); }
+
+    .calcBtn {
+      width: 100%; padding: 14px; font-size: 16px; font-weight: 700; color: #fff;
+      background: var(--accent-ink); border: none; border-radius: 12px; cursor: pointer; margin-top: 6px;
+    }
+    .calcBtn:hover { opacity: .92; }
+
+    .result { display: none; margin-top: 18px; border-radius: 14px; background: var(--panel); border: 1px solid var(--line); padding: 18px; }
+    .result table { width: 100%; border-collapse: collapse; font-size: 15px; }
+    .result td { padding: 8px 0; border-bottom: 1px dashed var(--line); }
+    .result td.k { color: var(--muted); }
+    .result td.v { text-align: right; font-weight: 800; color: var(--accent-ink); }
+    .formula { font-size: 12px; color: var(--muted); margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line); }
+    .err { display: none; margin-top: 14px; color: #b91c1c; font-size: 13px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 10px; padding: 10px 12px; }
+
+    .cross { margin-top: 30px; }
+    .cross h2 { font-size: 16px; margin: 0 0 10px; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+    .card { display: block; border: 1px solid var(--line); border-radius: 12px; padding: 14px; text-decoration: none; color: var(--ink); background: #fff; }
+    .card b { display: block; margin-bottom: 4px; font-size: 14px; }
+    .card small { color: var(--muted); font-size: 12.5px; }
+
+    .biz { margin-top: 18px; padding: 16px; border-radius: 14px; background: #0b1220; color: #cbd5e1; font-size: 13.5px; }
+    .biz a { color: #7dd3fc; font-weight: 700; }
+
+    .note { font-size: 12px; color: var(--muted); margin-top: 18px; }
+    footer { padding: 24px 0; color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); margin-top: 20px; }
+  </style>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "三角形の辺・角度 計算ツール",
+  "url": "https://hashimotokogyo.com/triangle_calc.html",
+  "applicationCategory": "UtilitiesApplication",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" },
+  "description": "わかっている辺・角度から、直角三角形・一般三角形の残りの値を計算する無料ツール。"
+}
+  </script>
+</head>
+
+<body>
+<nav class="no-print" style="background:#0b1220;padding:8px 16px;font-size:13px;font-family:system-ui,-apple-system,'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;border-bottom:1px solid rgba(255,255,255,.08);">
+  <a href="./index.html" style="color:#7dd3fc;font-weight:700;text-decoration:none;">株式会社橋本工業</a>
+  <span style="color:#64748b;margin:0 6px;">｜</span>
+  <a href="./tools.html" style="color:#cbd5e1;text-decoration:none;margin:0 6px;">無料ツール</a>
+  <a href="./itadori_free.html" style="color:#cbd5e1;text-decoration:none;margin:0 6px;">板取り</a>
+  <a href="./bar_free.html" style="color:#cbd5e1;text-decoration:none;margin:0 6px;">切断ロス</a>
+  <a href="./hayami.html" style="color:#cbd5e1;text-decoration:none;margin:0 6px;">重量早見表</a>
+  <a href="./weight_calc.html" style="color:#cbd5e1;text-decoration:none;margin:0 6px;">単品重量</a>
+  <a href="./circle_calc.html" style="color:#cbd5e1;text-decoration:none;margin:0 6px;">円計算</a>
+  <a href="./triangle_calc.html" style="color:#cbd5e1;text-decoration:none;margin:0 6px;">三角計算</a>
+</nav>
+
+  <header>
+    <div class="wrap">
+      <div class="brand">TOOL LAB</div>
+      <h1>三角形の辺・角度 計算 <span class="freeTag">無料</span></h1>
+      <small>わかっている値を入れるだけ。公式を覚えていなくてもOK</small>
+      <div class="trust">
+        <span>勾配・ブラケット角度の計算に</span>
+        <span>サーバー送信なし・ブラウザ内で完結</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap">
+
+      <div class="panel">
+        <h2>三角形の種類を選ぶ</h2>
+        <div class="kindTabs">
+          <button type="button" id="kindRight" class="active">直角三角形</button>
+          <button type="button" id="kindGeneral">一般三角形</button>
+        </div>
+
+        <!-- 直角三角形 -->
+        <div id="rightPanel">
+          <p class="hint">底辺a・高さb・斜辺c・角度A（底辺と斜辺の間の角）。わかっている2つを選んで入力してください。</p>
+          <div class="diagram">
+            <svg viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg">
+              <path d="M 20 110 L 170 110 L 20 30 Z" fill="none" stroke="#0ea5e9" stroke-width="3"/>
+              <rect x="20" y="95" width="15" height="15" fill="none" stroke="#0f172a" stroke-width="1.5"/>
+              <text x="85" y="126" font-size="11" fill="#64748b">底辺 a</text>
+              <text x="2" y="72" font-size="11" fill="#64748b">高さ b</text>
+              <text x="90" y="65" font-size="11" fill="#0ea5e9">斜辺 c</text>
+              <text x="145" y="103" font-size="11" fill="#64748b">A</text>
+            </svg>
+          </div>
+          <div class="modeTabs">
+            <button type="button" class="rtab active" data-mode="ab">底辺a・高さb</button>
+            <button type="button" class="rtab" data-mode="ac">底辺a・斜辺c</button>
+            <button type="button" class="rtab" data-mode="aA">底辺a・角度A</button>
+            <button type="button" class="rtab" data-mode="cA">斜辺c・角度A</button>
+          </div>
+
+          <div id="r_ab" class="rmode"><div class="row">
+            <div><label>底辺 a（mm）</label><input type="number" id="r_ab_a" placeholder="例：600" /></div>
+            <div><label>高さ b（mm）</label><input type="number" id="r_ab_b" placeholder="例：350" /></div>
+          </div></div>
+          <div id="r_ac" class="rmode" style="display:none;"><div class="row">
+            <div><label>底辺 a（mm）</label><input type="number" id="r_ac_a" placeholder="例：600" /></div>
+            <div><label>斜辺 c（mm）</label><input type="number" id="r_ac_c" placeholder="例：700" /></div>
+          </div></div>
+          <div id="r_aA" class="rmode" style="display:none;"><div class="row">
+            <div><label>底辺 a（mm）</label><input type="number" id="r_aA_a" placeholder="例：600" /></div>
+            <div><label>角度 A（度）</label><input type="number" id="r_aA_A" placeholder="例：30" /></div>
+          </div></div>
+          <div id="r_cA" class="rmode" style="display:none;"><div class="row">
+            <div><label>斜辺 c（mm）</label><input type="number" id="r_cA_c" placeholder="例：700" /></div>
+            <div><label>角度 A（度）</label><input type="number" id="r_cA_A" placeholder="例：30" /></div>
+          </div></div>
+
+          <button class="calcBtn" id="rightCalcBtn">計算する</button>
+        </div>
+
+        <!-- 一般三角形 -->
+        <div id="generalPanel" style="display:none;">
+          <p class="hint">3辺の長さ、または2辺と挟角のどちらかがわかれば、残りをすべて計算します。</p>
+          <div class="diagram">
+            <svg viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg">
+              <path d="M 20 110 L 180 100 L 90 20 Z" fill="none" stroke="#0ea5e9" stroke-width="3"/>
+              <text x="90" y="126" font-size="11" fill="#64748b">辺 a</text>
+              <text x="5" y="65" font-size="11" fill="#64748b">辺 c</text>
+              <text x="140" y="60" font-size="11" fill="#0ea5e9">辺 b</text>
+            </svg>
+          </div>
+          <div class="modeTabs">
+            <button type="button" class="gtab active" data-mode="sss">3辺（a・b・c）</button>
+            <button type="button" class="gtab" data-mode="sas">2辺＋挟角（a・b・C）</button>
+          </div>
+
+          <div id="g_sss" class="gmode"><div class="row3">
+            <div><label>辺 a（mm）</label><input type="number" id="g_sss_a" placeholder="例：500" /></div>
+            <div><label>辺 b（mm）</label><input type="number" id="g_sss_b" placeholder="例：600" /></div>
+            <div><label>辺 c（mm）</label><input type="number" id="g_sss_c" placeholder="例：400" /></div>
+          </div></div>
+          <div id="g_sas" class="gmode" style="display:none;"><div class="row3">
+            <div><label>辺 a（mm）</label><input type="number" id="g_sas_a" placeholder="例：500" /></div>
+            <div><label>辺 b（mm）</label><input type="number" id="g_sas_b" placeholder="例：600" /></div>
+            <div><label>挟角 C（度）</label><input type="number" id="g_sas_C" placeholder="例：70" /></div>
+          </div></div>
+
+          <button class="calcBtn" id="generalCalcBtn">計算する</button>
+        </div>
+
+        <div class="err" id="err"></div>
+        <div class="result" id="result">
+          <table id="resultTable"></table>
+          <div class="formula" id="formulaText"></div>
+        </div>
+      </div>
+
+      <div class="cross">
+        <h2>他の無料ツール</h2>
+        <div class="cards">
+          <a class="card" href="./circle_calc.html"><b>円の弦・弧・矢高 計算 →</b><small>実測した弦・矢高から半径を逆算するなど。</small></a>
+          <a class="card" href="./hayami.html"><b>鋼材 重量早見表 →</b><small>アングル・角パイプなどの単位重量をサイズ検索。</small></a>
+          <a class="card" href="./weight_calc.html"><b>単品重量計算 →</b><small>板・丸棒の寸法と比重から重量を即計算。</small></a>
+        </div>
+        <div class="biz">
+          鋼材の加工・製作でお困りではありませんか？ 当社は滋賀・湖南／甲賀エリアの鉄工所として、製缶・溶接、機械修理、特注部品、現地施工まで対応しています。
+          <a href="#contact">お問い合わせ →</a>
+        </div>
+      </div>
+
+      <p class="note">
+        ※ 計算結果は理論値です。実測・実加工では誤差が生じます。精密な図面が必要な場合はCAD等でご確認ください。
+      </p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap">© TOOL LAB ｜ 現場で使う鋼材カットの実務ツール</div>
+  </footer>
+
+  <script>
+    // 種類タブ
+    const kindRight = document.getElementById('kindRight');
+    const kindGeneral = document.getElementById('kindGeneral');
+    const rightPanel = document.getElementById('rightPanel');
+    const generalPanel = document.getElementById('generalPanel');
+    kindRight.addEventListener('click', () => {
+      kindRight.classList.add('active'); kindGeneral.classList.remove('active');
+      rightPanel.style.display = ''; generalPanel.style.display = 'none';
+      resetResult();
+    });
+    kindGeneral.addEventListener('click', () => {
+      kindGeneral.classList.add('active'); kindRight.classList.remove('active');
+      generalPanel.style.display = ''; rightPanel.style.display = 'none';
+      resetResult();
+    });
+
+    function resetResult() {
+      document.getElementById('result').style.display = 'none';
+      document.getElementById('err').style.display = 'none';
+    }
+    function showError(msg) {
+      const e = document.getElementById('err');
+      e.textContent = msg; e.style.display = 'block';
+      document.getElementById('result').style.display = 'none';
+    }
+    function renderResult(rows, formula) {
+      document.getElementById('err').style.display = 'none';
+      const tbl = document.getElementById('resultTable');
+      tbl.innerHTML = rows.map(r => `<tr><td class="k">${r[0]}</td><td class="v">${r[1]}</td></tr>`).join('');
+      document.getElementById('formulaText').textContent = formula;
+      document.getElementById('result').style.display = 'block';
+    }
+
+    // 直角三角形：モード切替
+    let rmode = 'ab';
+    const rtabs = document.querySelectorAll('.rtab');
+    const rpanels = { ab: document.getElementById('r_ab'), ac: document.getElementById('r_ac'), aA: document.getElementById('r_aA'), cA: document.getElementById('r_cA') };
+    rtabs.forEach(t => t.addEventListener('click', () => {
+      rtabs.forEach(x => x.classList.remove('active')); t.classList.add('active');
+      rmode = t.dataset.mode;
+      Object.keys(rpanels).forEach(k => rpanels[k].style.display = (k === rmode ? '' : 'none'));
+      resetResult();
+    }));
+
+    document.getElementById('rightCalcBtn').addEventListener('click', () => {
+      const D2R = Math.PI / 180, R2D = 180 / Math.PI;
+      try {
+        if (rmode === 'ab') {
+          const a = parseFloat(document.getElementById('r_ab_a').value);
+          const b = parseFloat(document.getElementById('r_ab_b').value);
+          if (!(a > 0 && b > 0)) return showError('底辺・高さを入力してください。');
+          const c = Math.hypot(a, b);
+          const A = Math.atan2(b, a) * R2D;
+          renderResult([
+            ['斜辺 c', c.toFixed(2) + ' mm'],
+            ['角度 A（底辺と斜辺の間）', A.toFixed(2) + ' °'],
+            ['角度 B（高さと斜辺の間）', (90 - A).toFixed(2) + ' °'],
+          ], `計算式：c = √(a² + b²)　A = atan(b / a)　※ a=${a}, b=${b}`);
+        } else if (rmode === 'ac') {
+          const a = parseFloat(document.getElementById('r_ac_a').value);
+          const c = parseFloat(document.getElementById('r_ac_c').value);
+          if (!(a > 0 && c > 0)) return showError('底辺・斜辺を入力してください。');
+          if (a >= c) return showError('斜辺は底辺より長い値にしてください。');
+          const b = Math.sqrt(c * c - a * a);
+          const A = Math.acos(a / c) * R2D;
+          renderResult([
+            ['高さ b', b.toFixed(2) + ' mm'],
+            ['角度 A（底辺と斜辺の間）', A.toFixed(2) + ' °'],
+            ['角度 B（高さと斜辺の間）', (90 - A).toFixed(2) + ' °'],
+          ], `計算式：b = √(c² − a²)　A = acos(a / c)　※ a=${a}, c=${c}`);
+        } else if (rmode === 'aA') {
+          const a = parseFloat(document.getElementById('r_aA_a').value);
+          const A = parseFloat(document.getElementById('r_aA_A').value);
+          if (!(a > 0 && A > 0 && A < 90)) return showError('底辺・角度（0〜90°未満）を入力してください。');
+          const b = a * Math.tan(A * D2R);
+          const c = a / Math.cos(A * D2R);
+          renderResult([
+            ['高さ b', b.toFixed(2) + ' mm'],
+            ['斜辺 c', c.toFixed(2) + ' mm'],
+            ['角度 B（高さと斜辺の間）', (90 - A).toFixed(2) + ' °'],
+          ], `計算式：b = a × tan(A)　c = a / cos(A)　※ a=${a}, A=${A}°`);
+        } else if (rmode === 'cA') {
+          const c = parseFloat(document.getElementById('r_cA_c').value);
+          const A = parseFloat(document.getElementById('r_cA_A').value);
+          if (!(c > 0 && A > 0 && A < 90)) return showError('斜辺・角度（0〜90°未満）を入力してください。');
+          const a = c * Math.cos(A * D2R);
+          const b = c * Math.sin(A * D2R);
+          renderResult([
+            ['底辺 a', a.toFixed(2) + ' mm'],
+            ['高さ b', b.toFixed(2) + ' mm'],
+            ['角度 B（高さと斜辺の間）', (90 - A).toFixed(2) + ' °'],
+          ], `計算式：a = c × cos(A)　b = c × sin(A)　※ c=${c}, A=${A}°`);
+        }
+      } catch (e) { showError('入力値を確認してください。'); }
+    });
+
+    // 一般三角形：モード切替
+    let gmode = 'sss';
+    const gtabs = document.querySelectorAll('.gtab');
+    const gpanels = { sss: document.getElementById('g_sss'), sas: document.getElementById('g_sas') };
+    gtabs.forEach(t => t.addEventListener('click', () => {
+      gtabs.forEach(x => x.classList.remove('active')); t.classList.add('active');
+      gmode = t.dataset.mode;
+      Object.keys(gpanels).forEach(k => gpanels[k].style.display = (k === gmode ? '' : 'none'));
+      resetResult();
+    }));
+
+    document.getElementById('generalCalcBtn').addEventListener('click', () => {
+      const D2R = Math.PI / 180, R2D = 180 / Math.PI;
+      try {
+        if (gmode === 'sss') {
+          const a = parseFloat(document.getElementById('g_sss_a').value);
+          const b = parseFloat(document.getElementById('g_sss_b').value);
+          const c = parseFloat(document.getElementById('g_sss_c').value);
+          if (!(a > 0 && b > 0 && c > 0)) return showError('3辺すべてを入力してください。');
+          if (a + b <= c || b + c <= a || a + c <= b) return showError('その3辺では三角形が成立しません。');
+          const A = Math.acos((b*b + c*c - a*a) / (2*b*c)) * R2D;
+          const B = Math.acos((a*a + c*c - b*b) / (2*a*c)) * R2D;
+          const C = 180 - A - B;
+          renderResult([
+            ['角度 A（辺aの対角）', A.toFixed(2) + ' °'],
+            ['角度 B（辺bの対角）', B.toFixed(2) + ' °'],
+            ['角度 C（辺cの対角）', C.toFixed(2) + ' °'],
+          ], `計算式（余弦定理）：A = acos((b²+c²−a²) / 2bc)　※ a=${a}, b=${b}, c=${c}`);
+        } else if (gmode === 'sas') {
+          const a = parseFloat(document.getElementById('g_sas_a').value);
+          const b = parseFloat(document.getElementById('g_sas_b').value);
+          const C = parseFloat(document.getElementById('g_sas_C').value);
+          if (!(a > 0 && b > 0 && C > 0 && C < 180)) return showError('2辺と挟角（0〜180°未満）を入力してください。');
+          const c = Math.sqrt(a*a + b*b - 2*a*b*Math.cos(C * D2R));
+          const A = Math.asin(a * Math.sin(C * D2R) / c) * R2D;
+          const B = 180 - A - C;
+          renderResult([
+            ['辺 c', c.toFixed(2) + ' mm'],
+            ['角度 A（辺aの対角）', A.toFixed(2) + ' °'],
+            ['角度 B（辺bの対角）', B.toFixed(2) + ' °'],
+          ], `計算式（余弦定理）：c = √(a²+b²−2ab・cosC)　※ a=${a}, b=${b}, C=${C}°`);
+        }
+      } catch (e) { showError('入力値を確認してください。'); }
+    });
+  </script>
+</body>
+
+</html>

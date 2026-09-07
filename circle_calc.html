@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>円の弦・弧・矢高 計算【無料】半径・中心角も相互計算｜TOOL LAB</title>
+  <meta name="description"
+    content="円弧の弦の長さ・弧の長さ・矢高（サグ）・半径・中心角を相互に計算する無料ツール。定盤に実寸図を描く現場作業で、測った弦と矢高から半径を逆算するのに便利。インストール不要・ブラウザで完結。" />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="https://hashimotokogyo.com/circle_calc.html" />
+  <meta property="og:url" content="https://hashimotokogyo.com/circle_calc.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="円の弦・弧・矢高 計算【無料】｜TOOL LAB" />
+  <meta property="og:description" content="弦・矢高から半径を逆算するなど、円弧まわりの計算を相互に行える無料ツール。" />
+  <meta property="og:locale" content="ja_JP" />
+  <style>
+    :root {
+      --bg: #ffffff; --ink: #0f172a; --muted: #64748b; --line: #e2e8f0;
+      --panel: #f8fafc; --panel2: #f1f5f9; --accent: #0ea5e9; --accent-ink: #075985;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: system-ui, -apple-system, "Segoe UI", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+      color: var(--ink); background: var(--bg); line-height: 1.6;
+    }
+    header { background: linear-gradient(180deg, #0b1220, #111a2e); color: #e5eefc; padding: 22px 18px; }
+    .wrap { max-width: 780px; margin: 0 auto; padding: 0 16px; }
+    header .wrap { padding: 0 16px; }
+    .brand { font-size: 13px; letter-spacing: .12em; color: #7dd3fc; font-weight: 700; }
+    h1 { margin: 6px 0 4px; font-size: 22px; }
+    h1 .freeTag { font-size: 12px; font-weight: 700; color: #052e16; background: #34ff7a; border-radius: 999px; padding: 2px 10px; vertical-align: middle; margin-left: 6px; }
+    header small { color: #94a3b8; }
+    .trust { margin-top: 10px; font-size: 12.5px; color: #cbd5e1; display: flex; gap: 14px; flex-wrap: wrap; }
+    .trust span::before { content: "✓ "; color: #34ff7a; }
+
+    main { padding: 24px 0 60px; }
+
+    .panel { border: 1px solid var(--line); border-radius: 16px; padding: 20px; background: #fff; margin-bottom: 18px; }
+    .panel h2 { font-size: 16px; margin: 0 0 4px; }
+    .panel .hint { font-size: 12.5px; color: var(--muted); margin: 0 0 14px; }
+
+    .modeTabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+    .modeTabs button {
+      flex: 1 1 auto; min-width: 140px; padding: 10px 8px; border-radius: 10px; border: 1px solid var(--line);
+      background: #fff; font-size: 13px; font-weight: 700; color: var(--muted); cursor: pointer;
+    }
+    .modeTabs button.active { background: var(--accent-ink); border-color: var(--accent-ink); color: #fff; }
+
+    .diagram { text-align: center; margin-bottom: 14px; }
+    .diagram svg { max-width: 220px; }
+
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+    label { display: block; font-size: 12.5px; color: var(--muted); margin-bottom: 4px; }
+    input[type="number"] {
+      width: 100%; padding: 10px 12px; font-size: 15px; border: 1px solid var(--line);
+      border-radius: 10px; background: #fff; color: var(--ink);
+    }
+    input:focus { outline: 2px solid var(--accent); border-color: var(--accent); }
+
+    .calcBtn {
+      width: 100%; padding: 14px; font-size: 16px; font-weight: 700; color: #fff;
+      background: var(--accent-ink); border: none; border-radius: 12px; cursor: pointer; margin-top: 6px;
+    }
+    .calcBtn:hover { opacity: .92; }
+
+    .result { display: none; margin-top: 18px; border-radius: 14px; background: var(--panel); border: 1px solid var(--line); padding: 18px; }
+    .result table { width: 100%; border-collapse: collapse; font-size: 15px; }
+    .result td { padding: 8px 0; border-bottom: 1px dashed var(--line); }
+    .result td.k { color: var(--muted); }
+    .result td.v { text-align: right; font-weight: 800; color: var(--accent-ink); }
+    .formula { font-size: 12px; color: var(--muted); margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line); }
+    .err { display: none; margin-top: 14px; color: #b91c1c; font-size: 13px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 10px; padding: 10px 12px; }
+
+    .cross { margin-top: 30px; }
+    .cross h2 { font-size: 16px; margin: 0 0 10px; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+    .card { display: block; border: 1px solid var(--line); border-radius: 12px; padding: 14px; text-decoration: none; color: var(--ink); background: #fff; }
+    .card b { display: block; margin-bottom: 4px; font-size: 14px; }
+    .card small { color: var(--muted); font-size: 12.5px; }
+
+    .biz { margin-top: 18px; padding: 16px; border-radius: 14px; background: #0b1220; color: #cbd5e1; font-size: 13.5px; }
+    .biz a { color: #7dd3fc; font-weight: 700; }
+
+    .note { font-size: 12px; color: var(--muted); margin-top: 18px; }
+    footer { padding: 24px 0; color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); margin-top: 20px; }
+  </style>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "円の弦・弧・矢高 計算ツール",
+  "url": "https://hashimotokogyo.com/circle_calc.html",
+  "applicationCategory": "UtilitiesApplication",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" },
+  "description": "円弧の弦・弧・矢高・半径・中心角を相互に計算する無料ツール。"
+}
+  </script>
+</head>
+
+<body>
+<nav class="no-print" style="background:#0b1220;padding:8px 16px;font-size:13px;font-family:system-ui,-apple-system,'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;border-bottom:1px solid rgba(255,255,255,.08);">
+  <a href="./index.html" style="color:#7dd3fc;font-weight:700;text-decoration:none;">株式会社橋本工業</a>
+  <span style="color:#64748b;margin:0 6px;">｜</span>
+  <a href="./tools.html" style="color:#cbd5e1;text-decoration:none;margin:0 6px;">無料ツール</a>
+  <a href="./itadori_free.html" style="color:#cbd5e1;text-decoration:none;margin:0 6px;">板取り</a>
+  <a href="./bar_free.html" style="color:#cbd5e1;text-decoration:none;margin:0 6px;">切断ロス</a>
+  <a href="./hayami.html" style="color:#cbd5e1;text-decoration:none;margin:0 6px;">重量早見表</a>
+  <a href="./weight_calc.html" style="color:#cbd5e1;text-decoration:none;margin:0 6px;">単品重量</a>
+  <a href="./circle_calc.html" style="color:#cbd5e1;text-decoration:none;margin:0 6px;">円計算</a>
+  <a href="./triangle_calc.html" style="color:#cbd5e1;text-decoration:none;margin:0 6px;">三角計算</a>
+</nav>
+
+  <header>
+    <div class="wrap">
+      <div class="brand">TOOL LAB</div>
+      <h1>円の弦・弧・矢高 計算 <span class="freeTag">無料</span></h1>
+      <small>弦・矢高・半径・弧・中心角を相互に計算</small>
+      <div class="trust">
+        <span>定盤での実寸図作成に</span>
+        <span>サーバー送信なし・ブラウザ内で完結</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap">
+
+      <div class="panel">
+        <h2>わかっている値を選ぶ</h2>
+        <p class="hint">現場で実測しやすい組み合わせは「弦・矢高から」です。</p>
+        <div class="modeTabs">
+          <button type="button" class="mtab active" data-mode="cs">弦・矢高から</button>
+          <button type="button" class="mtab" data-mode="ra">半径・中心角から</button>
+          <button type="button" class="mtab" data-mode="rc">半径・弦から</button>
+        </div>
+
+        <div class="diagram">
+          <svg viewBox="0 0 220 140" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 30 100 A 90 90 0 0 1 190 100" fill="none" stroke="#0ea5e9" stroke-width="3"/>
+            <line x1="30" y1="100" x2="190" y2="100" stroke="#0f172a" stroke-width="2"/>
+            <line x1="110" y1="100" x2="110" y2="63" stroke="#0f172a" stroke-width="2" stroke-dasharray="3,3"/>
+            <text x="105" y="118" font-size="11" fill="#64748b">弦 c</text>
+            <text x="115" y="80" font-size="11" fill="#64748b">矢高 h</text>
+            <text x="150" y="55" font-size="11" fill="#0ea5e9">弧 s</text>
+          </svg>
+        </div>
+
+        <div id="modeCS">
+          <div class="row">
+            <div><label for="cs_c">弦の長さ c（mm）</label><input type="number" id="cs_c" placeholder="例：300" /></div>
+            <div><label for="cs_h">矢高 h（mm）</label><input type="number" id="cs_h" placeholder="例：25" /></div>
+          </div>
+        </div>
+
+        <div id="modeRA" style="display:none;">
+          <div class="row">
+            <div><label for="ra_r">半径 R（mm）</label><input type="number" id="ra_r" placeholder="例：150" /></div>
+            <div><label for="ra_a">中心角 θ（度）</label><input type="number" id="ra_a" placeholder="例：60" /></div>
+          </div>
+        </div>
+
+        <div id="modeRC" style="display:none;">
+          <div class="row">
+            <div><label for="rc_r">半径 R（mm）</label><input type="number" id="rc_r" placeholder="例：150" /></div>
+            <div><label for="rc_c">弦の長さ c（mm）</label><input type="number" id="rc_c" placeholder="例：150" /></div>
+          </div>
+        </div>
+
+        <button class="calcBtn" id="calcBtn">計算する</button>
+        <div class="err" id="err"></div>
+
+        <div class="result" id="result">
+          <table id="resultTable"></table>
+          <div class="formula" id="formulaText"></div>
+        </div>
+      </div>
+
+      <div class="cross">
+        <h2>他の無料ツール</h2>
+        <div class="cards">
+          <a class="card" href="./triangle_calc.html"><b>三角形計算（辺・角度） →</b><small>わかっている辺・角度から残りを求める。</small></a>
+          <a class="card" href="./hayami.html"><b>鋼材 重量早見表 →</b><small>アングル・角パイプなどの単位重量をサイズ検索。</small></a>
+          <a class="card" href="./weight_calc.html"><b>単品重量計算 →</b><small>板・丸棒の寸法と比重から重量を即計算。</small></a>
+        </div>
+        <div class="biz">
+          鋼材の加工・製作でお困りではありませんか？ 当社は滋賀・湖南／甲賀エリアの鉄工所として、製缶・溶接、機械修理、特注部品、現地施工まで対応しています。
+          <a href="#contact">お問い合わせ →</a>
+        </div>
+      </div>
+
+      <p class="note">
+        ※ 計算結果は理論値です。実測・実加工では誤差が生じます。精密な図面が必要な場合はCAD等でご確認ください。
+      </p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap">© TOOL LAB ｜ 現場で使う鋼材カットの実務ツール</div>
+  </footer>
+
+  <script>
+    let mode = 'cs';
+    const tabs = document.querySelectorAll('.mtab');
+    const panels = { cs: document.getElementById('modeCS'), ra: document.getElementById('modeRA'), rc: document.getElementById('modeRC') };
+    tabs.forEach(t => t.addEventListener('click', () => {
+      tabs.forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
+      mode = t.dataset.mode;
+      Object.keys(panels).forEach(k => panels[k].style.display = (k === mode ? '' : 'none'));
+      document.getElementById('result').style.display = 'none';
+      document.getElementById('err').style.display = 'none';
+    }));
+
+    function showError(msg) {
+      const e = document.getElementById('err');
+      e.textContent = msg; e.style.display = 'block';
+      document.getElementById('result').style.display = 'none';
+    }
+
+    function renderResult(rows, formula) {
+      document.getElementById('err').style.display = 'none';
+      const tbl = document.getElementById('resultTable');
+      tbl.innerHTML = rows.map(r => `<tr><td class="k">${r[0]}</td><td class="v">${r[1]}</td></tr>`).join('');
+      document.getElementById('formulaText').textContent = formula;
+      document.getElementById('result').style.display = 'block';
+    }
+
+    document.getElementById('calcBtn').addEventListener('click', () => {
+      try {
+        if (mode === 'cs') {
+          const c = parseFloat(document.getElementById('cs_c').value);
+          const h = parseFloat(document.getElementById('cs_h').value);
+          if (!(c > 0 && h > 0)) return showError('弦の長さ・矢高をどちらも入力してください。');
+          if (h >= c) return showError('矢高は弦の長さより小さい値を入力してください。');
+          const R = (c * c / 4 + h * h) / (2 * h);
+          const half = Math.asin((c / 2) / R);
+          const theta = 2 * half;
+          const arc = R * theta;
+          renderResult([
+            ['半径 R', R.toFixed(2) + ' mm'],
+            ['中心角 θ', (theta * 180 / Math.PI).toFixed(2) + ' °'],
+            ['弧の長さ s', arc.toFixed(2) + ' mm'],
+          ], `計算式：R = (c²/4 + h²) ÷ (2h)　※ c=${c}, h=${h} → R=${R.toFixed(2)}`);
+        } else if (mode === 'ra') {
+          const R = parseFloat(document.getElementById('ra_r').value);
+          const a = parseFloat(document.getElementById('ra_a').value);
+          if (!(R > 0 && a > 0 && a < 360)) return showError('半径・中心角（0〜360°未満）を入力してください。');
+          const th = a * Math.PI / 180;
+          const chord = 2 * R * Math.sin(th / 2);
+          const arc = R * th;
+          const sagitta = R * (1 - Math.cos(th / 2));
+          renderResult([
+            ['弦の長さ c', chord.toFixed(2) + ' mm'],
+            ['弧の長さ s', arc.toFixed(2) + ' mm'],
+            ['矢高 h', sagitta.toFixed(2) + ' mm'],
+          ], `計算式：c = 2R sin(θ/2)　s = R θ(rad)　h = R(1 - cos(θ/2))　※ R=${R}, θ=${a}°`);
+        } else if (mode === 'rc') {
+          const R = parseFloat(document.getElementById('rc_r').value);
+          const c = parseFloat(document.getElementById('rc_c').value);
+          if (!(R > 0 && c > 0)) return showError('半径・弦の長さを入力してください。');
+          if (c > 2 * R) return showError('弦の長さは直径（2×半径）以下にしてください。');
+          const half = Math.asin((c / 2) / R);
+          const theta = 2 * half;
+          const sagitta = R - Math.sqrt(R * R - (c / 2) * (c / 2));
+          const arc = R * theta;
+          renderResult([
+            ['中心角 θ', (theta * 180 / Math.PI).toFixed(2) + ' °'],
+            ['矢高 h', sagitta.toFixed(2) + ' mm'],
+            ['弧の長さ s', arc.toFixed(2) + ' mm'],
+          ], `計算式：h = R − √(R² − (c/2)²)　θ = 2×asin((c/2)/R)　※ R=${R}, c=${c}`);
+        }
+      } catch (e) {
+        showError('入力値を確認してください。');
+      }
+    });
+  </script>
+</body>
+
+</html>

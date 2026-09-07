@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>単品重量計算【板・丸棒／無料】比重から瞬時にkg計算｜TOOL LAB</title>
+  <meta name="description"
+    content="鉄・ステンレス・アルミなどの板や丸棒（円柱）の重量を、寸法と比重からその場で計算する無料ツール。定尺に関係なく任意の寸法でOK。概算金額も表示。インストール不要・ブラウザで完結。" />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="https://hashimotokogyo.com/weight_calc.html" />
+  <meta property="og:url" content="https://hashimotokogyo.com/weight_calc.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="単品重量計算【板・丸棒／無料】｜TOOL LAB" />
+  <meta property="og:description" content="寸法と比重から板・丸棒の重量を即計算。定尺以外の半端な長さもOK。無料・ブラウザ完結。" />
+  <meta property="og:locale" content="ja_JP" />
+  <style>
+    :root {
+      --bg: #ffffff; --ink: #0f172a; --muted: #64748b; --line: #e2e8f0;
+      --panel: #f8fafc; --panel2: #f1f5f9; --accent: #0ea5e9; --accent-ink: #075985;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: system-ui, -apple-system, "Segoe UI", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+      color: var(--ink); background: var(--bg); line-height: 1.6;
+    }
+    header { background: linear-gradient(180deg, #0b1220, #111a2e); color: #e5eefc; padding: 22px 18px; }
+    .wrap { max-width: 780px; margin: 0 auto; padding: 0 16px; }
+    header .wrap { padding: 0 16px; }
+    .brand { font-size: 13px; letter-spacing: .12em; color: #7dd3fc; font-weight: 700; }
+    h1 { margin: 6px 0 4px; font-size: 22px; }
+    h1 .freeTag { font-size: 12px; font-weight: 700; color: #052e16; background: #34ff7a; border-radius: 999px; padding: 2px 10px; vertical-align: middle; margin-left: 6px; }
+    header small { color: #94a3b8; }
+    .trust { margin-top: 10px; font-size: 12.5px; color: #cbd5e1; display: flex; gap: 14px; flex-wrap: wrap; }
+    .trust span::before { content: "✓ "; color: #34ff7a; }
+
+    main { padding: 24px 0 60px; }
+
+    .panel { border: 1px solid var(--line); border-radius: 16px; padding: 20px; background: #fff; margin-bottom: 18px; }
+    .panel h2 { font-size: 16px; margin: 0 0 14px; }
+
+    .shapeTabs { display: flex; gap: 8px; margin-bottom: 16px; }
+    .shapeTabs button {
+      flex: 1; padding: 10px; border-radius: 10px; border: 1px solid var(--line);
+      background: #fff; font-size: 14px; font-weight: 700; color: var(--muted); cursor: pointer;
+    }
+    .shapeTabs button.active { background: var(--accent-ink); border-color: var(--accent-ink); color: #fff; }
+
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+    .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+    label { display: block; font-size: 12.5px; color: var(--muted); margin-bottom: 4px; }
+    input[type="number"], select {
+      width: 100%; padding: 10px 12px; font-size: 15px; border: 1px solid var(--line);
+      border-radius: 10px; background: #fff; color: var(--ink);
+    }
+    input:focus, select:focus { outline: 2px solid var(--accent); border-color: var(--accent); }
+
+    #densityCustomWrap { display: none; margin-top: 8px; }
+
+    .calcBtn {
+      width: 100%; padding: 14px; font-size: 16px; font-weight: 700; color: #fff;
+      background: var(--accent-ink); border: none; border-radius: 12px; cursor: pointer; margin-top: 6px;
+    }
+    .calcBtn:hover { opacity: .92; }
+
+    .result { display: none; margin-top: 18px; border-radius: 14px; background: var(--panel); border: 1px solid var(--line); padding: 18px; }
+    .result .big { font-size: 30px; font-weight: 800; color: var(--accent-ink); }
+    .result .big small { font-size: 15px; font-weight: 700; color: var(--muted); margin-left: 4px; }
+    .result table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 14px; }
+    .result td { padding: 6px 0; border-bottom: 1px dashed var(--line); }
+    .result td.k { color: var(--muted); }
+    .result td.v { text-align: right; font-weight: 700; }
+    .formula { font-size: 12px; color: var(--muted); margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line); }
+
+    .cross { margin-top: 30px; }
+    .cross h2 { font-size: 16px; margin: 0 0 10px; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+    .card { display: block; border: 1px solid var(--line); border-radius: 12px; padding: 14px; text-decoration: none; color: var(--ink); background: #fff; }
+    .card b { display: block; margin-bottom: 4px; font-size: 14px; }
+    .card small { color: var(--muted); font-size: 12.5px; }
+
+    .biz { margin-top: 18px; padding: 16px; border-radius: 14px; background: #0b1220; color: #cbd5e1; font-size: 13.5px; }
+    .biz a { color: #7dd3fc; font-weight: 700; }
+
+    .note { font-size: 12px; color: var(--muted); margin-top: 18px; }
+    footer { padding: 24px 0; color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); margin-top: 20px; }
+  </style>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "単品重量計算ツール",
+  "url": "https://hashimotokogyo.com/weight_calc.html",
+  "applicationCategory": "UtilitiesApplication",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" },
+  "description": "板・丸棒の寸法と比重から重量を計算する無料ツール。"
+}
+  </script>
+</head>
+
+<body>
+<nav class="no-print" style="background:#0b1220;padding:8px 16px;font-size:13px;font-family:system-ui,-apple-system,'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;border-bottom:1px solid rgba(255,255,255,.08);">
+  <a href="./index.html" style="color:#7dd3fc;font-weight:700;text-decoration:none;">株式会社橋本工業</a>
+  <span style="color:#64748b;margin:0 6px;">｜</span>
+  <a href="./tools.html" style="color:#cbd5e1;text-decoration:none;margin:0 6px;">無料ツール</a>
+  <a href="./itadori_free.html" style="color:#cbd5e1;text-decoration:none;margin:0 6px;">板取り</a>
+  <a href="./bar_free.html" style="color:#cbd5e1;text-decoration:none;margin:0 6px;">切断ロス</a>
+  <a href="./hayami.html" style="color:#cbd5e1;text-decoration:none;margin:0 6px;">重量早見表</a>
+  <a href="./weight_calc.html" style="color:#cbd5e1;text-decoration:none;margin:0 6px;">単品重量</a>
+  <a href="./circle_calc.html" style="color:#cbd5e1;text-decoration:none;margin:0 6px;">円計算</a>
+  <a href="./triangle_calc.html" style="color:#cbd5e1;text-decoration:none;margin:0 6px;">三角計算</a>
+</nav>
+
+  <header>
+    <div class="wrap">
+      <div class="brand">TOOL LAB</div>
+      <h1>単品重量計算 <span class="freeTag">無料</span></h1>
+      <small>板・丸棒の寸法と比重から、その場で重量を計算</small>
+      <div class="trust">
+        <span>定尺関係なく任意の長さでOK</span>
+        <span>サーバー送信なし・ブラウザ内で完結</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap">
+
+      <div class="panel">
+        <h2>形状を選ぶ</h2>
+        <div class="shapeTabs">
+          <button type="button" id="tabPlate" class="active">板</button>
+          <button type="button" id="tabRound">丸棒（円柱）</button>
+        </div>
+
+        <label for="material">材質（比重）</label>
+        <select id="material">
+          <option value="7.85">鉄・鋼（SS400など） 比重 7.85</option>
+          <option value="7.93">ステンレス（SUS304） 比重 7.93</option>
+          <option value="2.70">アルミ 比重 2.70</option>
+          <option value="8.50">真鍮 比重 8.50</option>
+          <option value="8.96">銅 比重 8.96</option>
+          <option value="custom">その他（比重を自分で入力）</option>
+        </select>
+        <div id="densityCustomWrap">
+          <label for="densityCustom">比重（g/cm³）</label>
+          <input type="number" id="densityCustom" step="0.01" placeholder="例：4.51（チタン）" />
+        </div>
+
+        <div id="plateInputs" style="margin-top:14px;">
+          <div class="row3">
+            <div><label for="pL">縦（mm）</label><input type="number" id="pL" placeholder="例：1000" /></div>
+            <div><label for="pW">横（mm）</label><input type="number" id="pW" placeholder="例：500" /></div>
+            <div><label for="pT">厚み（mm）</label><input type="number" id="pT" placeholder="例：6" /></div>
+          </div>
+        </div>
+
+        <div id="roundInputs" style="display:none; margin-top:14px;">
+          <div class="row">
+            <div><label for="rD">直径 φ（mm）</label><input type="number" id="rD" placeholder="例：25" /></div>
+            <div><label for="rL">長さ（mm）</label><input type="number" id="rL" placeholder="例：1000" /></div>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:4px;">
+          <div><label for="qty">数量（本・枚）</label><input type="number" id="qty" value="1" min="1" /></div>
+          <div><label for="price">単価（円/kg・任意）</label><input type="number" id="price" placeholder="任意入力" /></div>
+        </div>
+
+        <button class="calcBtn" id="calcBtn">計算する</button>
+
+        <div class="result" id="result">
+          <div class="big" id="totalKg">-- <small>kg（合計）</small></div>
+          <table>
+            <tr><td class="k">1個あたりの重量</td><td class="v" id="unitKg">--</td></tr>
+            <tr><td class="k">体積（1個あたり）</td><td class="v" id="volCm3">--</td></tr>
+            <tr id="priceRow" style="display:none;"><td class="k">概算金額（合計）</td><td class="v" id="totalPrice">--</td></tr>
+          </table>
+          <div class="formula" id="formulaText"></div>
+        </div>
+      </div>
+
+      <div class="cross">
+        <h2>他の無料ツール</h2>
+        <div class="cards">
+          <a class="card" href="./hayami.html"><b>鋼材 重量早見表 →</b><small>アングル・角パイプなど定尺サイズの単位重量をサイズ検索。</small></a>
+          <a class="card" href="./bar_free.html"><b>切断ロス計算ツール →</b><small>棒材の切断組合せを自動計算し、定尺のロスを最小化。</small></a>
+          <a class="card" href="./circle_calc.html"><b>円計算（弦・弧・矢高） →</b><small>実測した弦・矢高から半径を逆算するなど。</small></a>
+        </div>
+        <div class="biz">
+          鋼材の加工・製作でお困りではありませんか？ 当社は滋賀・湖南／甲賀エリアの鉄工所として、製缶・溶接、機械修理、特注部品、現地施工まで対応しています。
+          <a href="#contact">お問い合わせ →</a>
+        </div>
+      </div>
+
+      <p class="note">
+        ※ 比重は代表値です。材質・規格により実際の値は前後します。正式な見積り・強度計算にはミルシート等の実測値をご確認ください。
+      </p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap">© TOOL LAB ｜ 現場で使う鋼材カットの実務ツール</div>
+  </footer>
+
+  <script>
+    const tabPlate = document.getElementById('tabPlate');
+    const tabRound = document.getElementById('tabRound');
+    const plateInputs = document.getElementById('plateInputs');
+    const roundInputs = document.getElementById('roundInputs');
+    let shape = 'plate';
+
+    tabPlate.addEventListener('click', () => {
+      shape = 'plate'; tabPlate.classList.add('active'); tabRound.classList.remove('active');
+      plateInputs.style.display = ''; roundInputs.style.display = 'none';
+    });
+    tabRound.addEventListener('click', () => {
+      shape = 'round'; tabRound.classList.add('active'); tabPlate.classList.remove('active');
+      roundInputs.style.display = ''; plateInputs.style.display = 'none';
+    });
+
+    const materialSel = document.getElementById('material');
+    const densityCustomWrap = document.getElementById('densityCustomWrap');
+    materialSel.addEventListener('change', () => {
+      densityCustomWrap.style.display = materialSel.value === 'custom' ? '' : 'none';
+    });
+
+    function getDensity() {
+      if (materialSel.value === 'custom') {
+        const v = parseFloat(document.getElementById('densityCustom').value);
+        return isFinite(v) && v > 0 ? v : null;
+      }
+      return parseFloat(materialSel.value);
+    }
+
+    document.getElementById('calcBtn').addEventListener('click', () => {
+      const density = getDensity();
+      const qty = Math.max(1, parseFloat(document.getElementById('qty').value) || 1);
+      const price = parseFloat(document.getElementById('price').value);
+      const result = document.getElementById('result');
+
+      if (!density) { alert('比重を入力してください。'); return; }
+
+      let unitKg, volCm3, formulaText;
+
+      if (shape === 'plate') {
+        const L = parseFloat(document.getElementById('pL').value);
+        const W = parseFloat(document.getElementById('pW').value);
+        const T = parseFloat(document.getElementById('pT').value);
+        if (!(L > 0 && W > 0 && T > 0)) { alert('縦・横・厚みをすべて入力してください。'); return; }
+        unitKg = (L * W * T * density) / 1e6;
+        volCm3 = (L * W * T) / 1000;
+        formulaText = `計算式：重量(kg) = 縦(mm) × 横(mm) × 厚み(mm) × 比重 ÷ 1,000,000　※ ${L}×${W}×${T}×${density}÷1,000,000`;
+      } else {
+        const D = parseFloat(document.getElementById('rD').value);
+        const L = parseFloat(document.getElementById('rL').value);
+        if (!(D > 0 && L > 0)) { alert('直径・長さを入力してください。'); return; }
+        const r = D / 2;
+        unitKg = (Math.PI * r * r * L * density) / 1e6;
+        volCm3 = (Math.PI * r * r * L) / 1000;
+        formulaText = `計算式：重量(kg) = π ×（直径÷2）² × 長さ(mm) × 比重 ÷ 1,000,000　※ φ${D}×${L}×${density}`;
+      }
+
+      const totalKg = unitKg * qty;
+
+      document.getElementById('totalKg').innerHTML = totalKg.toFixed(2) + ' <small>kg（' + qty + (shape==='plate'?'枚':'本') + '合計）</small>';
+      document.getElementById('unitKg').textContent = unitKg.toFixed(3) + ' kg';
+      document.getElementById('volCm3').textContent = volCm3.toFixed(1) + ' cm³';
+      document.getElementById('formulaText').textContent = formulaText;
+
+      const priceRow = document.getElementById('priceRow');
+      if (isFinite(price) && price > 0) {
+        priceRow.style.display = '';
+        document.getElementById('totalPrice').textContent = '¥' + Math.round(totalKg * price).toLocaleString();
+      } else {
+        priceRow.style.display = 'none';
+      }
+
+      result.style.display = 'block';
+    });
+  </script>
+</body>
+
+</html>
