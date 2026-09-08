@@ -51,9 +51,18 @@
     .hero {
       background: linear-gradient(180deg, #0b1220, #131f38); color: #e5eefc; padding: 60px 0 52px;
     }
+    .hero .wrap { display: grid; grid-template-columns: 1.15fr .85fr; gap: 36px; align-items: center; }
     .hero .kicker { font-size: 13px; letter-spacing: .14em; color: #7dd3fc; font-weight: 700; }
     .hero h1 { font-size: 32px; margin: 12px 0 14px; line-height: 1.35; }
     .hero p { font-size: 16px; color: #cbd5e1; margin: 0 0 22px; max-width: 620px; }
+    .heroPhoto {
+      border-radius: 18px; overflow: hidden; border: 1px solid rgba(255,255,255,.14);
+      aspect-ratio: 16 / 9; box-shadow: 0 12px 30px rgba(0,0,0,.35);
+    }
+    .heroPhoto img { width: 100%; height: 100%; object-fit: cover; object-position: 42% 50%; display: block; }
+    @media (max-width: 760px) {
+      .hero .wrap { grid-template-columns: 1fr; }
+    }
     .btn {
       display: inline-block; padding: 13px 26px; border-radius: 12px; font-weight: 700;
       background: #34ff7a; color: #052e16; text-decoration: none;
@@ -161,15 +170,20 @@
 
   <div class="hero">
     <div class="wrap">
-      <div class="kicker">滋賀県・湖南市の鉄工所</div>
-      <h1>鉄を、図面から現場まで。<br>製缶・溶接・機械修理・現地施工。</h1>
-      <p>
-        株式会社橋本工業は、滋賀県湖南市を拠点とする鉄工所です。
-        製缶・溶接から機械修理、特注部品の製作、現地施工、鉄骨・構造物の解体まで、
-        一貫して対応します。少量・特急・特注のご相談もお気軽に。
-      </p>
-      <a class="btn" href="#contact">お問い合わせ</a>
-      <a class="btn ghost" href="#works">実績を見る</a>
+      <div>
+        <div class="kicker">滋賀県・湖南市の鉄工所</div>
+        <h1>鉄を、図面から現場まで。<br>製缶・溶接・機械修理・現地施工。</h1>
+        <p>
+          株式会社橋本工業は、滋賀県湖南市を拠点とする鉄工所です。
+          製缶・溶接から機械修理、特注部品の製作、現地施工、鉄骨・構造物の解体まで、
+          一貫して対応します。少量・特急・特注のご相談もお気軽に。
+        </p>
+        <a class="btn" href="#contact">お問い合わせ</a>
+        <a class="btn ghost" href="#works">実績を見る</a>
+      </div>
+      <div class="heroPhoto">
+        <img src="./factory-sign.jpg" alt="株式会社橋本工業 社屋" loading="eager">
+      </div>
     </div>
   </div>
 
@@ -235,6 +249,18 @@
         <a class="tool" href="./hayami.html">
           <span class="tag">無料</span><b>鋼材 重量早見表</b>
           <small>アングル・角パイプ・H形鋼などの重量をサイズ検索。</small><span class="go">調べる →</span>
+        </a>
+        <a class="tool" href="./weight_calc.html">
+          <span class="tag">無料</span><b>単品重量計算</b>
+          <small>板・丸棒の寸法と比重から重量を即計算。半端な長さもOK。</small><span class="go">計算する →</span>
+        </a>
+        <a class="tool" href="./circle_calc.html">
+          <span class="tag">無料</span><b>円の弦・弧・矢高 計算</b>
+          <small>弦・矢高・半径・弧・中心角を相互に計算。</small><span class="go">計算する →</span>
+        </a>
+        <a class="tool" href="./triangle_calc.html">
+          <span class="tag">無料</span><b>三角形の辺・角度 計算</b>
+          <small>わかっている辺・角度から残りを計算。公式を覚えていなくてもOK。</small><span class="go">計算する →</span>
         </a>
       </div>
     </div>
